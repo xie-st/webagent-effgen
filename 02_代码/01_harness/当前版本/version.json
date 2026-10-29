@@ -1,0 +1,6 @@
+{
+  "schema_version": 2,
+  "version": "当前版本",
+  "sdk_root": "sdk",
+  "based_on": "v1"
+}

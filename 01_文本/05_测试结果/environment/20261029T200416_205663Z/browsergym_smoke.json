@@ -1,0 +1,24 @@
+{
+  "kind": "browsergym_smoke_no_model",
+  "all_passed": true,
+  "observation_keys": [
+    "active_page_index",
+    "axtree_object",
+    "chat_messages",
+    "dom_object",
+    "elapsed_time",
+    "extra_element_properties",
+    "focused_element_bid",
+    "goal",
+    "goal_object",
+    "last_action",
+    "last_action_error",
+    "open_pages_titles",
+    "open_pages_urls",
+    "screenshot",
+    "url"
+  ],
+  "axtree_nodes": 12,
+  "action_verified": "fill",
+  "chromium_override": "C:\\Users\\hiyad\\AppData\\Local\\ms-playwright\\chromium-1243\\chrome-win64\\chrome.exe"
+}

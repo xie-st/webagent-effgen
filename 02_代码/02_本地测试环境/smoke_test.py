@@ -7,6 +7,7 @@ from playwright.sync_api import sync_playwright
 from playwright.async_api import async_playwright
 from runner import BrowserAdapter
 from sandbox import Fixture, LocalServer
+from report_paths import new_environment_result
 
 ROOT = Path(__file__).resolve().parent
 
@@ -116,9 +117,11 @@ def main():
         parallel = asyncio.run(parallel_check(server.url))
     report = {'kind': 'environment_smoke_not_agent_benchmark', 'model_calls': 0,
               'checks': results, 'all_passed': True, 'parallel_io': parallel}
-    (ROOT / 'results').mkdir(exist_ok=True)
-    (ROOT / 'results' / 'smoke.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+    result_dir = new_environment_result()
+    (result_dir / 'smoke.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+    (result_dir / 'run.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(report, ensure_ascii=False, indent=2))
+    print(result_dir)
 
 
 if __name__ == '__main__':

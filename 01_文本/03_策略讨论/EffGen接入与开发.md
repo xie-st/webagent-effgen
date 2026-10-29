@@ -1,14 +1,12 @@
 # EffGen 接入与开发
 
-## 2026-10-30 工程更新
+## 当前实现
 
-当前固定版本入口为 `02_代码/01_harness/`，官方 SDK 为 `02_代码/03_官方客户端/sdk-6eee7ddab626/`，统一启动用项目根 `python webagent.py connect`，结果入口为 `01_文本/05_测试结果/`。`webagent.json` 指定默认版本与 SDK；连接配置在 `.local/`，Git 忽略。
+日常开发版本位于 `02_代码/01_harness/当前版本/`，v1 保留为阶段版本，包含决策、官方 SDK、启动程序和测试。根 `webagent.py` 仅选择版本；`webagent.json` 选择默认版本，连接配置在 `.local/`，结果在 `01_文本/05_测试结果/`。
 
-当前新增 v1 是单 Tab baseline 参照版本，EffGen 适配仍需另建版本。用户确认此前已用 EffGen 在赛方测试，历史批次 ypgf_v0 为 3/4 通过；安装与实际实现位置待定位，不能用本轮环境检查否定历史运行。已发现 EffGen 1.3.0 的 uv 下载缓存，但尚未确认当时加载路径。
+v1 是单标签页 baseline，尚未接入 EffGen。用户确认历史 EffGen 批次 ypgf_v0 为 3/4 通过，具体实现位置仍待定位；不将这份成绩绑定到 v1。
 
-下文保留此前接入设计与环境说明，当前位置以上述工程更新及项目根 README 为准。
-
-当前阶段：种子已确定，网页适配尚未实现。框架能力见[特性说明](EffGen特性说明.md)，协议和模型限制以[比赛要求](../01_比赛要求/WebAgent比赛要求.md)及实际客户端为依据。
+后续 EffGen 开发在 `当前版本/` 内进行；完成一个阶段后用 `python webagent.py new-version v2` 保存完整编号版本，继续在当前版本开发。框架能力见[特性说明](EffGen特性说明.md)，模型与协议限制以[比赛要求](../01_比赛要求/WebAgent比赛要求.md)和版本内 SDK 为依据。
 
 ## 两条执行路径
 
@@ -21,7 +19,7 @@
 
 ## 官方模型适配
 
-实际 SDK 为 `本地测试环境/webarena-client/third_party_agent/`，调用方式为 `third_party_agent.model.generate(messages)`。它仅接收 system/user/assistant 角色的字符串消息，返回 `.text` 和 `.request_id`。不能把 EffGen 的模型名、采样参数或原生工具参数转发给平台。
+当前开发版本的 SDK 为 `02_代码/01_harness/当前版本/sdk/third_party_agent/`，调用方式为 `third_party_agent.model.generate(messages)`。它仅接收 system/user/assistant 角色的字符串消息，返回 `.text` 和 `.request_id`。不能把 EffGen 的模型名、采样参数或原生工具参数转发给平台。
 
 因此需要在 EffGen 的模型接口与官方 SDK 之间增加适配器：将框架请求整理为合法 messages，将返回文本封装成框架结果；若工具协议需要表达，放入文本提示并解析。平台没有提供的 token 与成本字段保留未知，不填 0，也不按模型名推算实际账单。
 
@@ -39,22 +37,18 @@
 
 ## 当前代码位置
 
-以下路径均相对项目根目录。
-
-| 路径 | 当前内容 |
+| 相对项目根的路径 | 内容 |
 |---|---|
-| `本地测试环境/webarena-client/my_agent.py` | 官方连接适配入口，调用 `agent_logic.decide` |
-| `本地测试环境/webarena-client/agent_logic.py` | 原 baseline，尚无 EffGen 接入 |
-| `本地测试环境/webarena-client/third_party_agent/README.zh-CN.md` | SDK 接口说明 |
-| `02_代码/02_本地测试环境/runner.py` | 本地练习运行器 |
-| `02_代码/01_harness/` | 后续版本实现位置，当前仅目录约定 |
-| `01_文本/06_归档_2026-10-30/effgen-setup/` | 历史百炼安装及验证脚本，作为旧记录保留 |
-
-历史百炼直连脚本用于外部兼容 API 实验，与比赛统一模型接入分开。脚本中的“通过”输出不能替代实际运行记录。
+| `02_代码/01_harness/当前版本/my_agent.py` | 当前任务适配入口 |
+| `02_代码/01_harness/当前版本/agent_logic.py` | 当前 baseline 决策 |
+| `02_代码/01_harness/当前版本/sdk/` | 随版本保存的官方客户端原件 |
+| `02_代码/01_harness/当前版本/run.py` | 可独立运行的版本启动程序 |
+| `02_代码/01_harness/当前版本/tests/` | 当前版本协议与快照检查 |
+| `02_代码/02_本地测试环境/` | 本机练习站与浏览器运行器 |
 
 ## 环境与验证状态
 
-2026-10-30 检查系统 Python、历史脚本指向的 WorkBuddy Python、根目录 `.venv-effgen`：均未找到可导入的 `effgen`。现有 `.venv-effgen` 目录本身不代表依赖已安装。本轮只整理文档与历史文件。
+2026-10-30 检查系统 Python、历史脚本指向的 WorkBuddy Python、根目录 `.venv-effgen`：均未找到可导入的 `effgen`。现有 `.venv-effgen` 目录本身不代表依赖已安装。该记录不代表历史运行未发生。
 
 后续实现版本需要记录 Python 版本、EffGen 固定版本或 commit、依赖锁定文件和模型适配方式；本轮核查使用上游 v1.3.0。
 

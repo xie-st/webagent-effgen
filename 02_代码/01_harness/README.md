@@ -1,18 +1,15 @@
-# harness 固定入口
+# 版本与启动
 
-本目录位置保持稳定，存放本项目自己的 Agent 决策与适配代码。官方通信 SDK 独立放在[官方客户端目录](../03_官方客户端/README.md)，无需与每份 harness 或连接文件混放。
+[当前版本](当前版本/README.md) 是日常工作目录；[v1](v1/README.md) 保存一个阶段的成果。每个目录都有完整代码，互相独立。
 
-- [v1](v1/README.md)：从官方 baseline 建立的首个可回溯参照版本，修正自动化平台的单 Tab 约束。
-- 后续版本使用 `v2/`、`v3/` 等独立目录，写明来源、变化和适用场景；从上一版复制后修改，保留旧版本。
-- 默认版本由根 `webagent.json` 选择；启动用根 `webagent.py connect`，旧版本用 `--version v1`。
-- 结果始终写入[统一测试结果目录](../../01_文本/05_测试结果/README.md)，与版本目录分开。
+平时在当前版本修改，沿用[开发方案](../../01_文本/06_开发框架/开发方案.md)的模块边界，按阶段验收。阶段结束并由用户决定保存后，在项目根执行 `python webagent.py new-version v2`，保存完整大版本；之后继续开发当前版本。
 
-新版本可按如下方式建立，再补版本说明、检查并更新默认配置：
+在项目根运行：
 
-```powershell
-Copy-Item -LiteralPath '02_代码/01_harness/v1' -Destination '02_代码/01_harness/v2' -Recurse
-python webagent.py check --version v2
-python webagent.py test --version v2
-```
+| 命令 | 用途 |
+|---|---|
+| `python webagent.py check` | 检查代码与连接配置 |
+| `python webagent.py test` | 本机离线测试 |
+| `python webagent.py connect` | 连接赛方平台 |
 
-每次运行都有独立代码快照与文件指纹，复查旧结果时先读它的 `run.json`。旧运行没有代码指纹的，保留来源未知，不根据连接名称补认版本。
+默认运行当前版本。使用旧版时加 `--version v1`；默认配置在根 `webagent.json`。运行结果见[测试结果](../../01_文本/05_测试结果/README.md)。

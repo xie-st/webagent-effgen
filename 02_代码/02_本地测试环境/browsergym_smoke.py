@@ -1,4 +1,5 @@
 """Run with .venv-browsergym. Reads genuine BrowserGym AXTree, no LLM."""
+from report_paths import new_environment_result
 import json
 import os
 from unittest.mock import patch
@@ -35,9 +36,12 @@ def main():
                   'observation_keys': sorted(observation.keys()),
                   'axtree_nodes': len(observation['axtree_object']['nodes']),
                   'action_verified': 'fill', 'chromium_override': executable}
-        path = Path(__file__).resolve().parent / 'results' / 'browsergym_smoke.json'
+        result_dir = new_environment_result()
+        path = result_dir / 'browsergym_smoke.json'
         path.write_text(json.dumps(report, indent=2), encoding='utf-8')
+        (result_dir / 'run.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
         print(json.dumps(report))
+        print(result_dir)
     finally:
         env.close()
         if override:

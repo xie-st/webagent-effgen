@@ -1,18 +1,38 @@
-# 测试结果固定入口
+# 测试结果
 
-本目录持续保留，源码升级不改变入口。
+线上和本机测试统一保存在这里，每次运行单独建目录。
 
-| 位置 | 内容 |
+| 目录 | 内容 |
 |---|---|
-| `index.jsonl` | 新运行的追加索引，包含版本、类型和目录 |
-| `latest.json` | 最近创建的运行位置；只更新指向，不覆盖旧结果 |
-| `runs/<唯一运行ID>/` | 根启动器创建的会话或协议检查 |
-| `local/<唯一运行ID>/` | 本地练习运行器创建的合成测试 |
-| [历史批次 ypgf_v0](historical/batch-8ed63eb9d774f28ba098cfa7bb4f8e9c/result.md) | 用户提供的官方测试导出，代码位置待定位 |
-| `historical/local-before-versioning/` | 旧脚本结果，尚无 harness 版本绑定 |
+| `runs/运行ID/` | 线上连接会话、本机离线协议测试 |
+| `local/运行ID/` | 本地网页练习的结果、动作日志和回放 |
+| `environment/运行ID/` | 练习站与 BrowserGym 环境检查 |
+| `historical/` | 历史测试资料 |
 
-`python webagent.py connect` 自动保存本次代码快照、版本与 Git 信息，再连接平台。仅预留记录位置可执行 `python webagent.py new-run --version v1 --kind official`；预留目录不表示测试已执行。
+## 线上测试
 
-每次目录中的 `run.json` 保存元数据，`result.md` 保存任务、指标与结论。平台任务编号与批次编号写入 `platform_run_ids`；原始报告、trace 和日志下载到 `raw/`。客户端会话结束不代表任务通过，成绩必须来自平台。
+在项目根运行 `python webagent.py connect`，终端会显示本次结果目录。代码快照和会话信息自动保存；当前版本也会建好 `raw/`。
 
-新结果唯一目录名使用 UTC 时间和随机后缀，避免同版本多次测试互相覆盖。切换默认版本只修改根配置，既有运行的版本、快照与来源记录保持不变。原始日志、trace 与快照保留本机；元数据与结论提交 Git。
+官方成绩需从平台下载，放入本次 `raw/`；把成绩和结论写入 `result.md`，平台批次编号写入 `run.json` 的 `platform_run_ids`。一个会话有多个批次时分别记录。
+
+已有历史官方成绩：[ypgf_v0](historical/batch-8ed63eb9d774f28ba098cfa7bb4f8e9c/result.md)。旧本机报告与回放见[历史本机测试](historical/environment-before-cleanup/result.md)。
+
+## 本机测试
+
+`python webagent.py test` 自动保存测试输出、摘要和完整代码快照。本地网页练习与环境检查也会自动保存到表中对应目录。
+
+`runs/` 中的 `run.json` 用 `kind` 区分：`official` 是线上会话，`infrastructure` 是离线检查。每次保留当次代码，之后修改当前版本不影响旧结果。网页练习只保存运行器及决策模块快照，环境检查只保存报告。
+
+## 查找结果
+
+运行命令会打印保存路径。`latest.json` 指向最近创建的 runs 记录，`index.jsonl` 保存 runs 索引；local 和 environment 按目录时间查找。目录时间采用 UTC，比北京时间早 8 小时。
+
+直接在版本内运行 `run.py`，结果默认在该版本 `results/runs/`；`--results-dir` 可另选位置。`check` 和启动练习站不生成任务成绩，工程检查输出在终端。
+
+Git 收录范围见[Git 说明](../../Git.md)。
+
+## 用于任务验收
+
+交接时提供结果目录、测试命令、当次代码标识和简短结论，说明通过项与未完成项。摘要注明是离线协议、脚本环境、模型任务还是官方成绩。
+
+复核者依据代码和原始结果判断是否完成，再更新[开发方案](../06_开发框架/开发方案.md)中的任务状态。各 README 保留运行方法，任务进度集中在开发方案。
