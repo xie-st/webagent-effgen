@@ -31,3 +31,7 @@
 固定 SDK 的全部暂存文件与 SOURCE.json 校验一致；当前入口的 10 份文档本地链接通过。协议检查 8 项通过；从项目外目录调用启动器正常；本地简介合成任务三步通过，结果写入统一 local/。Git 初次提交后再次运行协议检查，run.json 已记录该提交与干净工作区。
 
 私密仓库已创建：[xie-st/webagent-effgen](https://github.com/xie-st/webagent-effgen)，本轮将源码与元数据推送 main。历史 EffGen 的安装路径仍未确定；未将本次 baseline 版本认作历史 EffGen 实现。
+
+## 仓库可见性更新
+
+用户随后明确要求改为 public。已将仓库切换为 PUBLIC，保留连接令牌、环境、缓存、原始日志和本机快照的忽略规则。源码及成绩摘要已同步至 main。

@@ -47,4 +47,4 @@ Git 同步源码、版本目录、官方 SDK、文档、成绩摘要和运行元
 
 ## GitHub
 
-私密仓库：[xie-st/webagent-effgen](https://github.com/xie-st/webagent-effgen)。主分支 `main`。本机环境与连接配置按 `.gitignore` 保留在本地，克隆后需要另行配置。
+公开仓库：[xie-st/webagent-effgen](https://github.com/xie-st/webagent-effgen)。主分支 `main`。本机环境与连接配置按 `.gitignore` 保留在本地，克隆后需要另行配置。
