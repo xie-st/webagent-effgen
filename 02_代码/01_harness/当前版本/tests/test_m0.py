@@ -140,6 +140,17 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(generate.call_count, 1)
         self.assertEqual(state["memory"], "saved")
 
+    def test_custom_port_stale_action_is_rejected_before_memory_merge(self):
+        frame = official.frame_from_request(request("port"), step=0)
+        state = {"memory": "kept facts"}
+
+        def stale_port(context, task_state):
+            return {"action": "click [999]", "memory": "stale note"}
+
+        with self.assertRaisesRegex(ValueError, "CURRENT page"):
+            Runtime(stale_port).advance(frame, state)
+        self.assertEqual(state["memory"], "kept facts")
+
 
 class StateTests(unittest.TestCase):
     def test_memory_continues_until_reset(self):

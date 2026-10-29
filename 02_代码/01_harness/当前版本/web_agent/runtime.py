@@ -5,7 +5,7 @@ from collections.abc import Callable, Mapping
 from typing import Any
 
 from . import observe
-from .baseline import validate_action
+from .actions import validate_action
 from .contracts import Context, Frame
 from .state import TaskState
 
