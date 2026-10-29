@@ -20,7 +20,7 @@
 | `version.json` | 版本标识与 SDK 路径 |
 | `tests/`、`requirements.txt` | 测试与依赖说明 |
 
-Python 3.11 及以上，目前只用标准库。`sdk/` 内的同名 Agent 文件是官方样例，实际决策入口是本目录的 `agent_logic.py`，官方生命周期入口是 `my_agent.py`。
+Python 3.11 及以上，目前只用标准库。`sdk/` 内的同名 Agent 文件是官方样例，官方生命周期入口是 `my_agent.py`，默认决策经 Runtime 调用 `web_agent/baseline.py`；`agent_logic.py` 保留旧调用签名与兼容导出。
 
 本目录的测试随代码一起保存。M0 回归覆盖 Frame 映射、Runtime 接线、单次模型调用、状态隔离、自定义端口动作校验、当前 ID、同源 goto、纠错与重复坏输出恢复。下一阶段把 Runtime 的 baseline 决策端口替换为 EffGen policy。
 
