@@ -1,0 +1,74 @@
+[
+  {
+    "tag": "webagent-planning",
+    "label": "任务规划",
+    "month_count": 1,
+    "year_count": 93
+  },
+  {
+    "tag": "webagent-observation",
+    "label": "页面观察与信息提取",
+    "month_count": 2,
+    "year_count": 100
+  },
+  {
+    "tag": "webagent-actions",
+    "label": "网页行动与工具",
+    "month_count": 4,
+    "year_count": 100
+  },
+  {
+    "tag": "webagent-concurrency",
+    "label": "并发调度与等待",
+    "month_count": 1,
+    "year_count": 59
+  },
+  {
+    "tag": "webagent-action-efficiency",
+    "label": "行动效率",
+    "month_count": 0,
+    "year_count": 100
+  },
+  {
+    "tag": "webagent-inference",
+    "label": "模型调用效率",
+    "month_count": 2,
+    "year_count": 100
+  },
+  {
+    "tag": "webagent-verification",
+    "label": "结果检验",
+    "month_count": 3,
+    "year_count": 96
+  },
+  {
+    "tag": "webagent-recovery",
+    "label": "失败处理与恢复",
+    "month_count": 4,
+    "year_count": 100
+  },
+  {
+    "tag": "webagent-context",
+    "label": "上下文管理",
+    "month_count": 3,
+    "year_count": 100
+  },
+  {
+    "tag": "webagent-prompt-hooks",
+    "label": "提示词与钩子",
+    "month_count": 1,
+    "year_count": 75
+  },
+  {
+    "tag": "webagent-rate-control",
+    "label": "限流控制",
+    "month_count": null,
+    "year_count": 3
+  },
+  {
+    "tag": "webagent-skills",
+    "label": "Skill",
+    "month_count": null,
+    "year_count": 100
+  }
+]

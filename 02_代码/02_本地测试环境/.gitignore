@@ -1,0 +1,5 @@
+.venv*/
+__pycache__/
+agent-connection*.json
+*.env
+results/*.zip

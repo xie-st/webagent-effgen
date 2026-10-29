@@ -1,0 +1,97 @@
+# 任务规划 · 近一年
+
+2025-10-30 至 2026-10-29，共 93 篇。分数为原程序的模型相关性评分。
+
+- [Falsifiable Commitment Planning for Self-Correcting Web Agents](https://arxiv.org/pdf/2607.24167v1) · 2026-07-27 · 相关性 9
+- [Does The Way You Plan Matter? An Empirical Study of Planning Representations for LLM Web Agents](https://arxiv.org/pdf/2605.29927v1) · 2026-05-28 · 相关性 9
+- [WebUncertainty: Dual-Level Uncertainty Driven Planning and Reasoning For Autonomous Web Agent](https://arxiv.org/pdf/2604.17821v2) · 2026-04-20 · 相关性 9
+- [A Subgoal-driven Framework for Improving Long-Horizon LLM Agents](https://arxiv.org/pdf/2603.19685v1) · 2026-03-20 · 相关性 9
+- [Why Do LLM-based Web Agents Fail? A Hierarchical Planning Perspective](https://arxiv.org/pdf/2603.14248v2) · 2026-03-15 · 相关性 9
+- [AI Planning Framework for LLM-Based Web Agents](https://arxiv.org/pdf/2603.12710v1) · 2026-03-13 · 相关性 9
+- [STRUCTUREDAGENT: Planning with AND/OR Trees for Long-Horizon Web Tasks](https://arxiv.org/pdf/2603.05294v2) · 2026-03-05 · 相关性 9
+- [Plan-MCTS: Plan Exploration for Action Exploitation in Web Navigation](https://arxiv.org/pdf/2602.14083v1) · 2026-02-15 · 相关性 9
+- [WebAnchor: Anchoring Agent Planning to Stabilize Long-Horizon Web Reasoning](https://arxiv.org/pdf/2601.03164v2) · 2026-01-06 · 相关性 9
+- [Wuying-Browser-Agent: Real-World Centric Fundamental Long-Horizon Browser Agents](https://arxiv.org/pdf/2608.17319v1) · 2026-08-18 · 相关性 8
+- [HxAgent: Iterative Agent Planning for End-to-End Web Application Testing](https://arxiv.org/pdf/2608.15491v1) · 2026-08-16 · 相关性 8
+- [WebSwarm: Recursive Multi-Agent Orchestration for Deep-and-Wide Web Search](https://arxiv.org/pdf/2607.08662v1) · 2026-07-09 · 相关性 8
+- [Empowering GUI Agents via Autonomous Experience Exploration and Hindsight Experience Utilization for Task Planning](https://arxiv.org/pdf/2606.27330v1) · 2026-06-25 · 相关性 8
+- [Multi-Agent Computer Use](https://arxiv.org/pdf/2606.01533v1) · 2026-06-01 · 相关性 8
+- [Web Agents Should Adopt the Plan-Then-Execute Paradigm](https://arxiv.org/pdf/2605.14290v1) · 2026-05-14 · 相关性 8
+- [Enhancing Web Agents with a Hierarchical Memory Tree](https://arxiv.org/pdf/2603.07024v1) · 2026-03-07 · 相关性 8
+- [OpAgent: Operator Agent for Web Navigation](https://arxiv.org/pdf/2602.13559v2) · 2026-02-14 · 相关性 8
+- [EvoWeave: Composing Reusable Agent Experience through Operation Level Graphs](https://arxiv.org/pdf/2610.19381v1) · 2026-10-14 · 相关性 7
+- [Learning Simple Test-Time Environments for LLM Web Agents](https://arxiv.org/pdf/2608.29305v1) · 2026-08-29 · 相关性 7
+- [Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents](https://arxiv.org/pdf/2607.28227v1) · 2026-07-30 · 相关性 7
+- [Beyond Sequential Interaction: Benchmarking Parallel Execution and Coordination for GUI Agents](https://arxiv.org/pdf/2607.22689v1) · 2026-07-17 · 相关性 7
+- [Plover: Steering GUI Agents through Plan-Centric Interaction](https://arxiv.org/pdf/2607.15193v1) · 2026-07-16 · 相关性 7
+- [GATS: Graph-Augmented Tree Search with Layered World Models for Efficient Agent Planning](https://arxiv.org/pdf/2607.08894v1) · 2026-07-09 · 相关性 7
+- [RunAgent SuperBrowser: A Theory of Autonomous Web Navigation Grounded in Human Browsing Behaviour](https://arxiv.org/pdf/2606.09399v1) · 2026-06-08 · 相关性 7
+- [Agent Planning Benchmark: A Diagnostic Framework for Planning Capabilities in LLM Agents](https://arxiv.org/pdf/2606.04874v2) · 2026-06-03 · 相关性 7
+- [Learning to Adapt: Self-Improving Web Agent via Cognitive-Aware Exploration](https://arxiv.org/pdf/2605.31365v1) · 2026-05-29 · 相关性 7
+- [Agent JIT Compilation for Latency-Optimizing Web Agent Planning and Scheduling](https://arxiv.org/pdf/2605.21470v2) · 2026-05-20 · 相关性 7
+- [Planner Matters! An Efficient and Unbalanced Multi-agent Collaboration Framework for Long-horizon Planning](https://arxiv.org/pdf/2605.02168v1) · 2026-05-04 · 相关性 7
+- [cotomi Act: Learning to Automate Work by Watching You](https://arxiv.org/pdf/2605.03231v1) · 2026-05-04 · 相关性 7
+- [Mango: Multi-Agent Web Navigation via Global-View Optimization](https://arxiv.org/pdf/2604.18779v1) · 2026-04-20 · 相关性 7
+- [WebXSkill: Skill Learning for Autonomous Web Agents](https://arxiv.org/pdf/2604.13318v2) · 2026-04-14 · 相关性 7
+- [When Users Change Their Mind: Evaluating Interruptible Agents in Long-Horizon Web Navigation](https://arxiv.org/pdf/2604.00892v1) · 2026-04-01 · 相关性 7
+- [ActionEngine: From Reactive to Programmatic GUI Agents via State Machine Memory](https://arxiv.org/pdf/2602.20502v1) · 2026-02-24 · 相关性 7
+- [Avenir-Web: Human-Experience-Imitating Multimodal Web Agents with Mixture of Grounding Experts](https://arxiv.org/pdf/2602.02468v1) · 2026-02-02 · 相关性 7
+- [BEAP-Agent: Backtrackable Execution and Adaptive Planning for GUI Agents](https://arxiv.org/pdf/2601.21352v1) · 2026-01-29 · 相关性 7
+- [ColorBrowserAgent: Complex Long-Horizon Browser Agent with Adaptive Knowledge Evolution](https://arxiv.org/pdf/2601.07262v3) · 2026-01-12 · 相关性 7
+- [WebOperator: Action-Aware Tree Search for Autonomous Agents in Web Environment](https://arxiv.org/pdf/2512.12692v1) · 2025-12-14 · 相关性 7
+- [Reflecting with Two Voices: A Co-Adaptive Dual-Strategy Framework for LLM-Based Agent Decision Making](https://arxiv.org/pdf/2512.08366v2) · 2025-12-09 · 相关性 7
+- [ReAcTree: Hierarchical LLM Agent Trees with Control Flow for Long-Horizon Task Planning](https://arxiv.org/pdf/2511.02424v2) · 2025-11-04 · 相关性 7
+- [Harness-Model Collaboration for Long-Horizon Continual Learning](https://arxiv.org/pdf/2610.34724v1) · 2026-10-26 · 相关性 6
+- [SkillShift-Bench: Benchmarking Skill Learning under Environment Evolution for Web Agents](https://arxiv.org/pdf/2610.33528v1) · 2026-10-24 · 相关性 6
+- [Step-Aligned Script Generation with Verification and Recovery for Web Automation Testing](https://arxiv.org/pdf/2610.25601v1) · 2026-10-19 · 相关性 6
+- [HyWe: Unifying Search and Operation for Real-World Hybrid Web Tasks](https://arxiv.org/pdf/2610.16319v2) · 2026-10-12 · 相关性 6
+- [TaReD: Tool-Aware Recursive Decomposition for Long-Horizon Tasks](https://arxiv.org/pdf/2610.11268v1) · 2026-10-08 · 相关性 6
+- [Topology-Consistent Task Planning over Cellular Workflow Complexes for LLM-based Agents](https://arxiv.org/pdf/2610.07004v1) · 2026-10-04 · 相关性 6
+- [The Hard Part Comes After Search: Benchmarking Web Agents on Synthesizing, Organizing, and Displaying Knowledge](https://arxiv.org/pdf/2609.30604v1) · 2026-09-24 · 相关性 6
+- [Discriminative World Models for Web Agents](https://arxiv.org/pdf/2609.02885v1) · 2026-09-02 · 相关性 6
+- [SCAFFOLD: Self-Improving Web Agents via Recursive Parametric Skill Abstraction](https://arxiv.org/pdf/2609.05511v1) · 2026-08-31 · 相关性 6
+- [Intent-Driven Situation Tracking for User-Centric Multi-Turn Agents](https://arxiv.org/pdf/2608.15755v1) · 2026-08-16 · 相关性 6
+- [SynWeaver: Website-Prior Task and Trajectory Co-Synthesis for Web Agents](https://arxiv.org/pdf/2608.12429v1) · 2026-08-12 · 相关性 6
+- [MELLON - Multimodal Enhanced LLM for Online Navigation](https://arxiv.org/pdf/2608.09121v1) · 2026-08-10 · 相关性 6
+- [MoRSE: Task-Oriented Multi-Agent System with Mixture of Role-Subtask Experts](https://arxiv.org/pdf/2608.09251v1) · 2026-08-10 · 相关性 6
+- [MemPrism: Task-Conditioned Relational Memory Views for Long-Horizon Agents](https://arxiv.org/pdf/2608.06745v1) · 2026-08-07 · 相关性 6
+- [OneDayAgent: Towards a Long-Horizon Harness for Autonomous Agents](https://arxiv.org/pdf/2608.05013v1) · 2026-08-04 · 相关性 6
+- [LongHorizon-Harness: Advancing Long-Horizon Agents for Real-World Tasks](https://arxiv.org/pdf/2608.01964v1) · 2026-08-03 · 相关性 6
+- [HyperAgent: Planning and Acting over Tool-Schema Hypergraphs for Tool-Use LLM Agents](https://arxiv.org/pdf/2608.02650v1) · 2026-07-31 · 相关性 6
+- [OTAP: Structure-Aware Optimal Transport for Evaluating Planning and Execution in Agent Trajectories](https://arxiv.org/pdf/2607.17082v2) · 2026-07-19 · 相关性 6
+- [MAG: A Web-Agent Benchmark and Harness for Multimodal Action and Guide Generation](https://arxiv.org/pdf/2607.10079v3) · 2026-07-11 · 相关性 6
+- [DeepSearch-World: Self-Distillation for Deep Search Agents in a Verifiable Environment](https://arxiv.org/pdf/2607.07820v2) · 2026-07-08 · 相关性 6
+- [Task Decomposition-Guided Reranking for Adaptive Agent Skill Retrieval](https://arxiv.org/pdf/2607.06283v1) · 2026-07-07 · 相关性 6
+- [Scalable Behaviour Cloning on Browser Using via Skill Distillation](https://arxiv.org/pdf/2606.32014v1) · 2026-06-30 · 相关性 6
+- [Beyond Static Endpoints: Tool Programs as an Interface for Flexible Agentic Web Services](https://arxiv.org/pdf/2606.19992v1) · 2026-06-18 · 相关性 6
+- [When Web Agents Finish but Still Fail: Reproducible Triggers and Trace Diagnostics for Parallel Web Exploration](https://arxiv.org/pdf/2606.20724v2) · 2026-06-16 · 相关性 6
+- [WebChallenger: A Reliable and Efficient Generalist Web Agent](https://arxiv.org/pdf/2606.10423v1) · 2026-06-09 · 相关性 6
+- [Signal-Driven Observation for Long-Horizon Web Agents](https://arxiv.org/pdf/2606.06708v2) · 2026-06-04 · 相关性 6
+- [Beyond Semantic Organization: Memory as Execution State Management for Long-Horizon Agents](https://arxiv.org/pdf/2606.06090v1) · 2026-06-04 · 相关性 6
+- [Online Skill Learning for Web Agents via State-Grounded Dynamic Retrieval](https://arxiv.org/pdf/2606.04391v1) · 2026-06-03 · 相关性 6
+- [OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents](https://arxiv.org/pdf/2606.02031v2) · 2026-06-01 · 相关性 6
+- [CoMAP: Co-Evolving World Models and Agent Policies for LLM Agents](https://arxiv.org/pdf/2606.02372v2) · 2026-06-01 · 相关性 6
+- [State-Centric Decision Process](https://arxiv.org/pdf/2605.12755v1) · 2026-05-12 · 相关性 6
+- [Do Agents Need to Plan Step-by-Step? Rethinking Planning Horizon in Data-Centric Tool Calling](https://arxiv.org/pdf/2605.08477v1) · 2026-05-08 · 相关性 6
+- [Learning and Reusing Policy Decompositions for Hierarchical Generalized Planning with LLM Agents](https://arxiv.org/pdf/2605.06957v1) · 2026-05-07 · 相关性 6
+- [AutoSurfer -- Teaching Web Agents through Comprehensive Surfing, Learning, and Modeling](https://arxiv.org/pdf/2604.27253v1) · 2026-04-29 · 相关性 6
+- [DRIVE: Modeling Skills at the Reasoning and Interaction Levels for Web Agents under Continual Learning](https://arxiv.org/pdf/2605.23939v1) · 2026-04-28 · 相关性 6
+- [Small Model as Master Orchestrator: Learning Unified Agent-Tool Orchestration with Parallel Subtask Decomposition](https://arxiv.org/pdf/2604.17009v1) · 2026-04-18 · 相关性 6
+- [AgentSwing: Adaptive Parallel Context Management Routing for Long-Horizon Web Agents](https://arxiv.org/pdf/2603.27490v1) · 2026-03-29 · 相关性 6
+- [ContractSkill: Repairable Contract-Based Skills for Multimodal Web Agents](https://arxiv.org/pdf/2603.20340v3) · 2026-03-20 · 相关性 6
+- [See and Remember: A Multimodal Agent for Web Traversal](https://arxiv.org/pdf/2603.02626v1) · 2026-03-03 · 相关性 6
+- [M$^2$: Dual-Memory Augmentation for Long-Horizon Web Agents via Trajectory Summarization and Insight Retrieval](https://arxiv.org/pdf/2603.00503v1) · 2026-02-28 · 相关性 6
+- [MagicAgent: Towards Generalized Agent Planning](https://arxiv.org/pdf/2602.19000v2) · 2026-02-22 · 相关性 6
+- [IntentCUA: Learning Intent-level Representations for Skill Abstraction and Multi-Agent Planning in Computer-Use Agents](https://arxiv.org/pdf/2602.17049v2) · 2026-02-19 · 相关性 6
+- [BrowseComp-$V^3$: A Visual, Vertical, and Verifiable Benchmark for Multimodal Browsing Agents](https://arxiv.org/pdf/2602.12876v2) · 2026-02-13 · 相关性 6
+- [TodoEvolve: Learning to Architect Agent Planning Systems](https://arxiv.org/pdf/2602.07839v1) · 2026-02-08 · 相关性 6
+- [WebExpert: domain-aware web agents with critic-guided expert experience for high-precision search](https://arxiv.org/pdf/2604.06177v1) · 2026-02-03 · 相关性 6
+- [Agent Alpha: Tree Search Unifying Generation, Exploration and Evaluation for Computer-Use Agents](https://arxiv.org/pdf/2602.02995v1) · 2026-02-03 · 相关性 6
+- [ROMA: Recursive Open Meta-Agent Framework for Long-Horizon Multi-Agent Systems](https://arxiv.org/pdf/2602.01848v2) · 2026-02-02 · 相关性 6
+- [DeepPlanning: Benchmarking Long-Horizon Agentic Planning with Verifiable Constraints](https://arxiv.org/pdf/2601.18137v1) · 2026-01-26 · 相关性 6
+- [PAACE: A Plan-Aware Automated Agent Context Engineering Framework](https://arxiv.org/pdf/2512.16970v1) · 2025-12-18 · 相关性 6
+- [Evaluating Long-Context Reasoning in LLM-Based WebAgents](https://arxiv.org/pdf/2512.04307v1) · 2025-12-03 · 相关性 6
+- [Prune4Web: DOM Tree Pruning Programming for Web Agent](https://arxiv.org/pdf/2511.21398v1) · 2025-11-26 · 相关性 6
+- [WebCoach: Self-Evolving Web Agents with Cross-Session Memory Guidance](https://arxiv.org/pdf/2511.12997v2) · 2025-11-17 · 相关性 6
+- [Mobile-Agent-RAG: Driving Smart Multi-Agent Coordination with Contextual Knowledge Empowerment for Long-Horizon Mobile Automation](https://arxiv.org/pdf/2511.12254v3) · 2025-11-15 · 相关性 6
+- [Co-EPG: A Framework for Co-Evolution of Planning and Grounding in Autonomous GUI Agents](https://arxiv.org/pdf/2511.10705v1) · 2025-11-13 · 相关性 6

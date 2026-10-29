@@ -1,0 +1,250 @@
+[
+  {
+    "id": "2606.01533v1",
+    "url": "https://arxiv.org/html/2606.01533v1",
+    "title": "Multi-Agent Computer Use",
+    "links": [
+      "https://github.com/QwenLM/qwen-code"
+    ]
+  },
+  {
+    "id": "2605.21470v2",
+    "url": "https://arxiv.org/html/2605.21470v2",
+    "title": "Agent JIT Compilation for Latency-Optimizing Web Agent Planning and Scheduling",
+    "links": [
+      "https://github.com/stanford-mast/blast"
+    ]
+  },
+  {
+    "id": "2607.22689v1",
+    "url": "https://arxiv.org/html/2607.22689v1",
+    "title": "Beyond Sequential Interaction: Benchmarking Parallel Execution and Coordination for GUI Agents",
+    "links": [
+      "https://github.com/pkgunboat/ParaGUIBench",
+      "https://huggingface.co/Hcompany/Holo3-35B-A3B"
+    ]
+  },
+  {
+    "id": "2607.24167v1",
+    "url": "https://arxiv.org/html/2607.24167v1",
+    "title": "Falsifiable Commitment Planning for Self-Correcting Web Agents",
+    "links": []
+  },
+  {
+    "id": "2605.14290v1",
+    "url": "https://arxiv.org/html/2605.14290v1",
+    "title": "Web Agents Should Adopt the Plan-Then-Execute Paradigm",
+    "links": [
+      "https://github.com/browser-use/browser-use"
+    ]
+  },
+  {
+    "id": "2511.21398v1",
+    "url": "https://arxiv.org/html/2511.21398v1",
+    "title": "Prune4Web: DOM Tree Pruning Programming for Web Agent",
+    "links": []
+  },
+  {
+    "id": "2605.07134v1",
+    "url": "https://arxiv.org/html/2605.07134v1",
+    "title": "Region4Web: Rethinking Observation Space Granularity for Web Agents",
+    "links": [
+      "https://github.com/ServiceNow/BrowserGym/blob/main/browsergym/core/src/browsergym/core/observation.py",
+      "https://github.com/imeanai/webcanvas?tab=readme-ov-file#download",
+      "https://github.com/kwondu/region4web",
+      "https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2"
+    ]
+  },
+  {
+    "id": "2605.29397v1",
+    "url": "https://arxiv.org/html/2605.29397v1",
+    "title": "Revisiting Observation Reduction for Web Agents: Comprehensive Evaluation with a Lightweight Framework",
+    "links": [
+      "https://huggingface.co/datasets/McGill-NLP/WebLINX"
+    ]
+  },
+  {
+    "id": "2602.20502v1",
+    "url": "https://arxiv.org/html/2602.20502v1",
+    "title": "ActionEngine : From Reactive to Programmatic GUI Agents via State Machine Memory",
+    "links": []
+  },
+  {
+    "id": "2602.17245v2",
+    "url": "https://arxiv.org/html/2602.17245v2",
+    "title": "Position: Web Agents Should Use Typed Actions Instead of Click-Based Browsing",
+    "links": [
+      "https://github.com/browser-use/browser-use",
+      "https://github.com/nlweb-ai/MSR-Web-Verbs"
+    ]
+  },
+  {
+    "id": "2610.03036v2",
+    "url": "https://arxiv.org/html/2610.03036v2",
+    "title": "WebFovea: When the Model Is Right but the Click Is Wrong Reliable Round Trips for Vision-Based Web Agents on Live Websites",
+    "links": [
+      "https://github.com/browser-use/browser-use",
+      "https://github.com/jianganghan/WebFovea",
+      "https://mininglamp-ai.github.io/WebRetriever/",
+      "https://mininglamp-ai.github.io/WebRetriever_Challenge/"
+    ]
+  },
+  {
+    "id": "2605.16565v2",
+    "url": "https://arxiv.org/html/2605.16565v2",
+    "title": "Skim: Speculative Execution for Fast and Efficient Web Agents",
+    "links": [
+      "https://github.com/browser-use/browser-use"
+    ]
+  },
+  {
+    "id": "2604.09718v2",
+    "url": "https://arxiv.org/html/2604.09718v2",
+    "title": "Agentic Compilation: Mitigating the LLM Rerun Crisis for Minimized-Inference-Cost Web Automation",
+    "links": []
+  },
+  {
+    "id": "2601.21123v2",
+    "url": "https://arxiv.org/html/2601.21123v2",
+    "title": "CUA-Skill: Develop Skills for Computer Using Agent",
+    "links": [
+      "https://microsoft.github.io/cua_skill/"
+    ]
+  },
+  {
+    "id": "2603.00503v1",
+    "url": "https://arxiv.org/html/2603.00503v1",
+    "title": "M 2 : Dual-Memory Augmentation for Long-Horizon Web Agents via Trajectory Summarization and Insight Retrieval",
+    "links": []
+  },
+  {
+    "id": "2610.01415v1",
+    "url": "https://arxiv.org/html/2610.01415v1",
+    "title": "Beyond Memory: Harnessing Long-Horizon Agents with Explicit Belief States",
+    "links": [
+      "https://github.com/luoyu100/PoS",
+      "https://luoyu100.github.io/projects/progression-of-states/project/"
+    ]
+  },
+  {
+    "id": "2512.10371v2",
+    "url": "https://arxiv.org/html/2512.10371v2",
+    "title": "AgentProg: Empowering Long-Horizon GUI Agents with Program-Guided Context Management Thanks: Corresponding Author: Yuanchun Li (liyuanchun@air.tsinghua.edu.cn)",
+    "links": [
+      "https://github.com/MobileLLM/AgentProg"
+    ]
+  },
+  {
+    "id": "2606.15017v2",
+    "url": "https://arxiv.org/html/2606.15017v2",
+    "title": "Are Online Skill and Memory Modules Always Worth Their Tokens? A Budget-Constrained Study of Web Agents",
+    "links": [
+      "https://huggingface.co/Qwen/Qwen3.6-27B",
+      "https://sinahmr.github.io/budget-constrained-web-agents"
+    ]
+  },
+  {
+    "id": "2603.15473v2",
+    "url": "https://arxiv.org/html/2603.15473v2",
+    "title": "Agent Lifecycle Toolkit (ALTK): Reusable Middleware Components for Robust AI Agents",
+    "links": [
+      "https://github.com/crewAIInc/crewAI",
+      "https://github.com/huggingface/smolagents",
+      "https://github.com/i-am-bee/bee-agent-framework",
+      "https://github.com/langchain-ai/langchain",
+      "https://github.com/langchain-ai/langgraph",
+      "https://github.com/meta-llama/llama-stack",
+      "https://github.com/run-llama/llama_index"
+    ]
+  },
+  {
+    "id": "2512.15374v2",
+    "url": "https://arxiv.org/html/2512.15374v2",
+    "title": "SCOPE: Prompt Evolution for Enhancing Agent Effectiveness",
+    "links": [
+      "https://github.com/JarvisPei/SCOPE"
+    ]
+  },
+  {
+    "id": "2512.07094v2",
+    "url": "https://arxiv.org/html/2512.07094v2",
+    "title": "VIGIL: A Reflective Runtime for Self-Healing LLM Agents",
+    "links": []
+  },
+  {
+    "id": "2608.02643v2",
+    "url": "https://arxiv.org/html/2608.02643v2",
+    "title": "CUADebug: Diagnosing and Repairing Computer-Use Agent Failures",
+    "links": [
+      "https://cuadebug.github.io/"
+    ]
+  },
+  {
+    "id": "2610.27954v1",
+    "url": "https://arxiv.org/html/2610.27954v1",
+    "title": "Lost in Recovery: Demystifying Recovery Behavior of Computer-Use Agents via Goal-Oriented Action Replay",
+    "links": [
+      "https://github.com/BangProx/ReTRACE",
+      "https://github.com/OS-Copilot/OS-Symphony.git",
+      "https://github.com/xlang-ai/OSWorld.git"
+    ]
+  },
+  {
+    "id": "2603.20340v3",
+    "url": "https://arxiv.org/html/2603.20340v3",
+    "title": "ContractSkill: Repairable Contract-Based Skills for Multimodal Web Agents",
+    "links": [
+      "https://github.com/underfitting-lu/contractskill.git"
+    ]
+  },
+  {
+    "id": "2604.06240v1",
+    "url": "https://arxiv.org/html/2604.06240v1",
+    "title": "The Art of Building Verifiers for Computer Use Agents",
+    "links": [
+      "https://github.com/karpathy/autoresearch",
+      "https://github.com/microsoft/fara"
+    ]
+  },
+  {
+    "id": "2511.20067v1",
+    "url": "https://arxiv.org/html/2511.20067v1",
+    "title": "“Are We Done Yet?”: A Vision-Based Judge for Autonomous Task Completion of Computer Use Agents",
+    "links": []
+  },
+  {
+    "id": "2605.16116v1",
+    "url": "https://arxiv.org/html/2605.16116v1",
+    "title": "ShopGym: An Integrated Framework for Realistic Simulation and Scalable Benchmarking of E-Commerce Web Agents",
+    "links": []
+  },
+  {
+    "id": "2604.16385v1",
+    "url": "https://arxiv.org/html/2604.16385v1",
+    "title": "StressWeb: A Diagnostic Benchmark for Web Agent Robustness under Realistic Interaction Variability",
+    "links": [
+      "https://github.com/inclusionAI/AWorld-RL/tree/main/StressWeb"
+    ]
+  },
+  {
+    "id": "2604.01535v1",
+    "url": "https://arxiv.org/html/2604.01535v1",
+    "title": "Read More, Think More: Revisiting Observation Reduction for Web Agents",
+    "links": []
+  },
+  {
+    "id": "2609.38912v1",
+    "url": "https://arxiv.org/html/2609.38912v1",
+    "title": "Composing Task-specific Agent Harnesses at Test Time with Reusable Primitives",
+    "links": []
+  },
+  {
+    "id": "2609.05736v1",
+    "url": "https://arxiv.org/html/2609.05736v1",
+    "title": "Beyond Prompts: Measuring and Optimizing LLM Tool-Agent Harnesses",
+    "links": [
+      "https://github.com/airbnb/agent-harness-optimizer",
+      "https://github.com/langchain-ai/deepagents"
+    ]
+  }
+]

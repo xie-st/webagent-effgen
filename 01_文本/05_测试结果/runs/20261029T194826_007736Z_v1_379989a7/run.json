@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "run_id": "20261029T194826_007736Z_v1_379989a7",
+  "kind": "infrastructure",
+  "harness": "v1",
+  "started_at": "2026-10-29T19:48:26.016248+00:00",
+  "status": "passed",
+  "git": {
+    "commit": null,
+    "dirty": false
+  },
+  "python": "3.12.9 (tags/v3.12.9:fdb8142, Feb  4 2025, 15:27:58) [MSC v.1942 64 bit (AMD64)]",
+  "python_executable": "C:\\Users\\hiyad\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+  "harness_sha256": {
+    "agent_logic.py": "a643e05f109ade2fdb02e4e7b3001b0981ae729b572fc460f3ef6d00fa9bab81",
+    "my_agent.py": "06bc198cf834402afdbfda3ec6e322dc0cb149dcd519f8ddb7aa45e07e8be020",
+    "README.md": "430517882b97acc064754ea0110be730ad99993af47de6113316ccd0705617f1"
+  },
+  "sdk_archive_sha256": "6eee7ddab6264aa228c29fce8ee0aff75f8e10067b65afcce9d5377dcdce496f",
+  "sdk_sha256": {
+    "agent_logic.py": "2e7b129205b825f026426784b0569eb84d7719e621f56d830cacc8c3e005c8ad",
+    "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "my_agent.py": "06bc198cf834402afdbfda3ec6e322dc0cb149dcd519f8ddb7aa45e07e8be020",
+    "README.zh-CN.md": "ba4b5afa14ca10f1abdf8e7d039065b678e36c699a792052a686ff4b95ceb1b1",
+    "SOURCE.json": "27d1ea9bd1d2bb3fa294fff4c178d8967d8b20510be3ad9048e765e18d9dec60",
+    "start-agent.cmd": "ddcbd2fdde168af59ce1683f96d50913adeac368728224adb134e6452c1ed586",
+    "third_party_agent/__init__.py": "f64ba6602436be965754be2d035b777e261b2cbcd8863cc3e01a7653d9972705",
+    "third_party_agent/__main__.py": "ac03873d479cb59416ada01669030a61ffcfc4b464985e8ea9095f0ba26cd232",
+    "third_party_agent/example.py": "314e58b423ab8babdf244921484f51422a353dc7bd43e9bffcc5a0f2f286140b",
+    "third_party_agent/model.py": "fad9c07fa33c3137cff22def2d6d56f77761afe3b8d6c835bfa80209ff2eaf2c",
+    "third_party_agent/outbound.py": "cfcb26a929b144d4fb3392b557e60068352114388c9a43a7423f93bb519fabe1",
+    "third_party_agent/README.zh-CN.md": "ba4b5afa14ca10f1abdf8e7d039065b678e36c699a792052a686ff4b95ceb1b1",
+    "third_party_agent/session.py": "d5e04cea64e791c32f20ab91162e7c4dd3217b6bf56272a4ea3029178cf394f7"
+  },
+  "launcher_sha256": "0fcb9e7a407f7204c9f93c138537ffef0edc1c55a8099cf97deb83a3e7e73e51",
+  "official_score": null,
+  "platform_run_ids": [],
+  "tests_sha256": {
+    "test_workspace.py": "f8a848a83049ffc0ddd7c6855e25dce7927c75b6f36dfb36577a12c75459746b"
+  },
+  "exit_code": 0,
+  "finished_at": "2026-10-29T19:48:27.769045+00:00"
+}

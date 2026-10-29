@@ -1,0 +1,79 @@
+# 提示词与钩子 · 近一年
+
+2025-10-30 至 2026-10-29，共 75 篇。分数为原程序的模型相关性评分。
+
+- [Why Generate a Click? Plug-in Decision Heads for Web Agents](https://arxiv.org/pdf/2610.20107v1) · 2026-10-14 · 相关性 8
+- [Text2Dashboard: A Governed Agent Architecture for Natural-Language Dashboard Generation over Enterprise DataBrain](https://arxiv.org/pdf/2610.06914v1) · 2026-10-02 · 相关性 8
+- [Beyond Prompts: Measuring and Optimizing LLM Tool-Agent Harnesses](https://arxiv.org/pdf/2609.05736v1) · 2026-09-04 · 相关性 8
+- [Do GUI Agents Know When Not to Act? Enabling Conflict-Aware Termination for Multimodal GUI Agents](https://arxiv.org/pdf/2609.03438v1) · 2026-09-03 · 相关性 8
+- [Falsifiable Commitment Planning for Self-Correcting Web Agents](https://arxiv.org/pdf/2607.24167v1) · 2026-07-27 · 相关性 8
+- [Willful Disobedience: Automatically Detecting Failures in Agentic Traces](https://arxiv.org/pdf/2603.23806v2) · 2026-03-25 · 相关性 8
+- [Agent Lifecycle Toolkit (ALTK): Reusable Middleware Components for Robust AI Agents](https://arxiv.org/pdf/2603.15473v2) · 2026-03-16 · 相关性 8
+- [EmbeWebAgent: Embedding Web Agents into Any Customized UI](https://arxiv.org/pdf/2602.14865v1) · 2026-02-16 · 相关性 8
+- [MUZZLE: Adaptive Agentic Red-Teaming of Web Agents Against Indirect Prompt Injection Attacks](https://arxiv.org/pdf/2602.09222v2) · 2026-02-09 · 相关性 8
+- [WebSentinel: Detecting and Localizing Prompt Injection Attacks for Web Agents](https://arxiv.org/pdf/2602.03792v1) · 2026-02-03 · 相关性 8
+- [When Bots Take the Bait: Exposing and Mitigating the Emerging Social Engineering Attack in Web Automation Agent](https://arxiv.org/pdf/2601.07263v1) · 2026-01-12 · 相关性 8
+- [It's a TRAP! Task-Redirecting Agent Persuasion Benchmark for Web Agents](https://arxiv.org/pdf/2512.23128v3) · 2025-12-29 · 相关性 8
+- [SCOPE: Prompt Evolution for Enhancing Agent Effectiveness](https://arxiv.org/pdf/2512.15374v2) · 2025-12-17 · 相关性 8
+- [VIGIL: A Reflective Runtime for Self-Healing Agents](https://arxiv.org/pdf/2512.07094v2) · 2025-12-08 · 相关性 8
+- [WebCoach: Self-Evolving Web Agents with Cross-Session Memory Guidance](https://arxiv.org/pdf/2511.12997v2) · 2025-11-17 · 相关性 8
+- [What It Is, Not What It Says: Securing Agentic Browsing Interactions with Web Semantics](https://arxiv.org/pdf/2610.22697v1) · 2026-10-15 · 相关性 7
+- [The Agent Clicks Approve: Injected Page Text Makes Browser Agents Authorize Access the Task Never Named](https://arxiv.org/pdf/2610.15138v1) · 2026-10-10 · 相关性 7
+- [Composing Task-specific Agent Harnesses at Test Time with Reusable Primitives](https://arxiv.org/pdf/2609.38912v1) · 2026-09-30 · 相关性 7
+- [Monitoring Web Agents Without Internal Signals: Observable Trajectories and Key-Step Supervision](https://arxiv.org/pdf/2609.02057v1) · 2026-09-02 · 相关性 7
+- [WebMCP-Phalanx: Enforcing and Characterizing Trust Boundaries for Browser-Integrated LLM Agents](https://arxiv.org/pdf/2608.24017v1) · 2026-08-25 · 相关性 7
+- [Wuying-Browser-Agent: Real-World Centric Fundamental Long-Horizon Browser Agents](https://arxiv.org/pdf/2608.17319v1) · 2026-08-18 · 相关性 7
+- [Control Under Compression: Reliability Frontiers for Tool-Using Agents](https://arxiv.org/pdf/2608.01056v1) · 2026-08-02 · 相关性 7
+- [Authoring Agent Skills: A Software-Engineering Approach](https://arxiv.org/pdf/2607.25032v1) · 2026-07-27 · 相关性 7
+- [AgentCheck: A Reproduce-Intervene-Mitigate Workbench for LLM Agents over MCP](https://arxiv.org/pdf/2607.11098v3) · 2026-07-13 · 相关性 7
+- [DualView: Preventing Indirect Prompt Injection in Personal AI Agents](https://arxiv.org/pdf/2607.03821v1) · 2026-07-04 · 相关性 7
+- [MAS-PromptBench: When Does Prompt Optimization Improve Multi-Agent LLM Systems?](https://arxiv.org/pdf/2606.23664v1) · 2026-06-22 · 相关性 7
+- [Web Agents Should Adopt the Plan-Then-Execute Paradigm](https://arxiv.org/pdf/2605.14290v1) · 2026-05-14 · 相关性 7
+- [Agent Mentor: Framing Agent Knowledge through Semantic Trajectory Analysis](https://arxiv.org/pdf/2604.10513v1) · 2026-04-12 · 相关性 7
+- [AgentWatcher: A Rule-based Prompt Injection Monitor](https://arxiv.org/pdf/2604.01194v2) · 2026-04-01 · 相关性 7
+- [Web Agents Should Use Typed Actions Instead of Click-Based Browsing](https://arxiv.org/pdf/2602.17245v2) · 2026-02-19 · 相关性 7
+- [AgentFixer: From Failure Detection to Fix Recommendations in LLM Agentic Systems](https://arxiv.org/pdf/2603.29848v1) · 2026-02-18 · 相关性 7
+- [Jenius Agent: Towards Experience-Driven Accuracy Optimization in Real-World Scenarios](https://arxiv.org/pdf/2601.01857v3) · 2026-01-05 · 相关性 7
+- [Youtu-Agent: Scaling Agent Productivity with Automated Generation and Hybrid Policy Optimization](https://arxiv.org/pdf/2512.24615v1) · 2025-12-31 · 相关性 7
+- [SIEVE: Selective Integrity Verification and Escalation for Defending LLM Agents against Indirect Prompt Injection](https://arxiv.org/pdf/2512.06716v3) · 2025-12-07 · 相关性 7
+- [Hidden in Plain Sight: an Empirical Study about The Instruction Stacks of Coding Agents](https://arxiv.org/pdf/2610.37332v1) · 2026-10-27 · 相关性 6
+- [Before the First Edit? Measuring When Coding-Agent Guidance Actually Arrives](https://arxiv.org/pdf/2610.35992v1) · 2026-10-26 · 相关性 6
+- [AgentProofBench: Benchmarking Reusable Verifiers for Web Agents](https://arxiv.org/pdf/2610.34634v1) · 2026-10-25 · 相关性 6
+- [SkillShift-Bench: Benchmarking Skill Learning under Environment Evolution for Web Agents](https://arxiv.org/pdf/2610.33528v1) · 2026-10-24 · 相关性 6
+- [Step-Aligned Script Generation with Verification and Recovery for Web Automation Testing](https://arxiv.org/pdf/2610.25601v1) · 2026-10-19 · 相关性 6
+- [WebFovea: When the Model Is Right but the Click Is Wrong -- Reliable Round Trips for Vision-Based Web Agents on Live Websites](https://arxiv.org/pdf/2610.03036v2) · 2026-10-02 · 相关性 6
+- [Auditing Web Agent Evaluation on WebArena-Lite: Human Review of Outcomes and Trajectories](https://arxiv.org/pdf/2610.01491v1) · 2026-10-01 · 相关性 6
+- [The Right Lesson at the Right Step: Deriving Control Updates for Self-Evolving Agents](https://arxiv.org/pdf/2609.34988v1) · 2026-09-28 · 相关性 6
+- [Faithful Where It Can Be Checked: Auditing a Reflection Agent Against Its System Prompt in a Randomized Trial](https://arxiv.org/pdf/2609.19635v1) · 2026-09-17 · 相关性 6
+- [ParaRecover: A Process-Level Benchmark for Error Localization and Recovery in Parallel Tool-Use Agents](https://arxiv.org/pdf/2609.12345v1) · 2026-09-11 · 相关性 6
+- [AgentGrad: Intervention-guided Prompt Optimization for Multi Agent Systems](https://arxiv.org/pdf/2609.08572v1) · 2026-09-08 · 相关性 6
+- [Authority Is Not a String: A Capability-Scoped Harness for Prompt-Injection-Resistant Coding Agents](https://arxiv.org/pdf/2609.08371v1) · 2026-09-08 · 相关性 6
+- [Control-Data Flow Separation: Stable Prompt Optimization in Multi-Agent LLMs](https://arxiv.org/pdf/2609.00621v1) · 2026-09-01 · 相关性 6
+- [Callability Is Not Operability: Controlled Interface Interventions for LLM Agents](https://arxiv.org/pdf/2608.23628v2) · 2026-08-23 · 相关性 6
+- [Verified Tool Calls Improve LLM Agent Reliability Under Non-Atomic Failures](https://arxiv.org/pdf/2608.02645v1) · 2026-07-31 · 相关性 6
+- [Tool Specifications Matter: Uncovering and Mitigating Safety Risks in AI Agents](https://arxiv.org/pdf/2607.29254v1) · 2026-07-31 · 相关性 6
+- [COVENANT: Natural-Language Workflow Compilation for Aligned Agent Execution](https://arxiv.org/pdf/2607.25400v1) · 2026-07-28 · 相关性 6
+- [Agent Team Work Zone: An Automated, Persistent Workspace for Long-Lived Claude Code Agent Teams](https://arxiv.org/pdf/2607.22917v2) · 2026-07-24 · 相关性 6
+- [MemoHarness: Agent Harnesses That Learn from Experience](https://arxiv.org/pdf/2607.14159v1) · 2026-07-14 · 相关性 6
+- [When Agents Do Not Stop: Uncovering Infinite Agentic Loops in LLM Agents](https://arxiv.org/pdf/2607.01641v1) · 2026-07-02 · 相关性 6
+- [Instruction Bleed: Cross-Module Interference in Prompt-Composed Agentic Systems](https://arxiv.org/pdf/2606.26356v1) · 2026-06-24 · 相关性 6
+- [HANSEL: Extracting Breadcrumbs from Web Agent Trajectories for Interactive Verification](https://arxiv.org/pdf/2606.18671v1) · 2026-06-17 · 相关性 6
+- [Environment-Grounded Automated Prompt Optimization for LLM Game Agents](https://arxiv.org/pdf/2606.17838v1) · 2026-06-16 · 相关性 6
+- [From Question Answering to Task Completion: A Survey on Agent System and Harness Design](https://arxiv.org/pdf/2606.20683v1) · 2026-06-14 · 相关性 6
+- [SKILL.nb: Selective Formalization and Gated Execution for Durable Agent Workflows](https://arxiv.org/pdf/2606.08049v1) · 2026-06-06 · 相关性 6
+- [WARD: Adversarially Robust Defense of Web Agents Against Prompt Injections](https://arxiv.org/pdf/2605.15030v1) · 2026-05-14 · 相关性 6
+- [WebAgentGuard: A Reasoning-Driven Guard Model for Detecting Prompt Injection Attacks in Web Agents](https://arxiv.org/pdf/2604.12284v1) · 2026-04-14 · 相关性 6
+- [AgentSPEX: An Agent SPecification and EXecution Language](https://arxiv.org/pdf/2604.13346v1) · 2026-04-14 · 相关性 6
+- [Spec Kit Agents: Context-Grounded Agentic Workflows](https://arxiv.org/pdf/2604.05278v1) · 2026-04-07 · 相关性 6
+- [View-oriented Conversation Compiler for Agent Trace Analysis](https://arxiv.org/pdf/2603.29678v3) · 2026-03-31 · 相关性 6
+- [Guardrails as Infrastructure: Policy-First Control for Tool-Orchestrated Workflows](https://arxiv.org/pdf/2603.18059v1) · 2026-03-18 · 相关性 6
+- [Atomicity for Agents: Exposing, Exploiting, and Mitigating TOCTOU Vulnerabilities in Browser-Use Agents](https://arxiv.org/pdf/2603.00476v1) · 2026-02-28 · 相关性 6
+- [SoK: Agentic Skills -- Beyond Tool Use in LLM Agents](https://arxiv.org/pdf/2602.20867v1) · 2026-02-24 · 相关性 6
+- [OpAgent: Operator Agent for Web Navigation](https://arxiv.org/pdf/2602.13559v2) · 2026-02-14 · 相关性 6
+- [Mapping the Design Space of User Experience for Computer Use Agents](https://arxiv.org/pdf/2602.07283v1) · 2026-02-07 · 相关性 6
+- [Do Web Agents Investigate Before They Decide?](https://arxiv.org/pdf/2602.05354v3) · 2026-02-05 · 相关性 6
+- [Facilitating Proactive and Reactive Guidance for Decision Making on the Web: A Design Probe with WebSeek](https://arxiv.org/pdf/2601.15100v1) · 2026-01-21 · 相关性 6
+- [Don't Break the Cache: An Evaluation of Prompt Caching for Long-Horizon Agentic Tasks](https://arxiv.org/pdf/2601.06007v2) · 2026-01-09 · 相关性 6
+- [Architectures for Building Agentic AI](https://arxiv.org/pdf/2512.09458v1) · 2025-12-10 · 相关性 6
+- [Dynamic System Instructions and Tool Exposure for Efficient Agentic LLMs](https://arxiv.org/pdf/2602.17046v1) · 2025-12-01 · 相关性 6
+- [Building Browser Agents: Architecture, Security, and Practical Solutions](https://arxiv.org/pdf/2511.19477v1) · 2025-11-22 · 相关性 6

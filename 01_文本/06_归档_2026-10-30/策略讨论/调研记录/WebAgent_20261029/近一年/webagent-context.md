@@ -1,0 +1,104 @@
+# 上下文管理 · 近一年
+
+2025-10-30 至 2026-10-29，共 100 篇。分数为原程序的模型相关性评分。
+
+- [MemPrice: Online Memory Allocation via Adaptive Pricing for Long-Horizon Agents](https://arxiv.org/pdf/2610.24955v1) · 2026-10-18 · 相关性 10
+- [Beyond Memory: Harnessing Long-Horizon Agents with Explicit Belief States](https://arxiv.org/pdf/2610.01415v1) · 2026-10-01 · 相关性 10
+- [Persistent Context Graphs for Efficient Memory Compaction in LLM Agents](https://arxiv.org/pdf/2609.40118v1) · 2026-09-30 · 相关性 10
+- [Traverse: Learning When to Remember, Reset, and Redirect for Long-Horizon Web Search](https://arxiv.org/pdf/2609.37082v2) · 2026-09-29 · 相关性 10
+- [ContextRender: From Execution Dependencies to Agent Context](https://arxiv.org/pdf/2609.37743v1) · 2026-09-29 · 相关性 10
+- [FOCUS: Training-Free Decision-Preserving Context Compression for LLM Agents](https://arxiv.org/pdf/2609.37590v1) · 2026-09-29 · 相关性 10
+- [StateComp: Learning When to Compress History in Long Horizon Agents](https://arxiv.org/pdf/2609.27298v1) · 2026-09-23 · 相关性 10
+- [Addressable Recall Compaction for Long Context-Window Control in AI Agents](https://arxiv.org/pdf/2607.25066v1) · 2026-07-27 · 相关性 10
+- [ACM: Agentic Context Management for Long Horizon Tasks](https://arxiv.org/pdf/2607.23809v1) · 2026-07-26 · 相关性 10
+- [LLM Agents Are Latent Context Managers: Eliciting Self-Managed Context via State Proprioception](https://arxiv.org/pdf/2606.30005v5) · 2026-06-29 · 相关性 10
+- [Are We Ready For An Agent-Native Memory System?](https://arxiv.org/pdf/2606.24775v1) · 2026-06-23 · 相关性 10
+- [MemGUI-Agent: An End-to-End Long-Horizon Mobile GUI Agent with Proactive Context Management](https://arxiv.org/pdf/2606.19926v1) · 2026-06-18 · 相关性 10
+- [PACMS: Submodular Context Selection as a Pluggable Engine for LLM Agents](https://arxiv.org/pdf/2606.20047v2) · 2026-06-18 · 相关性 10
+- [Organize then Retrieve: Hierarchical Memory Navigation for Efficient Agents](https://arxiv.org/pdf/2606.11680v1) · 2026-06-10 · 相关性 10
+- [Beyond Semantic Organization: Memory as Execution State Management for Long-Horizon Agents](https://arxiv.org/pdf/2606.06090v1) · 2026-06-04 · 相关性 10
+- [Temporal Order Matters for Agentic Memory: Segment Trees for Long-Horizon Agents](https://arxiv.org/pdf/2606.04555v1) · 2026-06-03 · 相关性 10
+- [Scaling Self-Evolving Agents via Parametric Memory](https://arxiv.org/pdf/2606.04536v1) · 2026-06-03 · 相关性 10
+- [CoMem: Context Management with A Decoupled Long-Context Model](https://arxiv.org/pdf/2605.30842v1) · 2026-05-29 · 相关性 10
+- [Masking Stale Observations Helps Search Agents -- Until It Doesn't: A Regime Map and Its Mechanism](https://arxiv.org/pdf/2606.00408v1) · 2026-05-29 · 相关性 10
+- [LongSeeker: Elastic Context Orchestration for Long-Horizon Search Agents](https://arxiv.org/pdf/2605.05191v1) · 2026-05-06 · 相关性 10
+- [MemFlow: Intent-Driven Memory Orchestration for Small Language Model Agents](https://arxiv.org/pdf/2605.03312v1) · 2026-05-05 · 相关性 10
+- [Beyond Compaction: Structured Context Eviction for Long-Horizon Agents](https://arxiv.org/pdf/2606.11213v1) · 2026-05-01 · 相关性 10
+- [OCR-Memory: Optical Context Retrieval for Long-Horizon Agent Memory](https://arxiv.org/pdf/2604.26622v1) · 2026-04-29 · 相关性 10
+- [ContextWeaver: Selective and Dependency-Structured Memory Construction for LLM Agents](https://arxiv.org/pdf/2604.23069v1) · 2026-04-24 · 相关性 10
+- [M$^2$: Dual-Memory Augmentation for Long-Horizon Web Agents via Trajectory Summarization and Insight Retrieval](https://arxiv.org/pdf/2603.00503v1) · 2026-02-28 · 相关性 10
+- [AMBER: Training Long-Horizon Web Agents through Append-Only Memory](https://arxiv.org/pdf/2610.07118v1) · 2026-10-05 · 相关性 9
+- [Memory Control Signals Emerge Before Action in Long Horizon Agents](https://arxiv.org/pdf/2609.27286v1) · 2026-09-23 · 相关性 9
+- [Measure Before You Manage: Evaluating Agent Working Memory in Coding Agents](https://arxiv.org/pdf/2608.31057v1) · 2026-08-31 · 相关性 9
+- [GraphMemix: Query-Aware Evidence Forests for Long-Term Multimodal Agent Memory](https://arxiv.org/pdf/2608.26983v1) · 2026-08-27 · 相关性 9
+- [MemPrism: Task-Conditioned Relational Memory Views for Long-Horizon Agents](https://arxiv.org/pdf/2608.06745v1) · 2026-08-07 · 相关性 9
+- [Memory as a Controlled Process: Learned Adaptive Memory Management for LLM Agents](https://arxiv.org/pdf/2607.13591v1) · 2026-07-15 · 相关性 9
+- [Remember When It Matters: Proactive Memory Agent for Long-Horizon Agents](https://arxiv.org/pdf/2607.08716v1) · 2026-07-09 · 相关性 9
+- [Signal-Driven Observation for Long-Horizon Web Agents](https://arxiv.org/pdf/2606.06708v2) · 2026-06-04 · 相关性 9
+- [SF-AMS: Strategic Forgetting for Structured Memory in LLM Agent](https://arxiv.org/pdf/2607.22562v1) · 2026-05-29 · 相关性 9
+- [PRISM: Pareto-Efficient Retrieval over Intent-Aware Structured Memory for Long-Horizon Agents](https://arxiv.org/pdf/2605.12260v2) · 2026-05-12 · 相关性 9
+- [Remember the Decision, Not the Description: A Rate-Distortion Framework for Agent Memory](https://arxiv.org/pdf/2605.10870v1) · 2026-05-11 · 相关性 9
+- [ContextBudget: Budget-Aware Context Management for Long-Horizon Search Agents](https://arxiv.org/pdf/2604.01664v1) · 2026-04-02 · 相关性 9
+- [AgentSwing: Adaptive Parallel Context Management Routing for Long-Horizon Web Agents](https://arxiv.org/pdf/2603.27490v1) · 2026-03-29 · 相关性 9
+- [See and Remember: A Multimodal Agent for Web Traversal](https://arxiv.org/pdf/2603.02626v1) · 2026-03-03 · 相关性 9
+- [ColorBrowserAgent: Complex Long-Horizon Browser Agent with Adaptive Knowledge Evolution](https://arxiv.org/pdf/2601.07262v3) · 2026-01-12 · 相关性 9
+- [Context as a Tool: Context Management for Long-Horizon SWE-Agents](https://arxiv.org/pdf/2512.22087v1) · 2025-12-26 · 相关性 9
+- [AgentProg: Empowering Long-Horizon GUI Agents with Program-Guided Context Management](https://arxiv.org/pdf/2512.10371v2) · 2025-12-11 · 相关性 9
+- [WebCoach: Self-Evolving Web Agents with Cross-Session Memory Guidance](https://arxiv.org/pdf/2511.12997v2) · 2025-11-17 · 相关性 9
+- [CTXAgent - Self-Controlled Context Management of LLM Agents](https://arxiv.org/pdf/2610.34425v1) · 2026-10-25 · 相关性 8
+- [Cache Engineering for Agents](https://arxiv.org/pdf/2610.28577v1) · 2026-10-20 · 相关性 8
+- [REM: What to Store, When to Recall, What to Forget in Experience Memory for Coding Agents](https://arxiv.org/pdf/2610.27377v1) · 2026-10-19 · 相关性 8
+- [MemoWM: How World Models Change What Agents Need to Remember](https://arxiv.org/pdf/2610.10778v1) · 2026-10-07 · 相关性 8
+- [CADOC: Cache-Aware Dynamic Object Context for Long-Horizon Agents](https://arxiv.org/pdf/2609.37012v1) · 2026-09-29 · 相关性 8
+- [Adapting Context Compression for Long-Horizon Agents with Counterfactual Continuations](https://arxiv.org/pdf/2609.36526v1) · 2026-09-29 · 相关性 8
+- [FlowState: Execution State as Memory for Long-Horizon LLM Agents](https://arxiv.org/pdf/2609.34565v1) · 2026-09-28 · 相关性 8
+- [Just-In-Time Agent Memory with Runtime Agentic Research](https://arxiv.org/pdf/2609.34385v1) · 2026-09-28 · 相关性 8
+- [ActiveMem: Dynamic Latent Memory Trees for Long-Horizon Agents](https://arxiv.org/pdf/2609.33244v1) · 2026-09-27 · 相关性 8
+- [ARSM: Auto-Regressive State Machine for Agentic Reasoning Compression](https://arxiv.org/pdf/2609.32852v1) · 2026-09-26 · 相关性 8
+- [When Can Agents Forget Their Reasoning? ICLR for Long-Horizon Agent Context Compression](https://arxiv.org/pdf/2609.29875v1) · 2026-09-24 · 相关性 8
+- [Stable Geometry with Divergent Task Evidence for Efficient Long-Horizon Agent Compression](https://arxiv.org/pdf/2609.27332v1) · 2026-09-23 · 相关性 8
+- [DolphinBench: Mapping the Pareto Frontier of Agent Memory](https://arxiv.org/pdf/2609.24971v2) · 2026-09-21 · 相关性 8
+- [ContextPipe: Database-Inspired Context Assembly for Long-Horizon Agents](https://arxiv.org/pdf/2609.00749v1) · 2026-09-01 · 相关性 8
+- [Context as an Environment: Programmatic Context Management for Long-Horizon Agents](https://arxiv.org/pdf/2608.21690v1) · 2026-08-21 · 相关性 8
+- [Weighted Memory Tree: Remembering What Matters for Long-Horizon LLM Agents](https://arxiv.org/pdf/2608.20631v1) · 2026-08-21 · 相关性 8
+- [Can Agent Memory Systems Track Evolving State?](https://arxiv.org/pdf/2608.19652v1) · 2026-08-20 · 相关性 8
+- [Toward Reliable Context Compression for Long-Horizon Agents: An Empirical Study of Execution Instability](https://arxiv.org/pdf/2608.06503v1) · 2026-08-06 · 相关性 8
+- [MemoryCPT: An End-to-End Agent Memory Framework for Cost-Performance Trade-off](https://arxiv.org/pdf/2608.04843v1) · 2026-08-05 · 相关性 8
+- [LiveMem: Maintaining Memory State Continuity in Long-Running LLM Inference](https://arxiv.org/pdf/2608.02515v2) · 2026-08-03 · 相关性 8
+- [Oracle Agent Memory as an Enterprise Memory Substrate for Long-Horizon AI Agents](https://arxiv.org/pdf/2607.13157v1) · 2026-07-14 · 相关性 8
+- [ACE: Pluggable Adaptive Context Elasticizer across Agents](https://arxiv.org/pdf/2606.31564v1) · 2026-06-30 · 相关性 8
+- [Agent Memory: Characterization and System Implications of Stateful Long-Horizon Workloads](https://arxiv.org/pdf/2606.06448v1) · 2026-06-04 · 相关性 8
+- [Exploring Cross-Scenario Generality of Agentic Memory Systems: Diagnostics and a Strong Baseline](https://arxiv.org/pdf/2606.04315v1) · 2026-06-03 · 相关性 8
+- [PersonaTrail: Benchmarking Personalized Web Agents through Browsing Trails](https://arxiv.org/pdf/2607.20482v2) · 2026-05-30 · 相关性 8
+- [MemPro: Agentic Memory Systems as Evolvable Programs](https://arxiv.org/pdf/2606.00619v1) · 2026-05-30 · 相关性 8
+- [Learning Agent-Compatible Context Management for Long-Horizon Tasks](https://arxiv.org/pdf/2605.30785v1) · 2026-05-29 · 相关性 8
+- [STAMP: Training Explicit Memory for Mobile GUI Agents in Controllable and Scalable Virtual Environments](https://arxiv.org/pdf/2605.29324v1) · 2026-05-28 · 相关性 8
+- [Is Agent Memory a Database? Rethinking Data Foundations for Long-Term AI Agent Memory](https://arxiv.org/pdf/2605.26252v1) · 2026-05-25 · 相关性 8
+- [SAM: State-Adaptive Memory for Long-Horizon Reasoning Agent](https://arxiv.org/pdf/2605.24468v1) · 2026-05-23 · 相关性 8
+- [Parallel Context Compaction for Long-Horizon LLM Agent Serving](https://arxiv.org/pdf/2605.23296v1) · 2026-05-22 · 相关性 8
+- [MemForest: An Efficient Agent Memory System with Hierarchical Temporal Indexing](https://arxiv.org/pdf/2605.23986v3) · 2026-05-16 · 相关性 8
+- [LongMemEval-V2: Evaluating Long-Term Agent Memory Toward Experienced Colleagues](https://arxiv.org/pdf/2605.12493v1) · 2026-05-12 · 相关性 8
+- [$δ$-mem: Efficient Online Memory for Large Language Models](https://arxiv.org/pdf/2605.12357v1) · 2026-05-12 · 相关性 8
+- [Executable Agentic Memory for GUI Agent](https://arxiv.org/pdf/2605.12294v1) · 2026-05-12 · 相关性 8
+- [Mem-W: Latent Memory-Native GUI Agents](https://arxiv.org/pdf/2605.09317v1) · 2026-05-10 · 相关性 8
+- [Experience Compression Spectrum: Unifying Memory, Skills, and Rules in LLM Agents](https://arxiv.org/pdf/2604.15877v2) · 2026-04-17 · 相关性 8
+- [ClawVM: Harness-Managed Virtual Memory for Stateful Tool-Using LLM Agents](https://arxiv.org/pdf/2604.10352v1) · 2026-04-11 · 相关性 8
+- [Hierarchical Memory Orchestration for Personalized Persistent Agents](https://arxiv.org/pdf/2604.01670v1) · 2026-04-02 · 相关性 8
+- [Structured Distillation for Personalized Agent Memory: 11x Token Reduction with Retrieval Preservation](https://arxiv.org/pdf/2603.13017v1) · 2026-03-13 · 相关性 8
+- [Memory for Autonomous LLM Agents:Mechanisms, Evaluation, and Emerging Frontiers](https://arxiv.org/pdf/2603.07670v1) · 2026-03-08 · 相关性 8
+- [MemPO: Self-Memory Policy Optimization for Long-Horizon Agents](https://arxiv.org/pdf/2603.00680v4) · 2026-02-28 · 相关性 8
+- [SideQuest: Model-Driven KV Cache Management for Long-Horizon Agentic Reasoning](https://arxiv.org/pdf/2602.22603v2) · 2026-02-26 · 相关性 8
+- [AMA-Bench: Evaluating Long-Horizon Memory for Agentic Applications](https://arxiv.org/pdf/2602.22769v4) · 2026-02-26 · 相关性 8
+- [From Lossy to Verified: A Provenance-Aware Tiered Memory for Agents](https://arxiv.org/pdf/2602.17913v1) · 2026-02-20 · 相关性 8
+- [Learning to Remember: End-to-End Training of Memory Agents for Long-Context Reasoning](https://arxiv.org/pdf/2602.18493v2) · 2026-02-13 · 相关性 8
+- [MemOCR: Layout-Aware Visual Memory for Efficient Long-Horizon Reasoning](https://arxiv.org/pdf/2601.21468v5) · 2026-01-29 · 相关性 8
+- [MemWeaver: Weaving Hybrid Memories for Traceable Long-Horizon Agentic Reasoning](https://arxiv.org/pdf/2601.18204v1) · 2026-01-26 · 相关性 8
+- [ARC: Active and Reflection-driven Context Management for Long-Horizon Information Seeking Agents](https://arxiv.org/pdf/2601.12030v1) · 2026-01-17 · 相关性 8
+- [Grounding Agent Memory in Contextual Intent](https://arxiv.org/pdf/2601.10702v2) · 2026-01-15 · 相关性 8
+- [AI Agents Need Memory Control Over More Context](https://arxiv.org/pdf/2601.11653v1) · 2026-01-15 · 相关性 8
+- [A Survey of Agent Memory in the Second Half: Towards Self-Evolving and Long-Horizon Agents](https://arxiv.org/pdf/2602.06052v4) · 2026-01-14 · 相关性 8
+- [Active Context Compression: Autonomous Memory Management in LLM Agents](https://arxiv.org/pdf/2601.07190v1) · 2026-01-12 · 相关性 8
+- [OS-Symphony: A Holistic Framework for Robust and Generalist Computer-Using Agent](https://arxiv.org/pdf/2601.07779v1) · 2026-01-12 · 相关性 8
+- [SimpleMem: Efficient Lifelong Memory for LLM Agents](https://arxiv.org/pdf/2601.02553v3) · 2026-01-05 · 相关性 8
+- [Agentic Memory: Learning Unified Long-Term and Short-Term Memory Management for Large Language Model Agents](https://arxiv.org/pdf/2601.01885v3) · 2026-01-05 · 相关性 8
+- [PAACE: A Plan-Aware Automated Agent Context Engineering Framework](https://arxiv.org/pdf/2512.16970v1) · 2025-12-18 · 相关性 8

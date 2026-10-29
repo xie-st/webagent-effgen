@@ -1,0 +1,104 @@
+# 行动效率 · 近一年
+
+2025-10-30 至 2026-10-29，共 100 篇。分数为原程序的模型相关性评分。
+
+- [EconSkills: Studying Skill Transfer and Retrieval for Web Agents on Live Economic Data](https://arxiv.org/pdf/2609.19523v1) · 2026-09-17 · 相关性 9
+- [AutoTailor: Automatic, User-Aligned Capability Selection and Adaptation for Web Agents](https://arxiv.org/pdf/2609.13548v1) · 2026-09-11 · 相关性 9
+- [Token Efficient Task Execution via Application Behavior Modeling for Web Agents](https://arxiv.org/pdf/2609.13491v1) · 2026-09-11 · 相关性 9
+- [Beyond Domains: Reusing Web Skills via Transferable Interaction Patterns](https://arxiv.org/pdf/2606.17645v1) · 2026-06-16 · 相关性 9
+- [WebChallenger: A Reliable and Efficient Generalist Web Agent](https://arxiv.org/pdf/2606.10423v1) · 2026-06-09 · 相关性 9
+- [Online Skill Learning for Web Agents via State-Grounded Dynamic Retrieval](https://arxiv.org/pdf/2606.04391v1) · 2026-06-03 · 相关性 9
+- [Skim: Speculative Execution for Fast and Efficient Web Agents](https://arxiv.org/pdf/2605.16565v2) · 2026-05-15 · 相关性 9
+- [Agentic Compilation: Mitigating the LLM Rerun Crisis for Minimized-Inference-Cost Web Automation](https://arxiv.org/pdf/2604.09718v2) · 2026-04-08 · 相关性 9
+- [WebClipper: Efficient Evolution of Web Agents with Graph-based Trajectory Pruning](https://arxiv.org/pdf/2602.12852v2) · 2026-02-13 · 相关性 9
+- [CUA-Skill: Develop Skills for Computer Using Agent](https://arxiv.org/pdf/2601.21123v2) · 2026-01-28 · 相关性 9
+- [CI4A: Semantic Component Interfaces for Agents Empowering Web Automation](https://arxiv.org/pdf/2601.14790v1) · 2026-01-21 · 相关性 9
+- [From Interaction to Capability: Task Advancement as State and Supervision for GUI Agents](https://arxiv.org/pdf/2610.37482v1) · 2026-10-27 · 相关性 8
+- [Back to Basics: A Skill-Centric Approach to Generalist Web Agents](https://arxiv.org/pdf/2610.35823v1) · 2026-10-26 · 相关性 8
+- [AgentOrch: How Close Can Global Orchestration Come to Step-by-Step Interaction?](https://arxiv.org/pdf/2610.33375v1) · 2026-10-24 · 相关性 8
+- [Subgoal-aware Memory Graph for GUI Agent](https://arxiv.org/pdf/2610.31307v1) · 2026-10-22 · 相关性 8
+- [EvoWeave: Composing Reusable Agent Experience through Operation Level Graphs](https://arxiv.org/pdf/2610.19381v1) · 2026-10-14 · 相关性 8
+- [Web$hell: A Unified Interface for Agentic Web Access](https://arxiv.org/pdf/2610.13416v1) · 2026-10-09 · 相关性 8
+- [CUAWright: A Minimal Unified Interface for Digital Agents](https://arxiv.org/pdf/2610.04116v1) · 2026-10-02 · 相关性 8
+- [Efficient GUI Agents: A Systems Survey of Observation, Memory, Action, and Runtime Optimization](https://arxiv.org/pdf/2609.02309v1) · 2026-09-02 · 相关性 8
+- [TRIAGE: Three-level Routing and Intelligent Agent Guidance for Efficient Execution](https://arxiv.org/pdf/2609.01428v1) · 2026-09-01 · 相关性 8
+- [SCAFFOLD: Self-Improving Web Agents via Recursive Parametric Skill Abstraction](https://arxiv.org/pdf/2609.05511v1) · 2026-08-31 · 相关性 8
+- [From Atomic Actions to Standard Operating Procedures: Iterative Tool Optimization for Self-Evolving LLM Agents](https://arxiv.org/pdf/2607.07321v1) · 2026-07-08 · 相关性 8
+- [Scalable Behaviour Cloning on Browser Using via Skill Distillation](https://arxiv.org/pdf/2606.32014v1) · 2026-06-30 · 相关性 8
+- [Beyond Static Endpoints: Tool Programs as an Interface for Flexible Agentic Web Services](https://arxiv.org/pdf/2606.19992v1) · 2026-06-18 · 相关性 8
+- [Signal-Driven Observation for Long-Horizon Web Agents](https://arxiv.org/pdf/2606.06708v2) · 2026-06-04 · 相关性 8
+- [PANDO: Efficient Multimodal AI Agents via Online Skill Distillation](https://arxiv.org/pdf/2605.24785v2) · 2026-05-24 · 相关性 8
+- [Agent JIT Compilation for Latency-Optimizing Web Agent Planning and Scheduling](https://arxiv.org/pdf/2605.21470v2) · 2026-05-20 · 相关性 8
+- [cotomi Act: Learning to Automate Work by Watching You](https://arxiv.org/pdf/2605.03231v1) · 2026-05-04 · 相关性 8
+- [Odysseys: Benchmarking Web Agents on Realistic Long Horizon Tasks](https://arxiv.org/pdf/2604.24964v1) · 2026-04-27 · 相关性 8
+- [WebXSkill: Skill Learning for Autonomous Web Agents](https://arxiv.org/pdf/2604.13318v2) · 2026-04-14 · 相关性 8
+- [AgentSwing: Adaptive Parallel Context Management Routing for Long-Horizon Web Agents](https://arxiv.org/pdf/2603.27490v1) · 2026-03-29 · 相关性 8
+- [WorkflowGen:an adaptive workflow generation mechanism driven by trajectory experience](https://arxiv.org/pdf/2604.19756v1) · 2026-03-22 · 相关性 8
+- [Utility-Guided Agent Orchestration for Efficient LLM Tool Use](https://arxiv.org/pdf/2603.19896v1) · 2026-03-20 · 相关性 8
+- [Learning to Compose for Cross-domain Agentic Workflow Generation](https://arxiv.org/pdf/2602.11114v1) · 2026-02-11 · 相关性 8
+- [De-Linearizing Agent Traces: Bayesian Inference of Latent Partial Orders for Efficient Execution](https://arxiv.org/pdf/2602.02806v3) · 2026-02-02 · 相关性 8
+- [Optimizing Agentic Workflows using Meta-tools](https://arxiv.org/pdf/2601.22037v2) · 2026-01-29 · 相关性 8
+- [WebGym: Scaling Training Environments for Visual Web Agents with Realistic Tasks](https://arxiv.org/pdf/2601.02439v6) · 2026-01-05 · 相关性 8
+- [From User Interface to Agent Interface: Efficiency Optimization of UI Representations for LLM Agents](https://arxiv.org/pdf/2512.13438v1) · 2025-12-15 · 相关性 8
+- [Dynamic System Instructions and Tool Exposure for Efficient Agentic LLMs](https://arxiv.org/pdf/2602.17046v1) · 2025-12-01 · 相关性 8
+- [MCP vs RAG vs NLWeb vs HTML: A Comparison of the Effectiveness and Efficiency of Different Agent Interfaces to the Web (Technical Report)](https://arxiv.org/pdf/2511.23281v1) · 2025-11-28 · 相关性 8
+- [Prune4Web: DOM Tree Pruning Programming for Web Agent](https://arxiv.org/pdf/2511.21398v1) · 2025-11-26 · 相关性 8
+- [Building the Web for Agents: A Declarative Framework for Agent-Web Interaction](https://arxiv.org/pdf/2511.11287v1) · 2025-11-14 · 相关性 8
+- [SkillShift-Bench: Benchmarking Skill Learning under Environment Evolution for Web Agents](https://arxiv.org/pdf/2610.33528v1) · 2026-10-24 · 相关性 7
+- [FAOPs: Normal Forms and an Algebra for AI Agent Workflows](https://arxiv.org/pdf/2610.22061v1) · 2026-10-15 · 相关性 7
+- [HyWe: Unifying Search and Operation for Real-World Hybrid Web Tasks](https://arxiv.org/pdf/2610.16319v2) · 2026-10-12 · 相关性 7
+- [Programmatic Search Agents: Extending Agentic Search Beyond Query Reformulation](https://arxiv.org/pdf/2610.06689v1) · 2026-10-05 · 相关性 7
+- [Analyzing and Mitigating Cost-Inefficient Behaviors in Coding Agents](https://arxiv.org/pdf/2609.30725v1) · 2026-09-25 · 相关性 7
+- [Specifying and Maintaining Agentic Workflows: An Empirical Study of GitHub Agentic Workflows](https://arxiv.org/pdf/2609.27263v1) · 2026-09-23 · 相关性 7
+- [String: An Agentic OS Where Every App Is a Markdown File](https://arxiv.org/pdf/2608.28027v1) · 2026-08-28 · 相关性 7
+- [ASIL: Replacing Screenshot-and-Click with Structured State and Semantic Actions](https://arxiv.org/pdf/2608.26991v1) · 2026-08-27 · 相关性 7
+- [The Devil Is in the Interface: Evaluating How Tool Architecture Shapes Coding Agent Behavior](https://arxiv.org/pdf/2608.11386v1) · 2026-08-11 · 相关性 7
+- [FlowScout: From Execution Feedback to Reliable Tool-Using Agent Workflows](https://arxiv.org/pdf/2608.10039v1) · 2026-08-10 · 相关性 7
+- [EASy: Towards Efficient LLM-Based Agentic System](https://arxiv.org/pdf/2608.04588v1) · 2026-08-05 · 相关性 7
+- [Beyond Sequential Interaction: Benchmarking Parallel Execution and Coordination for GUI Agents](https://arxiv.org/pdf/2607.22689v1) · 2026-07-17 · 相关性 7
+- [Designing Agent-Ready Websites for AI Web Agents: A Framework for Machine Readability, Actionability, and Decision Reliability](https://arxiv.org/pdf/2607.12056v1) · 2026-07-13 · 相关性 7
+- [Are Online Skill and Memory Modules Always Worth Their Tokens? A Budget-Constrained Study of Web Agents](https://arxiv.org/pdf/2606.15017v2) · 2026-06-12 · 相关性 7
+- [SKILL.nb: Selective Formalization and Gated Execution for Durable Agent Workflows](https://arxiv.org/pdf/2606.08049v1) · 2026-06-06 · 相关性 7
+- [Region4Web: Rethinking Observation Space Granularity for Web Agents](https://arxiv.org/pdf/2605.07134v1) · 2026-05-08 · 相关性 7
+- [A Comprehensive Survey on Agent Skills: Taxonomy, Techniques, and Applications](https://arxiv.org/pdf/2605.07358v3) · 2026-05-08 · 相关性 7
+- [The Tool Illusion: Rethinking Tool Use in Web Agents](https://arxiv.org/pdf/2604.03465v2) · 2026-04-03 · 相关性 7
+- [Internal APIs Are All You Need: Shadow APIs, Shared Discovery, and the Case Against Browser-First Agent Architectures](https://arxiv.org/pdf/2604.00694v1) · 2026-04-01 · 相关性 7
+- [AgentCollab: A Self-Evaluation-Driven Collaboration Paradigm for Efficient LLM Agents](https://arxiv.org/pdf/2603.26034v1) · 2026-03-27 · 相关性 7
+- [Efficient LLM Serving for Agentic Workflows: A Data Systems Perspective](https://arxiv.org/pdf/2603.16104v1) · 2026-03-17 · 相关性 7
+- [Ares: Adaptive Reasoning Effort Selection for Efficient LLM Agents](https://arxiv.org/pdf/2603.07915v1) · 2026-03-09 · 相关性 7
+- [Enhancing Web Agents with a Hierarchical Memory Tree](https://arxiv.org/pdf/2603.07024v1) · 2026-03-07 · 相关性 7
+- [M$^2$: Dual-Memory Augmentation for Long-Horizon Web Agents via Trajectory Summarization and Insight Retrieval](https://arxiv.org/pdf/2603.00503v1) · 2026-02-28 · 相关性 7
+- [EmbeWebAgent: Embedding Web Agents into Any Customized UI](https://arxiv.org/pdf/2602.14865v1) · 2026-02-16 · 相关性 7
+- [Plan-MCTS: Plan Exploration for Action Exploitation in Web Navigation](https://arxiv.org/pdf/2602.14083v1) · 2026-02-15 · 相关性 7
+- [WebAnchor: Anchoring Agent Planning to Stabilize Long-Horizon Web Reasoning](https://arxiv.org/pdf/2601.03164v2) · 2026-01-06 · 相关性 7
+- [Nested Browser-Use Learning for Agentic Information Seeking](https://arxiv.org/pdf/2512.23647v1) · 2025-12-29 · 相关性 7
+- [Beyond Training: Enabling Self-Evolution of Agents with MOBIMEM](https://arxiv.org/pdf/2512.15784v1) · 2025-12-15 · 相关性 7
+- [Improving Language Agents through BREW: Bootstrapping expeRientially-learned Environmental knoWledge](https://arxiv.org/pdf/2511.20297v2) · 2025-11-25 · 相关性 7
+- [Building Browser Agents: Architecture, Security, and Practical Solutions](https://arxiv.org/pdf/2511.19477v1) · 2025-11-22 · 相关性 7
+- [Structured Interaction, Visual Localization, and Robust Execution for Complex Web Tasks: A Technical Report on the WebRetriever Challenge](https://arxiv.org/pdf/2609.35904v1) · 2026-09-28 · 相关性 6
+- [ControlScope: Workflow Revision and Reliability in LLM Agents](https://arxiv.org/pdf/2609.34313v1) · 2026-09-28 · 相关性 6
+- [When Better Turns Do Not Make Better Agents: Diagnosing the Gap Between Next-Turn Metrics and Workflow Success](https://arxiv.org/pdf/2609.21187v1) · 2026-09-18 · 相关性 6
+- [Natural-Language Workflows Are Not Software Yet: Artifact-Driven Compilation for Reliable Agent Execution](https://arxiv.org/pdf/2608.21341v1) · 2026-08-21 · 相关性 6
+- [ComponentBench: Diagnosing Component-Level Failures in Computer-Use Agents](https://arxiv.org/pdf/2608.18307v1) · 2026-08-18 · 相关性 6
+- [Routing Is Least Learnable Where It Is Most Valuable: Bounds on Representation Routing for Web Agents](https://arxiv.org/pdf/2608.06171v1) · 2026-08-06 · 相关性 6
+- [Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents](https://arxiv.org/pdf/2607.28227v1) · 2026-07-30 · 相关性 6
+- [COVENANT: Natural-Language Workflow Compilation for Aligned Agent Execution](https://arxiv.org/pdf/2607.25400v1) · 2026-07-28 · 相关性 6
+- [Beyond Generalist LLMs: Specialist Agentic Systems for Structured Code Workflow Execution](https://arxiv.org/pdf/2607.14456v1) · 2026-07-16 · 相关性 6
+- [MyAG: A Graph-Based Framework for Designing and Analyzing Composable LLM Agent Systems](https://arxiv.org/pdf/2607.13474v1) · 2026-07-15 · 相关性 6
+- [Process-Reward Tactic Evolution for Long-Horizon Bioinformatics Workflows](https://arxiv.org/pdf/2606.20839v1) · 2026-06-18 · 相关性 6
+- [RunAgent SuperBrowser: A Theory of Autonomous Web Navigation Grounded in Human Browsing Behaviour](https://arxiv.org/pdf/2606.09399v1) · 2026-06-08 · 相关性 6
+- [AsyncWebRL: Efficient Asynchronous Reinforcement Learning for Multi-Step Visual Web Agents](https://arxiv.org/pdf/2606.05597v3) · 2026-06-04 · 相关性 6
+- [GraphFlow: A Graph-Based Workflow Management for Efficient LLM-Agent Serving](https://arxiv.org/pdf/2605.22566v1) · 2026-05-21 · 相关性 6
+- [BaRA: Budget-constrained and Reliable Web Data Collection Agent](https://arxiv.org/pdf/2607.00007v2) · 2026-05-02 · 相关性 6
+- [SAGA: Workflow-Atomic Scheduling for AI Agent Inference on GPU Clusters](https://arxiv.org/pdf/2605.00528v2) · 2026-05-01 · 相关性 6
+- [Pythia: Exploiting Workflow Predictability for Efficient Agent-Native LLM Serving](https://arxiv.org/pdf/2604.25899v2) · 2026-04-28 · 相关性 6
+- [Mango: Multi-Agent Web Navigation via Global-View Optimization](https://arxiv.org/pdf/2604.18779v1) · 2026-04-20 · 相关性 6
+- [From Static Templates to Dynamic Runtime Graphs: A Survey of Workflow Optimization for LLM Agents](https://arxiv.org/pdf/2603.22386v1) · 2026-03-23 · 相关性 6
+- [Why Do LLM-based Web Agents Fail? A Hierarchical Planning Perspective](https://arxiv.org/pdf/2603.14248v2) · 2026-03-15 · 相关性 6
+- [ColorBrowserAgent: Complex Long-Horizon Browser Agent with Adaptive Knowledge Evolution](https://arxiv.org/pdf/2601.07262v3) · 2026-01-12 · 相关性 6
+- [Nalar: An agent serving framework](https://arxiv.org/pdf/2601.05109v1) · 2026-01-08 · 相关性 6
+- [Towards Efficient Agents: A Co-Design of Inference Architecture and System](https://arxiv.org/pdf/2512.18337v2) · 2025-12-20 · 相关性 6
+- [Fara-7B: An Efficient Agentic Model for Computer Use](https://arxiv.org/pdf/2511.19663v1) · 2025-11-24 · 相关性 6
+- [Framework Matters: Energy Efficiency of UI Automation Testing Frameworks](https://arxiv.org/pdf/2511.17303v1) · 2025-11-21 · 相关性 6
+- [WebCoach: Self-Evolving Web Agents with Cross-Session Memory Guidance](https://arxiv.org/pdf/2511.12997v2) · 2025-11-17 · 相关性 6
+- [Sherlock: Reliable and Efficient Agentic Workflow Execution](https://arxiv.org/pdf/2511.00330v1) · 2025-11-01 · 相关性 6

@@ -1,0 +1,104 @@
+# 页面观察与信息提取 · 近一年
+
+2025-10-30 至 2026-10-29，共 100 篇。分数为原程序的模型相关性评分。
+
+- [Structured Interaction, Visual Localization, and Robust Execution for Complex Web Tasks: A Technical Report on the WebRetriever Challenge](https://arxiv.org/pdf/2609.35904v1) · 2026-09-28 · 相关性 9
+- [Probe to Act: Elevating Browser-Use Agent via Active Visual Probing](https://arxiv.org/pdf/2609.33646v1) · 2026-09-27 · 相关性 9
+- [Hallucination-Free GUI Grounding via Regression-Free Layout-Aware Matching](https://arxiv.org/pdf/2608.09654v1) · 2026-08-10 · 相关性 9
+- [CAP: A Scalable Benchmark for Evaluating Cross-Site Browser Agents with Complex Actions and Perception](https://arxiv.org/pdf/2608.08392v1) · 2026-08-09 · 相关性 9
+- [Agent-Computer Observation Interfaces Enable Dynamic Computer Use](https://arxiv.org/pdf/2606.29472v1) · 2026-06-28 · 相关性 9
+- [WebChallenger: A Reliable and Efficient Generalist Web Agent](https://arxiv.org/pdf/2606.10423v1) · 2026-06-09 · 相关性 9
+- [Signal-Driven Observation for Long-Horizon Web Agents](https://arxiv.org/pdf/2606.06708v2) · 2026-06-04 · 相关性 9
+- [Revisiting Observation Reduction for Web Agents: Comprehensive Evaluation with a Lightweight Framework](https://arxiv.org/pdf/2605.29397v1) · 2026-05-28 · 相关性 9
+- [DRS-GUI: Dynamic Region Search for Training-Free GUI Grounding](https://arxiv.org/pdf/2605.15542v1) · 2026-05-15 · 相关性 9
+- [Region4Web: Rethinking Observation Space Granularity for Web Agents](https://arxiv.org/pdf/2605.07134v1) · 2026-05-08 · 相关性 9
+- [A11y-Compressor: A Framework for Enhancing the Efficiency of GUI Agent Observations through Visual Context Reconstruction and Redundancy Reduction](https://arxiv.org/pdf/2605.00551v1) · 2026-05-01 · 相关性 9
+- [Read More, Think More: Revisiting Observation Reduction for Web Agents](https://arxiv.org/pdf/2604.01535v1) · 2026-04-02 · 相关性 9
+- [See and Remember: A Multimodal Agent for Web Traversal](https://arxiv.org/pdf/2603.02626v1) · 2026-03-03 · 相关性 9
+- [AXE: Low-Cost Cross-Domain Web Structured Information Extraction](https://arxiv.org/pdf/2602.01838v2) · 2026-02-02 · 相关性 9
+- [Avenir-Web: Human-Experience-Imitating Multimodal Web Agents with Mixture of Grounding Experts](https://arxiv.org/pdf/2602.02468v1) · 2026-02-02 · 相关性 9
+- [An Index-based Approach for Efficient and Effective Web Content Extraction](https://arxiv.org/pdf/2512.06641v1) · 2025-12-07 · 相关性 9
+- [Prune4Web: DOM Tree Pruning Programming for Web Agent](https://arxiv.org/pdf/2511.21398v1) · 2025-11-26 · 相关性 9
+- [Right Click, Wrong Box: Grading GUI Grounding by What a Click Does](https://arxiv.org/pdf/2610.36831v1) · 2026-10-27 · 相关性 8
+- [IGG: A Benchmark for Interactive GUI Grounding under Visibility Constraints](https://arxiv.org/pdf/2610.32536v1) · 2026-10-23 · 相关性 8
+- [PointerBench: A Diagnostic Benchmark for Fine-Grained GUI Grounding](https://arxiv.org/pdf/2610.31274v1) · 2026-10-22 · 相关性 8
+- [MHVF: Training-Free GUI Grounding via Verification-Guided Multi-Hypothesis Search](https://arxiv.org/pdf/2610.17792v1) · 2026-10-13 · 相关性 8
+- [Web$hell: A Unified Interface for Agentic Web Access](https://arxiv.org/pdf/2610.13416v1) · 2026-10-09 · 相关性 8
+- [Adversarial Images Hijack Web Agents from Visual Grounding to Browser Execution](https://arxiv.org/pdf/2610.09240v1) · 2026-10-07 · 相关性 8
+- [Learning Simple Test-Time Environments for LLM Web Agents](https://arxiv.org/pdf/2608.29305v1) · 2026-08-29 · 相关性 8
+- [ASIL: Replacing Screenshot-and-Click with Structured State and Semantic Actions](https://arxiv.org/pdf/2608.26991v1) · 2026-08-27 · 相关性 8
+- [BrowserForge: Scaling Web Episode via Parallel Browser Sandboxes](https://arxiv.org/pdf/2608.24848v1) · 2026-08-25 · 相关性 8
+- [Routing Is Least Learnable Where It Is Most Valuable: Bounds on Representation Routing for Web Agents](https://arxiv.org/pdf/2608.06171v1) · 2026-08-06 · 相关性 8
+- [GUI-Lens: Coarse-to-Fine Cropping for GUI Grounding with General-Purpose VLMs](https://arxiv.org/pdf/2608.03270v1) · 2026-08-04 · 相关性 8
+- [Designing Agent-Ready Websites for AI Web Agents: A Framework for Machine Readability, Actionability, and Decision Reliability](https://arxiv.org/pdf/2607.12056v1) · 2026-07-13 · 相关性 8
+- [MAG: A Web-Agent Benchmark and Harness for Multimodal Action and Guide Generation](https://arxiv.org/pdf/2607.10079v3) · 2026-07-11 · 相关性 8
+- [LUMOS: A Semantic Operating-System Layer for Accessibility-Grounded AI Agents](https://arxiv.org/pdf/2606.30697v1) · 2026-06-29 · 相关性 8
+- [Co-Scraper: query-aware DOM Pruning and Reusable Scraper Synthesis for Lightweight Web Data Extraction](https://arxiv.org/pdf/2606.14821v1) · 2026-06-12 · 相关性 8
+- [Minim: Privacy-Aware Minimal View for Agents via Trusted Local Sanitization](https://arxiv.org/pdf/2606.13949v1) · 2026-06-11 · 相关性 8
+- [RunAgent SuperBrowser: A Theory of Autonomous Web Navigation Grounded in Human Browsing Behaviour](https://arxiv.org/pdf/2606.09399v1) · 2026-06-08 · 相关性 8
+- [ReVision: Scaling Computer-Use Agents via Temporal Visual Redundancy Reduction](https://arxiv.org/pdf/2605.11212v3) · 2026-05-11 · 相关性 8
+- [cotomi Act: Learning to Automate Work by Watching You](https://arxiv.org/pdf/2605.03231v1) · 2026-05-04 · 相关性 8
+- [PageGuide: Browser extension to assist users in navigating a webpage and locating information](https://arxiv.org/pdf/2604.23772v4) · 2026-04-26 · 相关性 8
+- [MolmoWeb: Open Visual Web Agent and Open Data for the Open Web](https://arxiv.org/pdf/2604.08516v1) · 2026-04-09 · 相关性 8
+- [LiveWeb-IE: A Benchmark For Online Web Information Extraction](https://arxiv.org/pdf/2603.13773v1) · 2026-03-14 · 相关性 8
+- [ICA: Information-Aware Credit Assignment for Visually Grounded Long-Horizon Information-Seeking Agents](https://arxiv.org/pdf/2602.10863v2) · 2026-02-11 · 相关性 8
+- [iSHIFT: Lightweight Slow-Fast GUI Agent with Adaptive Perception](https://arxiv.org/pdf/2512.22009v1) · 2025-12-26 · 相关性 8
+- [Zoom in, Click out: Unlocking and Evaluating the Potential of Zooming for GUI Grounding](https://arxiv.org/pdf/2512.05941v1) · 2025-12-05 · 相关性 8
+- [MEGA-GUI: Multi-stage Enhanced Grounding Agents for GUI Elements](https://arxiv.org/pdf/2511.13087v1) · 2025-11-17 · 相关性 8
+- [An Efficient Training Pipeline for Reasoning Graphical User Interface Agents](https://arxiv.org/pdf/2511.08172v3) · 2025-11-11 · 相关性 8
+- [Grounding Computer Use Agents on Human Demonstrations](https://arxiv.org/pdf/2511.07332v2) · 2025-11-10 · 相关性 8
+- [What It Is, Not What It Says: Securing Agentic Browsing Interactions with Web Semantics](https://arxiv.org/pdf/2610.22697v1) · 2026-10-15 · 相关性 7
+- [From Observations to Authorized Actions: Measuring Source Information in Android Agents](https://arxiv.org/pdf/2610.15502v1) · 2026-10-11 · 相关性 7
+- [When Charts Deceive Web Agents: A Paired Benchmark for Misleading Visualization-Grounded Tasks](https://arxiv.org/pdf/2610.12823v1) · 2026-10-09 · 相关性 7
+- [Secure-CUA: Controlling Untrusted Influence in Computer-Use Agents](https://arxiv.org/pdf/2610.09469v1) · 2026-10-07 · 相关性 7
+- [Action Conditioned Bisimulation For GUI Agent Memory](https://arxiv.org/pdf/2609.38778v1) · 2026-09-30 · 相关性 7
+- [MintAct: A Unified Visual Agent for Digital Environments](https://arxiv.org/pdf/2609.22083v1) · 2026-09-18 · 相关性 7
+- [Learning from Reliable Negatives: Confidence-Anchored Test-Time Adaptation for GUI Grounding](https://arxiv.org/pdf/2609.15307v1) · 2026-09-14 · 相关性 7
+- [Discriminative World Models for Web Agents](https://arxiv.org/pdf/2609.02885v1) · 2026-09-02 · 相关性 7
+- [Wuying-Browser-Agent: Real-World Centric Fundamental Long-Horizon Browser Agents](https://arxiv.org/pdf/2608.17319v1) · 2026-08-18 · 相关性 7
+- [HxAgent: Iterative Agent Planning for End-to-End Web Application Testing](https://arxiv.org/pdf/2608.15491v1) · 2026-08-16 · 相关性 7
+- [From Bug Reports to Browser-Executable Procedures: An LLM-Driven Agent for Web GUI Bug Reproduction](https://arxiv.org/pdf/2608.03598v1) · 2026-08-04 · 相关性 7
+- [Untrusted Content Masking for Web Agents with Security Guarantees](https://arxiv.org/pdf/2607.05277v1) · 2026-07-06 · 相关性 7
+- [HANSEL: Extracting Breadcrumbs from Web Agent Trajectories for Interactive Verification](https://arxiv.org/pdf/2606.18671v1) · 2026-06-17 · 相关性 7
+- [Beyond Domains: Reusing Web Skills via Transferable Interaction Patterns](https://arxiv.org/pdf/2606.17645v1) · 2026-06-16 · 相关性 7
+- [FraudSMSWalker: Benchmarking Agentic Large Language Models for SMS-to-Webpage Fraud Detection](https://arxiv.org/pdf/2606.16659v1) · 2026-06-15 · 相关性 7
+- [OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents](https://arxiv.org/pdf/2606.02031v2) · 2026-06-01 · 相关性 7
+- [PersonaTrail: Benchmarking Personalized Web Agents through Browsing Trails](https://arxiv.org/pdf/2607.20482v2) · 2026-05-30 · 相关性 7
+- [Weasel: Out-of-Domain Generalization for Web Agents via Importance-Diversity Data Selection](https://arxiv.org/pdf/2605.20291v2) · 2026-05-19 · 相关性 7
+- [DRIVE: Modeling Skills at the Reasoning and Interaction Levels for Web Agents under Continual Learning](https://arxiv.org/pdf/2605.23939v1) · 2026-04-28 · 相关性 7
+- [Beyond Chat and Clicks: GUI Agents for In-Situ Assistance via Live Interface Transformation](https://arxiv.org/pdf/2604.14668v1) · 2026-04-16 · 相关性 7
+- [Task-Adaptive Retrieval over Agentic Multi-Modal Web Histories via Learned Graph Memory](https://arxiv.org/pdf/2604.07863v1) · 2026-04-09 · 相关性 7
+- [Internal APIs Are All You Need: Shadow APIs, Shared Discovery, and the Case Against Browser-First Agent Architectures](https://arxiv.org/pdf/2604.00694v1) · 2026-04-01 · 相关性 7
+- [VACP: Visual Analytics Context Protocol](https://arxiv.org/pdf/2603.29322v1) · 2026-03-31 · 相关性 7
+- [VisBrowse-Bench: Benchmarking Visual-Native Search for Multimodal Browsing Agents](https://arxiv.org/pdf/2603.16289v2) · 2026-03-17 · 相关性 7
+- [Why Do LLM-based Web Agents Fail? A Hierarchical Planning Perspective](https://arxiv.org/pdf/2603.14248v2) · 2026-03-15 · 相关性 7
+- [WebChain: A Large-Scale Human-Annotated Dataset of Real-World Web Interaction Traces](https://arxiv.org/pdf/2603.05295v3) · 2026-03-05 · 相关性 7
+- [Avenir-UX: Automated UX Evaluation via Simulated Human Web Interaction with GUI Grounding](https://arxiv.org/pdf/2604.09581v2) · 2026-02-25 · 相关性 7
+- [EmbeWebAgent: Embedding Web Agents into Any Customized UI](https://arxiv.org/pdf/2602.14865v1) · 2026-02-16 · 相关性 7
+- [BrowseComp-$V^3$: A Visual, Vertical, and Verifiable Benchmark for Multimodal Browsing Agents](https://arxiv.org/pdf/2602.12876v2) · 2026-02-13 · 相关性 7
+- [ColorBrowserAgent: Complex Long-Horizon Browser Agent with Adaptive Knowledge Evolution](https://arxiv.org/pdf/2601.07262v3) · 2026-01-12 · 相关性 7
+- [WebGym: Scaling Training Environments for Visual Web Agents with Realistic Tasks](https://arxiv.org/pdf/2601.02439v6) · 2026-01-05 · 相关性 7
+- [Nested Browser-Use Learning for Agentic Information Seeking](https://arxiv.org/pdf/2512.23647v1) · 2025-12-29 · 相关性 7
+- [MCP vs RAG vs NLWeb vs HTML: A Comparison of the Effectiveness and Efficiency of Different Agent Interfaces to the Web (Technical Report)](https://arxiv.org/pdf/2511.23281v1) · 2025-11-28 · 相关性 7
+- [Fara-7B: An Efficient Agentic Model for Computer Use](https://arxiv.org/pdf/2511.19663v1) · 2025-11-24 · 相关性 7
+- [Building Browser Agents: Architecture, Security, and Practical Solutions](https://arxiv.org/pdf/2511.19477v1) · 2025-11-22 · 相关性 7
+- [SynthAgent: Adapting Web Agents with Synthetic Supervision](https://arxiv.org/pdf/2511.06101v3) · 2025-11-08 · 相关性 7
+- [Test-Time Adaptation for LLM Agents via Environment Interaction](https://arxiv.org/pdf/2511.04847v4) · 2025-11-06 · 相关性 7
+- [GUI-AIMA: Aligning Intrinsic Multimodal Attention with a Context Anchor for GUI Grounding](https://arxiv.org/pdf/2511.00810v4) · 2025-11-02 · 相关性 7
+- [Don't Retrain, Remix: Adaptation of Web Agents using Mixture Hypernetworks](https://arxiv.org/pdf/2610.22539v1) · 2026-10-15 · 相关性 6
+- [BrowseSafe++: Benchmarking Prompt Injection Detection Across Web Contexts, Languages, and Browser Views](https://arxiv.org/pdf/2610.17457v1) · 2026-10-12 · 相关性 6
+- [WebPageBench: Event-Level Verification and Controlled UI-Variant Generation for Web Agents](https://arxiv.org/pdf/2609.35026v1) · 2026-09-28 · 相关性 6
+- [Token Efficient Task Execution via Application Behavior Modeling for Web Agents](https://arxiv.org/pdf/2609.13491v1) · 2026-09-11 · 相关性 6
+- [Monitoring Web Agents Without Internal Signals: Observable Trajectories and Key-Step Supervision](https://arxiv.org/pdf/2609.02057v1) · 2026-09-02 · 相关性 6
+- [WebGrader: Training LLMs for Web Development with Self-Evolving Programmatic Grader](https://arxiv.org/pdf/2608.06474v1) · 2026-08-06 · 相关性 6
+- [Qwen-CUA: Native Computer Use for (almost) Everything](https://arxiv.org/pdf/2608.02352v1) · 2026-08-03 · 相关性 6
+- [From Blind Edits to Verified Repair: Building Trustworthy User-Side LLM Agents for Web Accessibility](https://arxiv.org/pdf/2608.24913v1) · 2026-07-26 · 相关性 6
+- [WebRetriever: A Large-Scale Comprehensive Benchmark for Efficient Web Agent Evaluation](https://arxiv.org/pdf/2607.06118v1) · 2026-07-07 · 相关性 6
+- [Online Skill Learning for Web Agents via State-Grounded Dynamic Retrieval](https://arxiv.org/pdf/2606.04391v1) · 2026-06-03 · 相关性 6
+- [Ego2Web: A Web Agent Benchmark Grounded in Egocentric Videos](https://arxiv.org/pdf/2603.22529v1) · 2026-03-23 · 相关性 6
+- [Enhancing Web Agents with a Hierarchical Memory Tree](https://arxiv.org/pdf/2603.07024v1) · 2026-03-07 · 相关性 6
+- [Atomicity for Agents: Exposing, Exploiting, and Mitigating TOCTOU Vulnerabilities in Browser-Use Agents](https://arxiv.org/pdf/2603.00476v1) · 2026-02-28 · 相关性 6
+- [OpAgent: Operator Agent for Web Navigation](https://arxiv.org/pdf/2602.13559v2) · 2026-02-14 · 相关性 6
+- [Do Web Agents Investigate Before They Decide?](https://arxiv.org/pdf/2602.05354v3) · 2026-02-05 · 相关性 6
+- [How do Visual Attributes Influence Web Agents? A Comprehensive Evaluation of User Interface Design Factors](https://arxiv.org/pdf/2601.21961v2) · 2026-01-29 · 相关性 6
+- [WebTrap Park: An Automated Platform for Systematic Security Evaluation of Web Agents](https://arxiv.org/pdf/2601.08406v1) · 2026-01-13 · 相关性 6

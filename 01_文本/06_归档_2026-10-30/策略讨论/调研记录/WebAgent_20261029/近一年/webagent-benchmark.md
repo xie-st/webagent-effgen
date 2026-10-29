@@ -1,0 +1,104 @@
+# Benchmark专题 · 近一年
+
+2025-10-30 至 2026-10-29，共 100 篇。相关性分为原流水线模型评分。
+
+- [WebPageBench: Event-Level Verification and Controlled UI-Variant Generation for Web Agents](https://arxiv.org/pdf/2609.35026v1) · 2026-09-28 · 相关性 8
+- [ShopGym: An Integrated Framework for Realistic Simulation and Scalable Benchmarking of E-Commerce Web Agents](https://arxiv.org/pdf/2605.16116v1) · 2026-05-15 · 相关性 8
+- [Beyond Sequential Interaction: Benchmarking Parallel Execution and Coordination for GUI Agents](https://arxiv.org/pdf/2607.22689v1) · 2026-07-17 · 相关性 8
+- [When Web Agents Finish but Still Fail: Reproducible Triggers and Trace Diagnostics for Parallel Web Exploration](https://arxiv.org/pdf/2606.20724v2) · 2026-06-16 · 相关性 8
+- [One Success Isn't Reliability: Thinkingbox, a Sandbox and Benchmark for Agents in Stateful Business Workflows](https://arxiv.org/pdf/2608.19741v2) · 2026-08-20 · 相关性 8
+- [AutomationBench](https://arxiv.org/pdf/2604.18934v1) · 2026-04-21 · 相关性 8
+- [It's a TRAP! Task-Redirecting Agent Persuasion Benchmark for Web Agents](https://arxiv.org/pdf/2512.23128v3) · 2025-12-29 · 相关性 8
+- [EntWorld: A Holistic Environment and Benchmark for Verifiable Enterprise GUI Agents](https://arxiv.org/pdf/2601.17722v1) · 2026-01-25 · 相关性 8
+- [cua-speedrun: Standardized Benchmarking of the Speed of Computer-Use Agents](https://arxiv.org/pdf/2609.40284v1) · 2026-09-30 · 相关性 8
+- [WebCraftBench: Evaluating Web Application Generation from a Software Testing Perspective](https://arxiv.org/pdf/2609.15387v3) · 2026-09-14 · 相关性 8
+- [Claw-Eval-Live: A Live Agent Benchmark for Evolving Real-World Workflows](https://arxiv.org/pdf/2604.28139v2) · 2026-04-30 · 相关性 8
+- [SGR-Bench: Benchmarking Search Agents on State-Gated Retrieval](https://arxiv.org/pdf/2605.22219v1) · 2026-05-21 · 相关性 8
+- [Region4Web: Rethinking Observation Space Granularity for Web Agents](https://arxiv.org/pdf/2605.07134v1) · 2026-05-08 · 相关性 8
+- [ERPBench: A State-Grounded Evaluation Paradigm for Computer-Use Agents in Enterprise Software](https://arxiv.org/pdf/2609.17885v1) · 2026-09-15 · 相关性 8
+- [Evaluating Long-Context Reasoning in LLM-Based WebAgents](https://arxiv.org/pdf/2512.04307v1) · 2025-12-03 · 相关性 8
+- [cotomi Act: Learning to Automate Work by Watching You](https://arxiv.org/pdf/2605.03231v1) · 2026-05-04 · 相关性 8
+- [WebUIProof: Benchmarking WebUI Code Generators with UI-Agent Execution Harness](https://arxiv.org/pdf/2610.02617v1) · 2026-10-02 · 相关性 8
+- [Weasel: Out-of-Domain Generalization for Web Agents via Importance-Diversity Data Selection](https://arxiv.org/pdf/2605.20291v2) · 2026-05-19 · 相关性 8
+- [Odysseys: Benchmarking Web Agents on Realistic Long Horizon Tasks](https://arxiv.org/pdf/2604.24964v1) · 2026-04-27 · 相关性 7
+- [The Hard Part Comes After Search: Benchmarking Web Agents on Synthesizing, Organizing, and Displaying Knowledge](https://arxiv.org/pdf/2609.30604v1) · 2026-09-24 · 相关性 7
+- [WebForge: Breaking the Realism-Reproducibility-Scalability Trilemma in Browser Agent Benchmark](https://arxiv.org/pdf/2604.10988v1) · 2026-04-13 · 相关性 7
+- [StressWeb: A Diagnostic Benchmark for Web Agent Robustness under Realistic Interaction Variability](https://arxiv.org/pdf/2604.16385v1) · 2026-03-27 · 相关性 7
+- [SkillShift-Bench: Benchmarking Skill Learning under Environment Evolution for Web Agents](https://arxiv.org/pdf/2610.33528v1) · 2026-10-24 · 相关性 7
+- [CAP: A Scalable Benchmark for Evaluating Cross-Site Browser Agents with Complex Actions and Perception](https://arxiv.org/pdf/2608.08392v1) · 2026-08-09 · 相关性 7
+- [Back to Basics: A Skill-Centric Approach to Generalist Web Agents](https://arxiv.org/pdf/2610.35823v1) · 2026-10-26 · 相关性 7
+- [SaaS-Bench: Can Computer-Use Agents Leverage Real-World SaaS to Solve Professional Workflows?](https://arxiv.org/pdf/2605.15777v2) · 2026-05-15 · 相关性 7
+- [Emergence WebVoyager: Toward Consistent and Transparent Evaluation of (Web) Agents in The Wild](https://arxiv.org/pdf/2603.29020v1) · 2026-03-30 · 相关性 7
+- [Ego2Web: A Web Agent Benchmark Grounded in Egocentric Videos](https://arxiv.org/pdf/2603.22529v1) · 2026-03-23 · 相关性 7
+- [Auditing Web Agent Evaluation on WebArena-Lite: Human Review of Outcomes and Trajectories](https://arxiv.org/pdf/2610.01491v1) · 2026-10-01 · 相关性 7
+- [Safe and Scalable Web Agent Learning via Recreated Websites](https://arxiv.org/pdf/2603.10505v1) · 2026-03-11 · 相关性 7
+- [STAGE-Claw: Automated State-based Agent Benchmarking for Realistic Scenarios](https://arxiv.org/pdf/2606.10394v1) · 2026-06-09 · 相关性 7
+- [Can Agent Benchmarks Support Their Scores? Evidence-Supported Bounds for Interactive-Agent Evaluation](https://arxiv.org/pdf/2605.10448v1) · 2026-05-11 · 相关性 7
+- [EconSkills: Studying Skill Transfer and Retrieval for Web Agents on Live Economic Data](https://arxiv.org/pdf/2609.19523v1) · 2026-09-17 · 相关性 7
+- [Harness-Bench: Measuring Harness Effects across Models in Realistic Agent Workflows](https://arxiv.org/pdf/2605.27922v1) · 2026-05-27 · 相关性 7
+- [Multi-Agent Computer Use](https://arxiv.org/pdf/2606.01533v1) · 2026-06-01 · 相关性 7
+- [AppWorld-UL: Benchmarking Diverse Agent-User Interactions for Tool-Use](https://arxiv.org/pdf/2607.20536v1) · 2026-07-10 · 相关性 7
+- [AutoWebWorld: Synthesizing Infinite Verifiable Web Environments via Finite State Machines](https://arxiv.org/pdf/2602.14296v1) · 2026-02-15 · 相关性 7
+- [When Users Change Their Mind: Evaluating Interruptible Agents in Long-Horizon Web Navigation](https://arxiv.org/pdf/2604.00892v1) · 2026-04-01 · 相关性 7
+- [Weblica: Scalable and Reproducible Training Environments for Visual Web Agents](https://arxiv.org/pdf/2605.06761v1) · 2026-05-07 · 相关性 7
+- [AgencyBench: Benchmarking the Frontiers of Autonomous Agents in 1M-Token Real-World Contexts](https://arxiv.org/pdf/2601.11044v4) · 2026-01-16 · 相关性 7
+- [The Agent's First Day: Benchmarking Learning, Exploration, and Scheduling in the Workplace Scenarios](https://arxiv.org/pdf/2601.08173v2) · 2026-01-13 · 相关性 7
+- [AgentTell: Behavioural Side-Channel Leakage in Browser-Use Agents](https://arxiv.org/pdf/2609.32915v1) · 2026-09-26 · 相关性 7
+- [Ares: Adaptive Reasoning Effort Selection for Efficient LLM Agents](https://arxiv.org/pdf/2603.07915v1) · 2026-03-09 · 相关性 7
+- [Where Did It Go Wrong? Process-Level Evaluation of Web Agents with Semantic State Tracking](https://arxiv.org/pdf/2606.15673v2) · 2026-04-08 · 相关性 6
+- [AgentHijack: Benchmarking Computer Use Agent Robustness to Common Environment Corruptions](https://arxiv.org/pdf/2605.25707v1) · 2026-05-25 · 相关性 6
+- [GTA: Generating Long-Horizon Tasks for Web Agents at Scale](https://arxiv.org/pdf/2605.29218v1) · 2026-05-28 · 相关性 6
+- [WebRetriever: A Large-Scale Comprehensive Benchmark for Efficient Web Agent Evaluation](https://arxiv.org/pdf/2607.06118v1) · 2026-07-07 · 相关性 6
+- [Scaling Web Agent Training through Automatic Data Generation and Fine-grained Evaluation](https://arxiv.org/pdf/2602.12544v1) · 2026-02-13 · 相关性 6
+- [Benchmarking Web Agent Safety under E-commerce Deceptive Interfaces](https://arxiv.org/pdf/2606.13686v1) · 2026-04-26 · 相关性 6
+- [OSWorld 2.0: Benchmarking Computer Use Agents on Long-Horizon Real-World Tasks](https://arxiv.org/pdf/2606.29537v2) · 2026-06-28 · 相关性 6
+- [OSGuard: A Benchmark for Safety in Computer-Use Agents](https://arxiv.org/pdf/2606.15034v1) · 2026-06-13 · 相关性 6
+- [WebFovea: When the Model Is Right but the Click Is Wrong -- Reliable Round Trips for Vision-Based Web Agents on Live Websites](https://arxiv.org/pdf/2610.03036v2) · 2026-10-02 · 相关性 6
+- [WindowsWorld: A Process-Centric Benchmark of Autonomous GUI Agents in Professional Cross-Application Environments](https://arxiv.org/pdf/2604.27776v1) · 2026-04-30 · 相关性 6
+- [MolmoWeb: Open Visual Web Agent and Open Data for the Open Web](https://arxiv.org/pdf/2604.08516v1) · 2026-04-09 · 相关性 6
+- [Do Web Agents Investigate Before They Decide?](https://arxiv.org/pdf/2602.05354v3) · 2026-02-05 · 相关性 6
+- [MyPCBench: A Benchmark for Personally Intelligent Computer-Use Agents](https://arxiv.org/pdf/2606.16748v1) · 2026-06-15 · 相关性 6
+- [ParaRecover: A Process-Level Benchmark for Error Localization and Recovery in Parallel Tool-Use Agents](https://arxiv.org/pdf/2609.12345v1) · 2026-09-11 · 相关性 6
+- [Don't Click That: Teaching Web Agents to Resist Deceptive Interfaces](https://arxiv.org/pdf/2605.09497v1) · 2026-05-10 · 相关性 6
+- [Discriminative World Models for Web Agents](https://arxiv.org/pdf/2609.02885v1) · 2026-09-02 · 相关性 6
+- [AI Planning Framework for LLM-Based Web Agents](https://arxiv.org/pdf/2603.12710v1) · 2026-03-13 · 相关性 6
+- [Revisiting Observation Reduction for Web Agents: Comprehensive Evaluation with a Lightweight Framework](https://arxiv.org/pdf/2605.29397v1) · 2026-05-28 · 相关性 6
+- [Monitoring Web Agents Without Internal Signals: Observable Trajectories and Key-Step Supervision](https://arxiv.org/pdf/2609.02057v1) · 2026-09-02 · 相关性 6
+- [Desktop-Delta Bench: Do Computer-Use Models Understand Desktop GUI Transitions?](https://arxiv.org/pdf/2607.26041v2) · 2026-07-28 · 相关性 6
+- [WARD: Adversarially Robust Defense of Web Agents Against Prompt Injections](https://arxiv.org/pdf/2605.15030v1) · 2026-05-14 · 相关性 6
+- [AutoTailor: Automatic, User-Aligned Capability Selection and Adaptation for Web Agents](https://arxiv.org/pdf/2609.13548v1) · 2026-09-11 · 相关性 6
+- [WeaveBench: A Long-Horizon, Real-World Benchmark for Computer-Use Agents with Hybrid Interfaces](https://arxiv.org/pdf/2606.09426v3) · 2026-06-08 · 相关性 6
+- [SentinelBench: A Benchmark for Long-Running Monitoring Agents](https://arxiv.org/pdf/2606.05342v2) · 2026-06-03 · 相关性 6
+- [BrowserForge: Scaling Web Episode via Parallel Browser Sandboxes](https://arxiv.org/pdf/2608.24848v1) · 2026-08-25 · 相关性 6
+- [HyWe: Unifying Search and Operation for Real-World Hybrid Web Tasks](https://arxiv.org/pdf/2610.16319v2) · 2026-10-12 · 相关性 6
+- [ActionEngine: From Reactive to Programmatic GUI Agents via State Machine Memory](https://arxiv.org/pdf/2602.20502v1) · 2026-02-24 · 相关性 6
+- [Structured Interaction, Visual Localization, and Robust Execution for Complex Web Tasks: A Technical Report on the WebRetriever Challenge](https://arxiv.org/pdf/2609.35904v1) · 2026-09-28 · 相关性 6
+- [OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents](https://arxiv.org/pdf/2606.02031v2) · 2026-06-01 · 相关性 6
+- [Why Do LLM-based Web Agents Fail? A Hierarchical Planning Perspective](https://arxiv.org/pdf/2603.14248v2) · 2026-03-15 · 相关性 6
+- [Agent JIT Compilation for Latency-Optimizing Web Agent Planning and Scheduling](https://arxiv.org/pdf/2605.21470v2) · 2026-05-20 · 相关性 6
+- [PeakBench: Benchmarking Resource-Aware Tool Invocation in LLM Agents](https://arxiv.org/pdf/2608.24509v1) · 2026-08-25 · 相关性 6
+- [Needle in the Web: A Benchmark for Retrieving Targeted Web Pages in the Wild](https://arxiv.org/pdf/2512.16553v1) · 2025-12-18 · 相关性 6
+- [Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents](https://arxiv.org/pdf/2607.28227v1) · 2026-07-30 · 相关性 6
+- [CLIFT: Conformal Self-Verification for Web Agent Training and Test-Time Scaling](https://arxiv.org/pdf/2610.06829v1) · 2026-10-05 · 相关性 6
+- [ColorBrowserAgent: Complex Long-Horizon Browser Agent with Adaptive Knowledge Evolution](https://arxiv.org/pdf/2601.07262v3) · 2026-01-12 · 相关性 6
+- [Asuka-Bench: Benchmarking Code Agents on Underspecified User Intent and Multi-Round Refinement](https://arxiv.org/pdf/2606.05920v1) · 2026-06-04 · 相关性 6
+- [The World Won't Stay Still: Programmable Evolution for Agent Benchmarks](https://arxiv.org/pdf/2603.05910v2) · 2026-03-06 · 相关性 6
+- [AgentSLABench: Evaluating and Benchmarking Agentic Systems Under Resource Constraints](https://arxiv.org/pdf/2608.00805v1) · 2026-08-01 · 相关性 6
+- [OpAgent: Operator Agent for Web Navigation](https://arxiv.org/pdf/2602.13559v2) · 2026-02-14 · 相关性 6
+- [Learning Simple Test-Time Environments for LLM Web Agents](https://arxiv.org/pdf/2608.29305v1) · 2026-08-29 · 相关性 6
+- [SCAFFOLD: Self-Improving Web Agents via Recursive Parametric Skill Abstraction](https://arxiv.org/pdf/2609.05511v1) · 2026-08-31 · 相关性 6
+- [OSWorld-Pro: Process-based Evaluation for Computer Use Agents](https://arxiv.org/pdf/2609.24890v1) · 2026-09-21 · 相关性 6
+- [Training Needs Trustworthy Worlds: Verified Synthetic Web Environments for Agent Learning](https://arxiv.org/pdf/2608.21898v1) · 2026-08-22 · 相关性 6
+- [WebGameBench: Requirement-to-Application Evaluation for Coding Agents via Browser-Native Games](https://arxiv.org/pdf/2605.17637v2) · 2026-05-17 · 相关性 6
+- [ClawProBench: Trace-Aware Evaluation of AI Agents with Runtime Coverage and Frozen Workplace-Style Holdouts](https://arxiv.org/pdf/2608.22510v1) · 2026-08-23 · 相关性 6
+- [Test-Time Adaptation for LLM Agents via Environment Interaction](https://arxiv.org/pdf/2511.04847v4) · 2025-11-06 · 相关性 6
+- [WebGym: Scaling Training Environments for Visual Web Agents with Realistic Tasks](https://arxiv.org/pdf/2601.02439v6) · 2026-01-05 · 相关性 6
+- [ExpSeek: Self-Triggered Experience Seeking for Web Agents](https://arxiv.org/pdf/2601.08605v2) · 2026-01-13 · 相关性 6
+- [Agentic Test-Time Scaling for WebAgents](https://arxiv.org/pdf/2602.12276v2) · 2026-02-12 · 相关性 6
+- [Agent-Diff: Benchmarking LLM Agents on Enterprise API Tasks via Code Execution with State-Diff-Based Evaluation](https://arxiv.org/pdf/2602.11224v3) · 2026-02-11 · 相关性 6
+- [DRIVE: Modeling Skills at the Reasoning and Interaction Levels for Web Agents under Continual Learning](https://arxiv.org/pdf/2605.23939v1) · 2026-04-28 · 相关性 6
+- [Poison Once, Exploit Forever: Environment-Injected Memory Poisoning Attacks on Web Agents](https://arxiv.org/pdf/2604.02623v2) · 2026-04-03 · 相关性 6
+- [Enhancing Web Agents with a Hierarchical Memory Tree](https://arxiv.org/pdf/2603.07024v1) · 2026-03-07 · 相关性 6
+- [Speculative Rollback Correction for Quality-Diverse Web Agent Imitation](https://arxiv.org/pdf/2606.12485v2) · 2026-06-10 · 相关性 6
+- [STRUCTUREDAGENT: Planning with AND/OR Trees for Long-Horizon Web Tasks](https://arxiv.org/pdf/2603.05294v2) · 2026-03-05 · 相关性 6
+- [JarvisGUI: Towards Cross-Device GUI Agents with Dynamic Task Composition](https://arxiv.org/pdf/2609.10451v1) · 2026-09-09 · 相关性 6

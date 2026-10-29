@@ -1,0 +1,104 @@
+# 失败处理与恢复 · 近一年
+
+2025-10-30 至 2026-10-29，共 100 篇。分数为原程序的模型相关性评分。
+
+- [Lost in Recovery: Demystifying Recovery Behavior of Computer-Use Agents via Goal-Oriented Action Replay](https://arxiv.org/pdf/2610.27954v1) · 2026-10-20 · 相关性 9
+- [CUADebug: Diagnosing and Repairing Computer-Use Agent Failures](https://arxiv.org/pdf/2608.02643v2) · 2026-07-31 · 相关性 9
+- [Falsifiable Commitment Planning for Self-Correcting Web Agents](https://arxiv.org/pdf/2607.24167v1) · 2026-07-27 · 相关性 9
+- [AndroidFlux: Evaluating and Reward Modeling Failure Recovery Capabilities in Mobile Use Multimodal Agents](https://arxiv.org/pdf/2610.34384v1) · 2026-10-25 · 相关性 8
+- [RITE: Evaluating End-to-End Resilience to Silent Tool Errors in E-Commerce Agentic Systems](https://arxiv.org/pdf/2610.27777v1) · 2026-10-20 · 相关性 8
+- [Step-Aligned Script Generation with Verification and Recovery for Web Automation Testing](https://arxiv.org/pdf/2610.25601v1) · 2026-10-19 · 相关性 8
+- [SPIDES: Information-Flow Control for Browser Agents](https://arxiv.org/pdf/2610.24277v1) · 2026-10-16 · 相关性 8
+- [What It Is, Not What It Says: Securing Agentic Browsing Interactions with Web Semantics](https://arxiv.org/pdf/2610.22697v1) · 2026-10-15 · 相关性 8
+- [The Agent Clicks Approve: Injected Page Text Makes Browser Agents Authorize Access the Task Never Named](https://arxiv.org/pdf/2610.15138v1) · 2026-10-10 · 相关性 8
+- [AMBER: Training Long-Horizon Web Agents through Append-Only Memory](https://arxiv.org/pdf/2610.07118v1) · 2026-10-05 · 相关性 8
+- [WebFovea: When the Model Is Right but the Click Is Wrong -- Reliable Round Trips for Vision-Based Web Agents on Live Websites](https://arxiv.org/pdf/2610.03036v2) · 2026-10-02 · 相关性 8
+- [One Readout, Many Repairs: Diffusion-Guided Hierarchical Search for Tool-Agent Repair](https://arxiv.org/pdf/2609.34879v2) · 2026-09-28 · 相关性 8
+- [RESKILL: Explicit Failure Attribution and Structured Repair for Interactive Language Agents](https://arxiv.org/pdf/2609.15684v1) · 2026-09-14 · 相关性 8
+- [Monitoring Web Agents Without Internal Signals: Observable Trajectories and Key-Step Supervision](https://arxiv.org/pdf/2609.02057v1) · 2026-09-02 · 相关性 8
+- [Safe to Resume? Breaking Execution Continuity of Agent Execution via Rollback](https://arxiv.org/pdf/2608.29381v1) · 2026-08-29 · 相关性 8
+- [WeAgent-MMSearch: Native Text-Vision Interaction for Multimodal Search Agents](https://arxiv.org/pdf/2608.28062v2) · 2026-08-28 · 相关性 8
+- [EvoUndo: Recoverability-Constrained Self-Evolution for LLM Agent Harnesses](https://arxiv.org/pdf/2608.28363v1) · 2026-08-28 · 相关性 8
+- [Wuying-Browser-Agent: Real-World Centric Fundamental Long-Horizon Browser Agents](https://arxiv.org/pdf/2608.17319v1) · 2026-08-18 · 相关性 8
+- [AgentRewind: Recoverable Execution for Long-Horizon LLM Agents](https://arxiv.org/pdf/2608.14380v1) · 2026-08-14 · 相关性 8
+- [AgentDebugX: An Open-Source Toolkit for Failure Observability, Attribution, and Recovery in LLM Agents](https://arxiv.org/pdf/2607.18754v1) · 2026-07-21 · 相关性 8
+- [AgentTether: Graph-Guided Diagnosis and Runtime Intervention for Reliable LLM Agent Operation](https://arxiv.org/pdf/2607.06273v1) · 2026-07-07 · 相关性 8
+- [Speculative Rollback Correction for Quality-Diverse Web Agent Imitation](https://arxiv.org/pdf/2606.12485v2) · 2026-06-10 · 相关性 8
+- [Self-Healing Agentic Orchestrators for Reliable Tool-Augmented Large Language Model Systems](https://arxiv.org/pdf/2606.01416v1) · 2026-05-31 · 相关性 8
+- [DART: Semantic Recoverability for Structured Tool Agents](https://arxiv.org/pdf/2605.23311v1) · 2026-05-22 · 相关性 8
+- [Agent Meltdowns: The Road to Hell Is Paved with Helpful Agents](https://arxiv.org/pdf/2605.19149v1) · 2026-05-18 · 相关性 8
+- [A Self-Healing Framework for Reliable LLM-Based Autonomous Agents](https://arxiv.org/pdf/2605.06737v1) · 2026-05-07 · 相关性 8
+- [Robust Agent Compensation (RAC): Teaching AI Agents to Compensate](https://arxiv.org/pdf/2605.03409v2) · 2026-05-05 · 相关性 8
+- [BaRA: Budget-constrained and Reliable Web Data Collection Agent](https://arxiv.org/pdf/2607.00007v2) · 2026-05-02 · 相关性 8
+- [Crab: A Semantics-Aware Checkpoint/Restore Runtime for Agent Sandboxes](https://arxiv.org/pdf/2604.28138v1) · 2026-04-30 · 相关性 8
+- [Human-Guided Harm Recovery for Computer Use Agents](https://arxiv.org/pdf/2604.18847v2) · 2026-04-20 · 相关性 8
+- [LogAct: Enabling Agentic Reliability via Shared Logs](https://arxiv.org/pdf/2604.07988v1) · 2026-04-09 · 相关性 8
+- [StressWeb: A Diagnostic Benchmark for Web Agent Robustness under Realistic Interaction Variability](https://arxiv.org/pdf/2604.16385v1) · 2026-03-27 · 相关性 8
+- [ACRFence: Preventing Semantic Rollback Attacks in Agent Checkpoint-Restore](https://arxiv.org/pdf/2603.20625v1) · 2026-03-21 · 相关性 8
+- [Why Do LLM-based Web Agents Fail? A Hierarchical Planning Perspective](https://arxiv.org/pdf/2603.14248v2) · 2026-03-15 · 相关性 8
+- [World-Model-Augmented Web Agents with Action Correction](https://arxiv.org/pdf/2602.15384v1) · 2026-02-17 · 相关性 8
+- [WebWorld: A Large-Scale World Model for Web Agent Training](https://arxiv.org/pdf/2602.14721v1) · 2026-02-16 · 相关性 8
+- [OpAgent: Operator Agent for Web Navigation](https://arxiv.org/pdf/2602.13559v2) · 2026-02-14 · 相关性 8
+- [Recoverability Has a Law: The ERR Measure for Tool-Augmented Agents](https://arxiv.org/pdf/2601.22352v1) · 2026-01-29 · 相关性 8
+- [StateWise: Diagnosing and Repairing Persistent Operational State Before Agent Actions](https://arxiv.org/pdf/2610.05241v1) · 2026-10-04 · 相关性 7
+- [Traverse: Learning When to Remember, Reset, and Redirect for Long-Horizon Web Search](https://arxiv.org/pdf/2609.37082v2) · 2026-09-29 · 相关性 7
+- [ResonAct: Streaming Metrics for Runtime Diagnosis and Self-Healing in Multi-Agent Systems](https://arxiv.org/pdf/2609.34701v1) · 2026-09-28 · 相关性 7
+- [Learning from Failures: Heterogeneous Graph Memory for Small Language Model Tool-Using Agents](https://arxiv.org/pdf/2609.28003v1) · 2026-09-23 · 相关性 7
+- [Recoverability as a System Primitive for Long-Horizon AI Agents](https://arxiv.org/pdf/2609.13672v1) · 2026-09-12 · 相关性 7
+- [Evaluating Deep-Search Agents under Hierarchical Web Evidence Poisoning](https://arxiv.org/pdf/2609.06027v1) · 2026-09-05 · 相关性 7
+- [REVISE: Validity-Guided Recovery for Online Revisions in Agent Workflows](https://arxiv.org/pdf/2609.00643v1) · 2026-09-01 · 相关性 7
+- [Localizing Emergent Failures in Agentic AI: Recovering Minimal Repair Families via Counterfactual Replay](https://arxiv.org/pdf/2608.29228v2) · 2026-08-29 · 相关性 7
+- [Retry, Switch, or Abstain? Learning Strategy-Aware Tool-Use Policies via Controlled Error Injection](https://arxiv.org/pdf/2608.11977v1) · 2026-08-12 · 相关性 7
+- [Software Engineering for and with GUI Agent](https://arxiv.org/pdf/2608.09278v1) · 2026-08-10 · 相关性 7
+- [AgentChaos: Chaos Engineering for Agent Systems via Programmatic Fault Injection](https://arxiv.org/pdf/2608.06790v1) · 2026-08-07 · 相关性 7
+- [DeepSearch-World: Self-Distillation for Deep Search Agents in a Verifiable Environment](https://arxiv.org/pdf/2607.07820v2) · 2026-07-08 · 相关性 7
+- [Do GUI Agents Believe Their Eyes? Diagnosing State-Belief Reliance on Pixels versus Structure](https://arxiv.org/pdf/2607.04334v2) · 2026-07-05 · 相关性 7
+- [When Tools Fail: Benchmarking Dynamic Replanning and Anomaly Recovery in LLM Agents](https://arxiv.org/pdf/2606.05806v1) · 2026-06-04 · 相关性 7
+- [AgentHijack: Benchmarking Computer Use Agent Robustness to Common Environment Corruptions](https://arxiv.org/pdf/2605.25707v1) · 2026-05-25 · 相关性 7
+- [AgentAtlas: Beyond Outcome Leaderboards for LLM Agents](https://arxiv.org/pdf/2605.20530v2) · 2026-05-19 · 相关性 7
+- [SaaS-Bench: Can Computer-Use Agents Leverage Real-World SaaS to Solve Professional Workflows?](https://arxiv.org/pdf/2605.15777v2) · 2026-05-15 · 相关性 7
+- [Debugging the Debuggers: Failure-Anchored Structured Recovery for Software Engineering Agents](https://arxiv.org/pdf/2605.08717v2) · 2026-05-09 · 相关性 7
+- [WebXSkill: Skill Learning for Autonomous Web Agents](https://arxiv.org/pdf/2604.13318v2) · 2026-04-14 · 相关性 7
+- [Rebooting Microreboot: Architectural Support for Safe, Parallel Recovery in Microservice Systems](https://arxiv.org/pdf/2604.09963v1) · 2026-04-11 · 相关性 7
+- [ToolMisuseBench: An Offline Deterministic Benchmark for Tool Misuse and Recovery in Agentic Systems](https://arxiv.org/pdf/2604.01508v1) · 2026-04-02 · 相关性 7
+- [Traversal-as-Policy: Log-Distilled Gated Behavior Trees as Externalized, Verifiable Policies for Safe, Robust, and Efficient Agents](https://arxiv.org/pdf/2603.05517v1) · 2026-01-30 · 相关性 7
+- [CUA-Skill: Develop Skills for Computer Using Agent](https://arxiv.org/pdf/2601.21123v2) · 2026-01-28 · 相关性 7
+- [CASEL: Consequence-Aware Selective Execution for Reliable Long-Horizon Tool-Using Agents](https://arxiv.org/pdf/2610.36570v1) · 2026-10-27 · 相关性 6
+- [Permission to Retry: A Study of Authorization and Recovery in AI Agent Workflows](https://arxiv.org/pdf/2610.31916v1) · 2026-10-22 · 相关性 6
+- [Back Up Before You Regret: Measuring Backup Awareness and Automating Backup in Coding Agents](https://arxiv.org/pdf/2610.28934v1) · 2026-10-20 · 相关性 6
+- [Robust Function Calling for LLM Agents Under Interface Drift](https://arxiv.org/pdf/2610.23342v1) · 2026-10-16 · 相关性 6
+- [HyWe: Unifying Search and Operation for Real-World Hybrid Web Tasks](https://arxiv.org/pdf/2610.16319v2) · 2026-10-12 · 相关性 6
+- [Returning to Development States: When Full Sandbox Snapshots Help Coding Agents](https://arxiv.org/pdf/2610.13841v1) · 2026-10-09 · 相关性 6
+- [When Charts Deceive Web Agents: A Paired Benchmark for Misleading Visualization-Grounded Tasks](https://arxiv.org/pdf/2610.12823v1) · 2026-10-09 · 相关性 6
+- [How Do Hardware Faults Manifest Differently in LLM Agents?](https://arxiv.org/pdf/2610.12756v1) · 2026-10-08 · 相关性 6
+- [AdvSim2Real : Training Web Agents Against Adaptive Prompt Injection in a Web World Model](https://arxiv.org/pdf/2610.08773v1) · 2026-10-06 · 相关性 6
+- [Before Acting, Change the State: Prospective State Intervention for Web Agents under Deceptive Interfaces](https://arxiv.org/pdf/2609.34974v1) · 2026-09-28 · 相关性 6
+- [EconSkills: Studying Skill Transfer and Retrieval for Web Agents on Live Economic Data](https://arxiv.org/pdf/2609.19523v1) · 2026-09-17 · 相关性 6
+- [RiskChainBench: A Benchmark for Obfuscated Platform Message Restoration and Evidence-Grounded Web Investigation](https://arxiv.org/pdf/2609.16900v2) · 2026-09-15 · 相关性 6
+- [ParaRecover: A Process-Level Benchmark for Error Localization and Recovery in Parallel Tool-Use Agents](https://arxiv.org/pdf/2609.12345v1) · 2026-09-11 · 相关性 6
+- [Search-to-World: Evaluation of 3D World Delivery from User Request through Web Search](https://arxiv.org/pdf/2609.07605v1) · 2026-09-07 · 相关性 6
+- [Towards Agentic Cloud Engineering: Graph and Loop Engineering with a Zero-Trust Agent Harness](https://arxiv.org/pdf/2609.00050v1) · 2026-08-30 · 相关性 6
+- [Learning Simple Test-Time Environments for LLM Web Agents](https://arxiv.org/pdf/2608.29305v1) · 2026-08-29 · 相关性 6
+- [Robustness Analysis of Agentic AI to Inconsistent and Incomplete Tool Responses](https://arxiv.org/pdf/2608.22676v2) · 2026-08-24 · 相关性 6
+- [Diagnosis Before Recovery: Turning Agent Failures into Selective Self-Correction](https://arxiv.org/pdf/2608.11772v1) · 2026-08-12 · 相关性 6
+- [From Faulty Memories to Corrected Actions: Dependency-Guided Rollback Repair for Memory-Augmented Agents](https://arxiv.org/pdf/2608.10502v1) · 2026-08-11 · 相关性 6
+- [AndroidReality: How Far Are Mobile Agents from the Real World?](https://arxiv.org/pdf/2608.07775v1) · 2026-08-07 · 相关性 6
+- [APPA: Recoverable Information-Flow Control for Real-World LLM Agents](https://arxiv.org/pdf/2607.24625v2) · 2026-07-27 · 相关性 6
+- [Fantastic Adaptive Taxonomies and How to Use Them](https://arxiv.org/pdf/2607.16387v2) · 2026-07-17 · 相关性 6
+- [The Compliance Trap: Diagnosing How AI Agents Consume Conflicting Memory](https://arxiv.org/pdf/2607.10608v1) · 2026-07-12 · 相关性 6
+- [Diagnosis-Driven Automatic Repair for Agentic Workflow via Symbolic Inference](https://arxiv.org/pdf/2607.02882v1) · 2026-07-03 · 相关性 6
+- [From Detection to Action: Using LLM Agents for Fault-Tolerant Control](https://arxiv.org/pdf/2606.28011v1) · 2026-06-26 · 相关性 6
+- [Making Failure Safe: A Constrained, Verifiable Agent Framework for Open-Web Data Collection](https://arxiv.org/pdf/2607.00035v1) · 2026-06-25 · 相关性 6
+- [When Web Agents Finish but Still Fail: Reproducible Triggers and Trace Diagnostics for Parallel Web Exploration](https://arxiv.org/pdf/2606.20724v2) · 2026-06-16 · 相关性 6
+- [CausalFlow: Causal Attribution and Counterfactual Repair for LLM Agent Failures](https://arxiv.org/pdf/2605.25338v1) · 2026-05-25 · 相关性 6
+- [Meta-Agent: From Task Descriptions to Verified Multi-Agent Systems](https://arxiv.org/pdf/2605.25233v1) · 2026-05-24 · 相关性 6
+- [Securing Computer-Use Agents: A Unified Architecture-Lifecycle Framework for Deployment-Grounded Reliability](https://arxiv.org/pdf/2605.07110v1) · 2026-05-08 · 相关性 6
+- [WebUncertainty: Dual-Level Uncertainty Driven Planning and Reasoning For Autonomous Web Agent](https://arxiv.org/pdf/2604.17821v2) · 2026-04-20 · 相关性 6
+- [Resilient Write: A Six-Layer Durable Write Surface for LLM Coding Agents](https://arxiv.org/pdf/2604.10842v3) · 2026-04-12 · 相关性 6
+- [When Users Change Their Mind: Evaluating Interruptible Agents in Long-Horizon Web Navigation](https://arxiv.org/pdf/2604.00892v1) · 2026-04-01 · 相关性 6
+- [Agent Lifecycle Toolkit (ALTK): Reusable Middleware Components for Robust AI Agents](https://arxiv.org/pdf/2603.15473v2) · 2026-03-16 · 相关性 6
+- [Wink: Recovering from Misbehaviors in Coding Agents](https://arxiv.org/pdf/2602.17037v2) · 2026-02-19 · 相关性 6
+- [The Dual-State Architecture for Reliable LLM Agents](https://arxiv.org/pdf/2512.20660v2) · 2025-12-18 · 相关性 6
+- [Evaluating Long-Context Reasoning in LLM-Based WebAgents](https://arxiv.org/pdf/2512.04307v1) · 2025-12-03 · 相关性 6
+- [Building Browser Agents: Architecture, Security, and Practical Solutions](https://arxiv.org/pdf/2511.19477v1) · 2025-11-22 · 相关性 6
+- [WebCoach: Self-Evolving Web Agents with Cross-Session Memory Guidance](https://arxiv.org/pdf/2511.12997v2) · 2025-11-17 · 相关性 6

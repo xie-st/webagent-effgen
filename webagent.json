@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "default_harness": "v1",
+  "harness_root": "02_代码/01_harness",
+  "sdk_root": "02_代码/03_官方客户端/sdk-6eee7ddab626",
+  "results_root": "01_文本/05_测试结果",
+  "connection_file": ".local/agent-connection.json"
+}

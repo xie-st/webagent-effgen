@@ -1,0 +1,52 @@
+[
+  {
+    "from": "01_文本/03_策略讨论",
+    "to": "01_文本/06_归档_2026-10-30/EffGen选定前调研/策略讨论",
+    "files": 6
+  },
+  {
+    "from": "02_代码/02_本地测试环境/任务记录.md",
+    "to": "01_文本/06_归档_2026-10-30/EffGen选定前调研/环境选型/任务记录.md",
+    "files": 1
+  },
+  {
+    "from": "01_文本/04_论文库/_html_cache",
+    "to": "01_文本/06_归档_2026-10-30/EffGen选定前调研/论文库辅助产物/_html_cache",
+    "files": 30
+  },
+  {
+    "from": "01_文本/04_论文库/_upload",
+    "to": "01_文本/06_归档_2026-10-30/EffGen选定前调研/论文库辅助产物/_upload",
+    "files": 31
+  },
+  {
+    "from": "01_文本/04_论文库/__pycache__",
+    "to": "01_文本/06_归档_2026-10-30/EffGen选定前调研/论文库辅助产物/__pycache__",
+    "files": 1
+  },
+  {
+    "from": "01_文本/04_论文库/build_upload.py",
+    "to": "01_文本/06_归档_2026-10-30/EffGen选定前调研/论文库辅助产物/build_upload.py",
+    "files": 1
+  },
+  {
+    "from": "01_文本/04_论文库/download_papers.py",
+    "to": "01_文本/06_归档_2026-10-30/EffGen选定前调研/论文库辅助产物/download_papers.py",
+    "files": 1
+  },
+  {
+    "from": "01_文本/04_论文库/lark_auth_qr.png",
+    "to": "01_文本/06_归档_2026-10-30/EffGen选定前调研/论文库辅助产物/lark_auth_qr.png",
+    "files": 1
+  },
+  {
+    "from": "本地测试环境/sources/AgentLab",
+    "to": "01_文本/06_归档_2026-10-30/EffGen选定前调研/候选源码/AgentLab",
+    "files": 215
+  },
+  {
+    "from": "本地测试环境/sources/AgentOccam",
+    "to": "01_文本/06_归档_2026-10-30/EffGen选定前调研/候选源码/AgentOccam",
+    "files": 334
+  }
+]

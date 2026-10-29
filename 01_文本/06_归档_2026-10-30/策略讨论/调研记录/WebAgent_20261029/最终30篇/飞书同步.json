@@ -1,0 +1,55 @@
+[
+  {
+    "Match": true,
+    "SHA256": "4659466A38C7D8EC12537968C2FF0872D40025BE7E9CB862E78A08FF2B5F2D6C",
+    "Path": "WebAgent项目最终30篇论文.md",
+    "Url": "https://my.feishu.cn/file/BAvFbZ0GrolAPUxsuSxc7dMPnth",
+    "Token": "BAvFbZ0GrolAPUxsuSxc7dMPnth",
+    "Verification": "加入关键五篇并精简后，云端下载与本地逐字节一致"
+  },
+  {
+    "Match": null,
+    "SHA256": "B7FD4823B08A4C1F9C57AC36899E640F13424C0E8D198AF28B2AB2937C5C7EFE",
+    "Path": "调研记录\\03_Benchmark选型.md",
+    "Url": "https://my.feishu.cn/file/ZrQobeGnWoQ56Qxvozbc3DBqnig",
+    "Token": "ZrQobeGnWoQ56Qxvozbc3DBqnig",
+    "Verification": "文件去序号后重传成功；此 SHA256 为上一轮校验值，本轮未重下载"
+  },
+  {
+    "Match": null,
+    "SHA256": "8BA156903285C824E2170E1A71E69821A5CAC77A6ED310FBDD499AB9FF62A35B",
+    "Path": "README.md",
+    "Url": "https://my.feishu.cn/file/Q9Hzb1oPEo7klrxMtS1cAEs4nDb",
+    "Token": "Q9Hzb1oPEo7klrxMtS1cAEs4nDb",
+    "Verification": "文件去序号后重传成功；此 SHA256 为上一轮校验值，本轮未重下载"
+  },
+  {
+    "Match": null,
+    "SHA256": "0D1B83FEA62CC3B0D2E15FC94EA839D26607097270AB7FBA8BBA26A93B8E341E",
+    "Path": "验收接口与实现分轨.md",
+    "Url": "https://my.feishu.cn/file/WcbJb0ZTEo3Ud6xUbx3cXfd5nFc",
+    "Token": "WcbJb0ZTEo3Ud6xUbx3cXfd5nFc",
+    "Verification": "文件去序号后重传成功；此 SHA256 为上一轮校验值，本轮未重下载"
+  },
+  {
+    "Match": true,
+    "SHA256": "BA16ED42B7F0B0EA13929BAAB2F52D99FB1E56BCAD1AF5EBB3E9E1AB84E030BF",
+    "Path": "调研记录\\WebAgent_20261029\\README.md",
+    "Url": "https://my.feishu.cn/file/F24abTjrcogXYpxROVXcFKHCnSe",
+    "Token": "F24abTjrcogXYpxROVXcFKHCnSe"
+  },
+  {
+    "Match": true,
+    "SHA256": "67B88EFA1BA2DC407B213D332DC9CF4DEE1D837D2B21F8B22EF58421C0722606",
+    "Path": "调研记录\\WebAgent_20261029\\每维度三篇_言语独立筛选.html",
+    "Url": "https://my.feishu.cn/file/JDy9bB3hpoypH3xcIKbcSAeMnMb",
+    "Token": "JDy9bB3hpoypH3xcIKbcSAeMnMb"
+  },
+  {
+    "Match": true,
+    "SHA256": "45DBF04D5B79EFEC52A23DA03ECB8CBD6B557ACE679F1B9CDE05E023EC2473BA",
+    "Path": "调研记录\\WebAgent_20261029\\独立筛选\\每维度三篇.md",
+    "Url": "https://my.feishu.cn/file/Ss13bvAuAoGExEx62lLc9OLjn5f",
+    "Token": "Ss13bvAuAoGExEx62lLc9OLjn5f"
+  }
+]

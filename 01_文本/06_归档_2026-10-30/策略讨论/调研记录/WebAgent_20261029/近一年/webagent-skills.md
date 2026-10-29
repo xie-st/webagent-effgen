@@ -1,0 +1,106 @@
+# Skill · 近一年专题
+
+时间：2025-10-30 至 2026-10-29。
+
+已筛选 100 篇。评分为Daily Paper模型相关性评分，尚未逐篇人工研究评估。
+
+- [Online Skill Learning for Web Agents via State-Grounded Dynamic Retrieval](https://arxiv.org/pdf/2606.04391v1) · 2026-06-03 · 相关性 9
+- [ContractSkill: Repairable Contract-Based Skills for Multimodal Web Agents](https://arxiv.org/pdf/2603.20340v3) · 2026-03-20 · 相关性 9
+- [SkillShift-Bench: Benchmarking Skill Learning under Environment Evolution for Web Agents](https://arxiv.org/pdf/2610.33528v1) · 2026-10-24 · 相关性 9
+- [CUA-Skill: Develop Skills for Computer Using Agent](https://arxiv.org/pdf/2601.21123v2) · 2026-01-28 · 相关性 9
+- [SkillJuror: Measuring How Agent Skill Organization Changes Runtime Behavior](https://arxiv.org/pdf/2606.11543v1) · 2026-06-10 · 相关性 9
+- [EconSkills: Studying Skill Transfer and Retrieval for Web Agents on Live Economic Data](https://arxiv.org/pdf/2609.19523v1) · 2026-09-17 · 相关性 9
+- [Workflow-Localized Mechanism Learning: Attribution-Guided Repair and Knowledge Reuse for Structured Agent Skills](https://arxiv.org/pdf/2607.20999v1) · 2026-07-23 · 相关性 9
+- [TeleTune: Evolving Agent Skills From Offline Telemetry](https://arxiv.org/pdf/2610.05437v2) · 2026-10-04 · 相关性 9
+- [SCAFFOLD: Self-Improving Web Agents via Recursive Parametric Skill Abstraction](https://arxiv.org/pdf/2609.05511v1) · 2026-08-31 · 相关性 9
+- [DRIVE: Modeling Skills at the Reasoning and Interaction Levels for Web Agents under Continual Learning](https://arxiv.org/pdf/2605.23939v1) · 2026-04-28 · 相关性 9
+- [SPEM: Structure-Aware Procedural Memory for Efficient Skill Use in LLM Agents](https://arxiv.org/pdf/2610.26995v1) · 2026-10-19 · 相关性 9
+- [Dynamic Agent Skills: A Lifecycle Survey and Taxonomy of Evolving Skill Libraries](https://arxiv.org/pdf/2607.10113v1) · 2026-07-11 · 相关性 9
+- [An Empirical Study of Agent Skills' Downstream Utility](https://arxiv.org/pdf/2610.08875v2) · 2026-10-06 · 相关性 9
+- [SkillRevise: Improving LLM-Authored Agent Skills via Trace-Conditioned Skill Revision](https://arxiv.org/pdf/2606.01139v4) · 2026-05-31 · 相关性 9
+- [SkillGen: Verified Inference-Time Agent Skill Synthesis](https://arxiv.org/pdf/2605.10999v1) · 2026-05-09 · 相关性 9
+- [Trace2Skill: Distill Trajectory-Local Lessons into Transferable Agent Skills](https://arxiv.org/pdf/2603.25158v5) · 2026-03-26 · 相关性 9
+- [SkillBrowser: Selective Skill Exposure for Scalable Skill-Using Agents](https://arxiv.org/pdf/2610.23554v1) · 2026-10-16 · 相关性 9
+- [AIP: A Graph Representation for Learning and Governing Agent Skills](https://arxiv.org/pdf/2606.04781v2) · 2026-06-03 · 相关性 9
+- [Skill-Pro: Learning Reusable Skills from Experience via Non-Parametric PPO for LLM Agents](https://arxiv.org/pdf/2602.01869v3) · 2026-02-02 · 相关性 9
+- [From Interaction Traces to Persistent Skills: Online Evolution for Computer-Use Agents](https://arxiv.org/pdf/2609.04869v1) · 2026-09-04 · 相关性 9
+- [Group of Skills: Group-Structured Skill Retrieval for Agent Skill Libraries](https://arxiv.org/pdf/2605.06978v1) · 2026-05-07 · 相关性 9
+- [Skill-Use: Can LLMs Actually Use Skills in Agentic Harnesses?](https://arxiv.org/pdf/2608.04828v1) · 2026-08-05 · 相关性 9
+- [SkillLens: Adaptive Multi-Granularity Skill Reuse for Cost-Efficient LLM Agents](https://arxiv.org/pdf/2605.08386v1) · 2026-05-08 · 相关性 9
+- [Work2Skill: Capturing Human GUI Experience for Reusable Agent Skill Induction](https://arxiv.org/pdf/2610.12984v1) · 2026-10-09 · 相关性 9
+- [SkillCraft: Can LLM Agents Learn to Use Tools Skillfully?](https://arxiv.org/pdf/2603.00718v2) · 2026-02-28 · 相关性 9
+- [Reflect, Revise, Reuse: Training-Free Skill Evolution for GUI Agents](https://arxiv.org/pdf/2609.17653v1) · 2026-09-15 · 相关性 9
+- [SIGIL: Compiling Agent Skills into Typed Harnesses](https://arxiv.org/pdf/2607.27309v2) · 2026-07-29 · 相关性 9
+- [SkillRAE: Agent Skill-Based Context Compilation for Retrieval-Augmented Execution](https://arxiv.org/pdf/2605.10114v1) · 2026-05-11 · 相关性 9
+- [How Well Do Agentic Skills Work in the Wild: Benchmarking LLM Skill Usage in Realistic Settings](https://arxiv.org/pdf/2604.04323v1) · 2026-04-06 · 相关性 9
+- [SkillDroid: Compile Once, Reuse Forever](https://arxiv.org/pdf/2604.14872v1) · 2026-04-16 · 相关性 9
+- [SkillFlow:Benchmarking Lifelong Skill Discovery and Evolution for Autonomous Agents](https://arxiv.org/pdf/2604.17308v1) · 2026-04-19 · 相关性 9
+- [Towards a Systems Foundation for Agentic Skills: Architecture, Lifecycle, and Security](https://arxiv.org/pdf/2608.29596v1) · 2026-08-30 · 相关性 9
+- [SkillLens: Visual Skill Cards for Retrieval-Augmented GUI Action Prediction and On-Policy Distillation](https://arxiv.org/pdf/2608.10775v1) · 2026-08-11 · 相关性 9
+- [Skill-V: Verifiable Self-Evolving Skill Library for Interactive Agents](https://arxiv.org/pdf/2610.11781v1) · 2026-10-08 · 相关性 9
+- [SkillNet: Create, Evaluate, and Connect AI Skills](https://arxiv.org/pdf/2603.04448v3) · 2026-02-26 · 相关性 9
+- [Back to Basics: A Skill-Centric Approach to Generalist Web Agents](https://arxiv.org/pdf/2610.35823v1) · 2026-10-26 · 相关性 8
+- [A Comprehensive Survey on Agent Skills: Taxonomy, Techniques, and Applications](https://arxiv.org/pdf/2605.07358v3) · 2026-05-08 · 相关性 8
+- [Report: Progressive Disclosure of Agent Skills](https://arxiv.org/pdf/2609.35692v1) · 2026-09-28 · 相关性 8
+- [SkillLifeBench: Benchmarking Security Across the Lifecycle of Agent Skills](https://arxiv.org/pdf/2610.35215v1) · 2026-10-26 · 相关性 8
+- [SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks](https://arxiv.org/pdf/2602.12670v4) · 2026-02-13 · 相关性 8
+- [SKILL-DISCO: Distilling and Compiling Agent Traces into Reusable Procedural Skills](https://arxiv.org/pdf/2606.26669v1) · 2026-06-25 · 相关性 8
+- [Authoring Agent Skills: A Software-Engineering Approach](https://arxiv.org/pdf/2607.25032v1) · 2026-07-27 · 相关性 8
+- [Agent Skills Can Be Harmful: An Empirical Study of Skill-Induced Failures in LLM Agents](https://arxiv.org/pdf/2608.11888v1) · 2026-08-12 · 相关性 8
+- [Scalable Behaviour Cloning on Browser Using via Skill Distillation](https://arxiv.org/pdf/2606.32014v1) · 2026-06-30 · 相关性 8
+- [Evaluating Skills, Not Just Agents: Agentic Continuous Evaluation of Skills](https://arxiv.org/pdf/2608.20614v1) · 2026-08-20 · 相关性 8
+- [What Keeps Agent Skills from Being Reusable? Evidence from 138K SKILL.md Files](https://arxiv.org/pdf/2608.08453v1) · 2026-08-09 · 相关性 8
+- [SkillAlign: Aligning Skill Interfaces for LLM-based Agents](https://arxiv.org/pdf/2609.07255v1) · 2026-09-07 · 相关性 8
+- [TRUSS: Towards Task-Reliable and User-Safe Automated Agent Skill Generation](https://arxiv.org/pdf/2608.17588v1) · 2026-08-18 · 相关性 8
+- [Skill Coverage: A Test Adequacy Metric for Agent Skills](https://arxiv.org/pdf/2606.20659v2) · 2026-06-09 · 相关性 8
+- [SWE-Skills-Bench: Do Agent Skills Actually Help in Real-World Software Engineering?](https://arxiv.org/pdf/2603.15401v1) · 2026-03-16 · 相关性 8
+- [SkillAlchemy: Open-World Agent Skill Creation](https://arxiv.org/pdf/2608.23417v1) · 2026-08-24 · 相关性 8
+- [A Framework for Evaluating Agentic Skills at Scale](https://arxiv.org/pdf/2606.17819v1) · 2026-06-16 · 相关性 8
+- [What Should a Skill Remember? Quality--Cost Trade-offs in Cost-Aware Skill Rewriting for Language Model Agents](https://arxiv.org/pdf/2606.09421v3) · 2026-06-08 · 相关性 8
+- [Organizing, Orchestrating, and Benchmarking Agent Skills at Ecosystem Scale](https://arxiv.org/pdf/2603.02176v1) · 2026-03-02 · 相关性 8
+- [SkillSeek: Revisiting Agent Skill Retrieval at Marketplace Scale](https://arxiv.org/pdf/2609.38822v1) · 2026-09-30 · 相关性 8
+- [SkillCorpus: Consolidating and Evaluating the Open Skill Ecosystem for Real-World LLM Agents](https://arxiv.org/pdf/2607.15557v6) · 2026-07-17 · 相关性 8
+- [Counterfactual Trace Auditing of LLM Agent Skills](https://arxiv.org/pdf/2605.11946v2) · 2026-05-12 · 相关性 8
+- [HiSkill: Empowering LLM Agents with Hierarchical Skill Graphs](https://arxiv.org/pdf/2607.25853v1) · 2026-07-28 · 相关性 8
+- [OSExpert: Computer-Use Agents Learning Professional Skills via Exploration](https://arxiv.org/pdf/2603.07978v1) · 2026-03-09 · 相关性 8
+- [GraSP: Graph-Structured Skill Compositions for LLM Agents](https://arxiv.org/pdf/2604.17870v1) · 2026-04-20 · 相关性 8
+- [Skill Is Not Document: Query-Conditioned Compatibility for LLM Agent Skill Routing](https://arxiv.org/pdf/2606.03565v5) · 2026-06-02 · 相关性 8
+- [Holding a Steady Course: Knowledge Evolution from Expertise and Lessons for Continual Agent Learning](https://arxiv.org/pdf/2610.34043v1) · 2026-10-25 · 相关性 8
+- [SkillFocus: Evolving Agent Skills via Capability Decomposition](https://arxiv.org/pdf/2609.34397v1) · 2026-09-28 · 相关性 8
+- [HEXIS: Compiling Agent Skills into Extended Finite State Machines](https://arxiv.org/pdf/2609.30123v2) · 2026-09-24 · 相关性 8
+- [Agent Skill Evaluation and Evolution: Frameworks and Benchmarks](https://arxiv.org/pdf/2606.11435v1) · 2026-06-09 · 相关性 8
+- [SkillEval: Decomposing Agent Skill Quality into Interpretable Signals](https://arxiv.org/pdf/2608.06891v1) · 2026-08-07 · 相关性 8
+- [SkillAdaptor: Self-Adapting Skills for LLM Agents from Trajectories](https://arxiv.org/pdf/2606.01311v1) · 2026-05-31 · 相关性 8
+- [From Skill Text to Skill Structure: The Scheduling-Structural-Logical Representation for Agent Skills](https://arxiv.org/pdf/2604.24026v4) · 2026-04-27 · 相关性 8
+- [Enhancing Web Agents with a Hierarchical Memory Tree](https://arxiv.org/pdf/2603.07024v1) · 2026-03-07 · 相关性 8
+- [SkillProx: Self-Evolving Agent Skills via Proximal Textual Gradient Descent](https://arxiv.org/pdf/2608.07449v1) · 2026-08-07 · 相关性 8
+- [SkillHarness: Harnessing Safe Skills for Computer-Use Agents](https://arxiv.org/pdf/2606.20636v1) · 2026-06-02 · 相关性 8
+- [Workflow-to-Skill: Skill Creation via Routing-Workflow-Semantics-Attachments Decomposition](https://arxiv.org/pdf/2606.06893v1) · 2026-06-05 · 相关性 8
+- [SkillReason: Reasoning-Enhanced Agent Skill Retrieval for Implicit User Requests](https://arxiv.org/pdf/2608.08640v1) · 2026-08-09 · 相关性 8
+- [AutoTailor: Automatic, User-Aligned Capability Selection and Adaptation for Web Agents](https://arxiv.org/pdf/2609.13548v1) · 2026-09-11 · 相关性 8
+- [SkillAxe: Sharpening LLM-Authored Agent Skills Through Evaluation-Guided Self-Refinement](https://arxiv.org/pdf/2606.10546v2) · 2026-06-09 · 相关性 8
+- [SkillApt: Learning When to Activate Agent Skills from Counterfactual Evidence](https://arxiv.org/pdf/2609.26863v1) · 2026-09-22 · 相关性 8
+- [Evolving Programmatic Skill Networks](https://arxiv.org/pdf/2601.03509v2) · 2026-01-07 · 相关性 8
+- [SkillGraph: Skill-Augmented Reinforcement Learning for Agents via Evolving Skill Graphs](https://arxiv.org/pdf/2605.12039v1) · 2026-05-12 · 相关性 8
+- [Trace2Tower: Transition-Aware EigenTrace Induction of Multi-Level Skills for LLM Agents](https://arxiv.org/pdf/2609.05261v1) · 2026-09-04 · 相关性 8
+- [WikiSkill: Compiling Agent Experience into Persistent Knowledge for Skill Evolution](https://arxiv.org/pdf/2608.27454v1) · 2026-08-27 · 相关性 8
+- [SE-GoS: Self-Evolving Graph-of-Skills for Skill Library at Scale](https://arxiv.org/pdf/2609.08228v1) · 2026-09-08 · 相关性 8
+- [Reinforcement Learning for Self-Improving Agent with Skill Library](https://arxiv.org/pdf/2512.17102v2) · 2025-12-18 · 相关性 8
+- [SkillSentry: Reliable Skill Execution for LLM Agents via Runtime Assurance](https://arxiv.org/pdf/2608.09253v1) · 2026-08-10 · 相关性 8
+- [SkillCommit: Evolving Agent Skills through Behaviorally Validated Scope Expansion](https://arxiv.org/pdf/2608.15165v1) · 2026-08-15 · 相关性 8
+- [SkillOps: Managing LLM Agent Skill Libraries as Self-Maintaining Software Ecosystems](https://arxiv.org/pdf/2605.13716v1) · 2026-05-13 · 相关性 8
+- [Retrieval-Augmented Skill Optimization via Cross-Harness Adaptation](https://arxiv.org/pdf/2609.38024v1) · 2026-09-29 · 相关性 8
+- [SkillLearnBench: Benchmarking Continual Learning Methods for Agent Skill Generation on Real-World Tasks](https://arxiv.org/pdf/2604.20087v1) · 2026-04-22 · 相关性 8
+- [SkillVine: Agent Skill Evolution via Branching Exploration](https://arxiv.org/pdf/2609.32731v1) · 2026-09-26 · 相关性 8
+- [SkillSpec: Intent-Masked Specification Reasoning for Agent Skill Correctness](https://arxiv.org/pdf/2609.06052v1) · 2026-09-05 · 相关性 8
+- [VISUALSKILL: Multimodal Skills for Computer-Use Agents](https://arxiv.org/pdf/2606.18448v1) · 2026-06-16 · 相关性 8
+- [Skill2Query: Exploiting Skill Structure to Generate Pseudo-Queries for Agent Skill Retrieval](https://arxiv.org/pdf/2608.16071v1) · 2026-08-17 · 相关性 8
+- [AEVAL: From Anecdotal to Deterministic Testing for Agentic Skill Workflows](https://arxiv.org/pdf/2607.16345v2) · 2026-07-16 · 相关性 8
+- [SkillAudit: Ground-Truth-Free Skill Evolution via Paired Trajectory Auditing](https://arxiv.org/pdf/2606.14239v1) · 2026-06-12 · 相关性 8
+- [SKALOS: Learning to Distinguish Similar Skills with Capability Graphs](https://arxiv.org/pdf/2610.34728v1) · 2026-10-26 · 相关性 8
+- [Hierarchical Skill Evolution for Coding Agent](https://arxiv.org/pdf/2610.35616v1) · 2026-10-26 · 相关性 8
+- [IntentCUA: Learning Intent-level Representations for Skill Abstraction and Multi-Agent Planning in Computer-Use Agents](https://arxiv.org/pdf/2602.17049v2) · 2026-02-19 · 相关性 8
+- [MUSE-Autoskill: Self-Evolving Agents via Skill Creation, Memory, Management, and Evaluation](https://arxiv.org/pdf/2605.27366v2) · 2026-05-26 · 相关性 8
+- [SkillNEO: Non-Elitist Evolutionary Optimization of Agent Skills](https://arxiv.org/pdf/2610.20926v2) · 2026-10-14 · 相关性 8
+- [Subagents vs Agent Skills: Executing Reusable Knowledge for Long-Horizon Agentic Tasks](https://arxiv.org/pdf/2609.09233v1) · 2026-09-07 · 相关性 8
+- [Break It Down, Pass It On: Cross-Task Skill Transfer in LLM Agents](https://arxiv.org/pdf/2608.20274v1) · 2026-08-20 · 相关性 8

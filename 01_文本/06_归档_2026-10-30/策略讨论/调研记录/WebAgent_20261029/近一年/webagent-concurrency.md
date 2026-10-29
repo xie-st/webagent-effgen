@@ -1,0 +1,63 @@
+# 并发调度与等待 · 近一年
+
+2025-10-30 至 2026-10-29，共 59 篇。分数为原程序的模型相关性评分。
+
+- [Beyond Sequential Interaction: Benchmarking Parallel Execution and Coordination for GUI Agents](https://arxiv.org/pdf/2607.22689v1) · 2026-07-17 · 相关性 9
+- [Multi-Agent Computer Use](https://arxiv.org/pdf/2606.01533v1) · 2026-06-01 · 相关性 9
+- [Agent JIT Compilation for Latency-Optimizing Web Agent Planning and Scheduling](https://arxiv.org/pdf/2605.21470v2) · 2026-05-20 · 相关性 9
+- [HiveMind: OS-Inspired Scheduling for Concurrent LLM Agent Workloads](https://arxiv.org/pdf/2604.17111v1) · 2026-04-18 · 相关性 9
+- [When Sub-Agents Work in Parallel: The Promises and Pitfalls of Dynamic Concurrency in Long-Horizon Coding Tasks](https://arxiv.org/pdf/2610.10263v1) · 2026-10-07 · 相关性 8
+- [BrowserForge: Scaling Web Episode via Parallel Browser Sandboxes](https://arxiv.org/pdf/2608.24848v1) · 2026-08-25 · 相关性 8
+- [SearchOS-V1: Towards Robust Open-Domain Information-Seeking Agent Collaboration](https://arxiv.org/pdf/2607.15257v1) · 2026-07-16 · 相关性 8
+- [AsyncTool: Evaluating the Asynchronous Function Calling Capability under Multi-Task Scenarios](https://arxiv.org/pdf/2605.27995v3) · 2026-05-27 · 相关性 8
+- [W&D:Scaling Parallel Tool Calling for Efficient Deep Research Agents](https://arxiv.org/pdf/2602.07359v1) · 2026-02-07 · 相关性 8
+- [TAO: Tool-Aware Joint Scheduling for LLM-Based Agentic Serving](https://arxiv.org/pdf/2610.37230v1) · 2026-10-27 · 相关性 7
+- [AOS-Bench: Can LLM Agents Manage Dynamic Workloads?](https://arxiv.org/pdf/2610.33178v1) · 2026-10-23 · 相关性 7
+- [Async-RBench: Benchmarking Asynchronous Task Execution in LLM Agents](https://arxiv.org/pdf/2610.32429v1) · 2026-10-23 · 相关性 7
+- [AgentWeave: Efficient Distributed Agent Serving via Flow Decomposition](https://arxiv.org/pdf/2610.14804v1) · 2026-10-10 · 相关性 7
+- [Tracking State Footprints: How Agents Can Transact](https://arxiv.org/pdf/2610.03140v1) · 2026-10-02 · 相关性 7
+- [Structured Interaction, Visual Localization, and Robust Execution for Complex Web Tasks: A Technical Report on the WebRetriever Challenge](https://arxiv.org/pdf/2609.35904v1) · 2026-09-28 · 相关性 7
+- [TOPAS: Workflow-Aware Prefix-State Scheduling for Multi-Agent LLM Serving](https://arxiv.org/pdf/2608.25523v1) · 2026-08-26 · 相关性 7
+- [PeakBench: Benchmarking Resource-Aware Tool Invocation in LLM Agents](https://arxiv.org/pdf/2608.24509v1) · 2026-08-25 · 相关性 7
+- [Spine-Branch Coordination for Multi-agent Computer Use](https://arxiv.org/pdf/2608.22077v1) · 2026-08-22 · 相关性 7
+- [WebSwarm: Recursive Multi-Agent Orchestration for Deep-and-Wide Web Search](https://arxiv.org/pdf/2607.08662v1) · 2026-07-09 · 相关性 7
+- [SentinelBench: A Benchmark for Long-Running Monitoring Agents](https://arxiv.org/pdf/2606.05342v2) · 2026-06-03 · 相关性 7
+- [TClone: Low-Latency Forking of Live GUI Environments for Computer-Use Agents](https://arxiv.org/pdf/2605.17320v1) · 2026-05-17 · 相关性 7
+- [SAGA: Workflow-Atomic Scheduling for AI Agent Inference on GPU Clusters](https://arxiv.org/pdf/2605.00528v2) · 2026-05-01 · 相关性 7
+- [Web2BigTable: A Bi-Level Multi-Agent LLM System for Internet-Scale Information Search and Extraction](https://arxiv.org/pdf/2604.27221v1) · 2026-04-29 · 相关性 7
+- [Phase-Scheduled Multi-Agent Systems for Token-Efficient Coordination](https://arxiv.org/pdf/2604.17400v1) · 2026-04-19 · 相关性 7
+- [AgentRM: An OS-Inspired Resource Manager for LLM Agent Systems](https://arxiv.org/pdf/2603.13110v1) · 2026-03-13 · 相关性 7
+- [Lemon Agent Technical Report](https://arxiv.org/pdf/2602.07092v1) · 2026-02-06 · 相关性 7
+- [De-Linearizing Agent Traces: Bayesian Inference of Latent Partial Orders for Efficient Execution](https://arxiv.org/pdf/2602.02806v3) · 2026-02-02 · 相关性 7
+- [FAME: QoS-aware Async Service Orchestration for Agentic Workflows](https://arxiv.org/pdf/2601.14735v3) · 2026-01-21 · 相关性 7
+- [Nalar: An agent serving framework](https://arxiv.org/pdf/2601.05109v1) · 2026-01-08 · 相关性 7
+- [Astraea: A State-Aware Scheduling Engine for LLM-Powered Agents](https://arxiv.org/pdf/2512.14142v1) · 2025-12-16 · 相关性 7
+- [UFO3: Weaving the Digital Agent Galaxy](https://arxiv.org/pdf/2511.11332v2) · 2025-11-14 · 相关性 7
+- [When to Intervene? An Empirical Study of Errors and Self-Recovery in LLM Agents](https://arxiv.org/pdf/2610.36471v1) · 2026-10-27 · 相关性 6
+- [Workflow-Aware Communication and Computation Scheduling for Mobile Edge AI Agents](https://arxiv.org/pdf/2610.29337v1) · 2026-10-21 · 相关性 6
+- [SquidAgent: Parallelize Wisely, Coordinate Efficiently](https://arxiv.org/pdf/2610.08647v1) · 2026-10-06 · 相关性 6
+- [Can Agent Harnesses and Inference Engines Hear Each Other? The HEAR Protocol for Agentic LLM Serving](https://arxiv.org/pdf/2610.06597v1) · 2026-10-05 · 相关性 6
+- [Passes Alone, Fails Together: Benchmarking Semantic Coordination in Parallel LLM-Agent Development](https://arxiv.org/pdf/2609.25396v1) · 2026-09-21 · 相关性 6
+- [Not All AI Agents Are Equal: Characterizing Resource and Performance Dynamics](https://arxiv.org/pdf/2609.19947v1) · 2026-09-17 · 相关性 6
+- [Efficient GUI Agents: A Systems Survey of Observation, Memory, Action, and Runtime Optimization](https://arxiv.org/pdf/2609.02309v1) · 2026-09-02 · 相关性 6
+- [Agentic Transaction: Towards ACID-Compliant Agent Systems](https://arxiv.org/pdf/2608.13900v1) · 2026-08-14 · 相关性 6
+- [Architectural Implications of Agentic AI Workflows](https://arxiv.org/pdf/2608.04458v1) · 2026-08-05 · 相关性 6
+- [OrchBench: Evaluating Multi-Agent Orchestration Plans in Isolation via Deterministic Simulation](https://arxiv.org/pdf/2607.25656v1) · 2026-07-28 · 相关性 6
+- [SwarmX: Agentic Scheduling for Low-Latency Agentic Systems](https://arxiv.org/pdf/2606.21401v2) · 2026-06-19 · 相关性 6
+- [When Web Agents Finish but Still Fail: Reproducible Triggers and Trace Diagnostics for Parallel Web Exploration](https://arxiv.org/pdf/2606.20724v2) · 2026-06-16 · 相关性 6
+- [HeraSys: Collaborative Serving of Multiple LLM Workflows via Fine-Grained End-to-End Optimization](https://arxiv.org/pdf/2607.22578v1) · 2026-06-07 · 相关性 6
+- [Position: Multi-Agent Systems Should Prioritize Concurrency Control](https://arxiv.org/pdf/2608.18092v1) · 2026-06-06 · 相关性 6
+- [Signal-Driven Observation for Long-Horizon Web Agents](https://arxiv.org/pdf/2606.06708v2) · 2026-06-04 · 相关性 6
+- [MARS: Efficient, Adaptive Co-Scheduling for Heterogeneous Agentic Systems](https://arxiv.org/pdf/2604.26963v2) · 2026-04-14 · 相关性 6
+- [AgentSPEX: An Agent SPecification and EXecution Language](https://arxiv.org/pdf/2604.13346v1) · 2026-04-14 · 相关性 6
+- [From Agent Loops to Structured Graphs:A Scheduler-Theoretic Framework for LLM Agent Execution](https://arxiv.org/pdf/2604.11378v1) · 2026-04-13 · 相关性 6
+- [InfoSeeker: A Scalable Hierarchical Parallel Agent Framework for Web Information Seeking](https://arxiv.org/pdf/2604.02971v1) · 2026-04-03 · 相关性 6
+- [AgentSwing: Adaptive Parallel Context Management Routing for Long-Horizon Web Agents](https://arxiv.org/pdf/2603.27490v1) · 2026-03-29 · 相关性 6
+- [Verified Multi-Agent Orchestration: A Plan-Execute-Verify-Replan Framework for Complex Query Resolution](https://arxiv.org/pdf/2603.11445v2) · 2026-03-12 · 相关性 6
+- [AgentCgroup: Understanding and Controlling OS Resources of AI Agents](https://arxiv.org/pdf/2602.09345v3) · 2026-02-10 · 相关性 6
+- [ROMA: Recursive Open Meta-Agent Framework for Long-Horizon Multi-Agent Systems](https://arxiv.org/pdf/2602.01848v2) · 2026-02-02 · 相关性 6
+- [Self-Manager: Parallel Agent Loop for Long-form Deep Research](https://arxiv.org/pdf/2601.17879v1) · 2026-01-25 · 相关性 6
+- [The Agent's First Day: Benchmarking Learning, Exploration, and Scheduling in the Workplace Scenarios](https://arxiv.org/pdf/2601.08173v2) · 2026-01-13 · 相关性 6
+- [Towards Efficient Agents: A Co-Design of Inference Architecture and System](https://arxiv.org/pdf/2512.18337v2) · 2025-12-20 · 相关性 6
+- [Learning to Wait: Synchronizing Agents with the Physical World](https://arxiv.org/pdf/2512.16262v1) · 2025-12-18 · 相关性 6
+- [TPS-Bench: Evaluating AI Agents' Tool Planning \& Scheduling Abilities in Compounding Tasks](https://arxiv.org/pdf/2511.01527v1) · 2025-11-03 · 相关性 6

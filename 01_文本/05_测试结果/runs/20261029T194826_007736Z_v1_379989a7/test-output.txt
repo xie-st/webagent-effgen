@@ -1,0 +1,13 @@
+test_bad_output_is_corrected_before_action (test_workspace.ProtocolTests.test_bad_output_is_corrected_before_action) ... ok
+test_current_ids_and_type_syntax (test_workspace.ProtocolTests.test_current_ids_and_type_syntax) ... ok
+test_one_action_and_task_memory (test_workspace.ProtocolTests.test_one_action_and_task_memory) ... ok
+test_sdk_spawn_model_binding_and_close (test_workspace.ProtocolTests.test_sdk_spawn_model_binding_and_close) ... ok
+test_unsupported_tabs_and_cross_origin_are_rejected (test_workspace.ProtocolTests.test_unsupported_tabs_and_cross_origin_are_rejected) ... ok
+test_defaults_and_path_escape (test_workspace.WorkspaceTests.test_defaults_and_path_escape) ... ok
+test_official_sdk_tampering_is_detected (test_workspace.WorkspaceTests.test_official_sdk_tampering_is_detected) ... ok
+test_snapshots_survive_version_changes (test_workspace.WorkspaceTests.test_snapshots_survive_version_changes) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.374s
+
+OK

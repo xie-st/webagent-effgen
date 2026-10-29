@@ -1,0 +1,28 @@
+# Machine-local environments, settings and credentials
+.local/
+.workbuddy/
+**/.venv*/
+**/__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+**/agent-connection*.json
+**/lark_auth_qr.png
+# Historical file contains a literal API credential; keep only on this machine
+**/effgen-setup/install_effgen.sh
+# Rebuildable research downloads and third-party repository clones
+**/_html_cache/
+**/_upload/
+**/候选源码/
+# Old execution folder duplicates the versioned SDK; retain locally
+/本地测试环境/
+# Raw execution data stays local; summaries/manifests are versioned
+/01_文本/05_测试结果/**/snapshot/
+/01_文本/05_测试结果/**/raw/
+/01_文本/05_测试结果/**/*.log
+/01_文本/05_测试结果/**/*.zip
+/02_代码/02_本地测试环境/results/
+
+# Detailed actions may contain page data
+/01_文本/05_测试结果/**/actions.jsonl

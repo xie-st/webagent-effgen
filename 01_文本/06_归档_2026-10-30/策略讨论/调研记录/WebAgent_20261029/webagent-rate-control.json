@@ -1,0 +1,416 @@
+{
+  "papers": [
+    {
+      "id": "2604.17111v1",
+      "title": "HiveMind: OS-Inspired Scheduling for Concurrent LLM Agent Workloads",
+      "abstract": "When multiple LLM coding agents share a rate-limited API endpoint, they exhibit resource contention patterns analogous to unscheduled OS processes competing for CPU, memory, and I/O. In a motivating incident, 3 of 11 parallel agents died from connection resets and HTTP 502 errors - a 27% failure rate - despite the API having sufficient aggregate capacity to serve all 11 sequentially. We present HIVEMIND, a transparent HTTP proxy that applies five OS-inspired scheduling primitives - admission control, rate-limit tracking, AIMD backpressure with circuit breaking, token budget management, and priority queuing - to eliminate the failure modes caused by uncoordinated parallel execution. The proxy requires zero modifications to existing agent code and supports Anthropic, OpenAI, and local model APIs via auto-detected provider profiles. Our evaluation across seven scenarios (5-50 concurrent agents) shows that uncoordinated agents fail at 72-100% rates under contention, while HIVEMIND reduces failures to 0-18% and eliminates 48-100% of wasted compute. An ablation study reveals that transparent retry - not admission control - is the single most critical primitive, but the primitives are most effective in combination. Real-world validation against Ollama confirms that HIVEMIND adds under 3ms of proxy overhead per request. The system is open-source under the MIT license.",
+      "published": "2026-04-18T18:59:33+00:00",
+      "link": "https://arxiv.org/pdf/2604.17111v1",
+      "pdf_url": "https://arxiv.org/pdf/2604.17111v1",
+      "authors": [
+        "Justice Owusu Agyemang",
+        "Jerry John Kponyo",
+        "Obed Kwasi Somuah",
+        "Elliot Amponsah",
+        "Godfred Manu Addo Boakye",
+        "Kwame Opuni-Boachie Obour Agyekum"
+      ],
+      "primary_category": "cs.DC",
+      "categories": [
+        "cs.DC",
+        "cs.AI"
+      ],
+      "source": "arxiv",
+      "similarity": 0.714455553423034,
+      "publication_date": "2026-04-18",
+      "publication_date_precision": "day",
+      "publication_date_source": "https://arxiv.org/pdf/2604.17111v1",
+      "publication_date_kind": "arxiv_first_submission",
+      "publication_window_status": "included",
+      "retrieval_source": "arxiv",
+      "retrieval_evidence": [
+        {
+          "lane": "embedding",
+          "query_text": "\"web agent\" \"rate limit\"",
+          "task_key": "aeefba1502ae90b976f83fab78cd28c535cf0dc6983d85126ba58cf35a9190dc",
+          "rank": 12
+        },
+        {
+          "lane": "embedding",
+          "query_text": "\"browser agent\" throttling",
+          "task_key": "760b8f71026899cd1e7451b3fb9b2da22dcd53aa6ae5bb6584624e72488ce6cf",
+          "rank": 10
+        },
+        {
+          "lane": "embedding",
+          "query_text": "\"web agent\" \"adaptive concurrency\"",
+          "task_key": "410e913f49e0bcc46083c0d00846599b2c14c021c56b8f57d6a409745e3ff34c",
+          "rank": 14
+        },
+        {
+          "lane": "embedding",
+          "query_text": "\"web automation\" backoff",
+          "task_key": "bd43211f20e70b6079bea3411d5420ee2e630378b2e0224557aec07848240e6e",
+          "rank": 38
+        },
+        {
+          "lane": "embedding",
+          "query_text": "\"browser agent\" scheduling",
+          "task_key": "3d46f54ccee11c1a013d64f988c49f839d1229454154d547779af93685de1cfe",
+          "rank": 9
+        },
+        {
+          "lane": "embedding",
+          "query_text": "Polite web crawling per-host request budgets adaptive throttling server feedback and retry backoff",
+          "task_key": "adbc561f5093e0d623c5344422dba8133a7333b606e5d1c3f7afeea951a5a22e",
+          "rank": 10
+        },
+        {
+          "lane": "embedding",
+          "query_text": "Browser automation recovery from HTTP 429 Retry-After cooldown with shared sessions and coordinated tabs",
+          "task_key": "c943b9a9bb0b0c30e73139f1b615c2b6b484b03cea41348f1178da04b1d9b97a",
+          "rank": 17
+        },
+        {
+          "lane": "embedding",
+          "query_text": "Rate constrained web agent scheduling balancing task success completion time request cost and retry budgets",
+          "task_key": "dce550d0df207e01f67e96d23029f8d99e2c7b6b408f7d840605dd3333f99fa3",
+          "rank": 8
+        }
+      ],
+      "canonical_id": "arxiv:2604.17111",
+      "versions": [
+        {
+          "id": "2604.17111v1",
+          "title": "HiveMind: OS-Inspired Scheduling for Concurrent LLM Agent Workloads",
+          "abstract": "When multiple LLM coding agents share a rate-limited API endpoint, they exhibit resource contention patterns analogous to unscheduled OS processes competing for CPU, memory, and I/O. In a motivating incident, 3 of 11 parallel agents died from connection resets and HTTP 502 errors - a 27% failure rate - despite the API having sufficient aggregate capacity to serve all 11 sequentially. We present HIVEMIND, a transparent HTTP proxy that applies five OS-inspired scheduling primitives - admission control, rate-limit tracking, AIMD backpressure with circuit breaking, token budget management, and priority queuing - to eliminate the failure modes caused by uncoordinated parallel execution. The proxy requires zero modifications to existing agent code and supports Anthropic, OpenAI, and local model APIs via auto-detected provider profiles. Our evaluation across seven scenarios (5-50 concurrent agents) shows that uncoordinated agents fail at 72-100% rates under contention, while HIVEMIND reduces failures to 0-18% and eliminates 48-100% of wasted compute. An ablation study reveals that transparent retry - not admission control - is the single most critical primitive, but the primitives are most effective in combination. Real-world validation against Ollama confirms that HIVEMIND adds under 3ms of proxy overhead per request. The system is open-source under the MIT license.",
+          "published": "2026-04-18T18:59:33+00:00",
+          "link": "https://arxiv.org/pdf/2604.17111v1",
+          "pdf_url": "https://arxiv.org/pdf/2604.17111v1",
+          "authors": [
+            "Justice Owusu Agyemang",
+            "Jerry John Kponyo",
+            "Obed Kwasi Somuah",
+            "Elliot Amponsah",
+            "Godfred Manu Addo Boakye",
+            "Kwame Opuni-Boachie Obour Agyekum"
+          ],
+          "primary_category": "cs.DC",
+          "categories": [
+            "cs.DC",
+            "cs.AI"
+          ],
+          "source": "arxiv",
+          "similarity": 0.714455553423034,
+          "publication_date": "2026-04-18",
+          "publication_date_precision": "day",
+          "publication_date_source": "https://arxiv.org/pdf/2604.17111v1",
+          "publication_date_kind": "arxiv_first_submission",
+          "publication_window_status": "included",
+          "retrieval_source": "arxiv",
+          "retrieval_evidence": [
+            {
+              "lane": "embedding",
+              "query_text": "\"web agent\" \"rate limit\"",
+              "task_key": "aeefba1502ae90b976f83fab78cd28c535cf0dc6983d85126ba58cf35a9190dc",
+              "rank": 12
+            },
+            {
+              "lane": "embedding",
+              "query_text": "\"browser agent\" throttling",
+              "task_key": "760b8f71026899cd1e7451b3fb9b2da22dcd53aa6ae5bb6584624e72488ce6cf",
+              "rank": 10
+            },
+            {
+              "lane": "embedding",
+              "query_text": "\"web agent\" \"adaptive concurrency\"",
+              "task_key": "410e913f49e0bcc46083c0d00846599b2c14c021c56b8f57d6a409745e3ff34c",
+              "rank": 14
+            },
+            {
+              "lane": "embedding",
+              "query_text": "\"web automation\" backoff",
+              "task_key": "bd43211f20e70b6079bea3411d5420ee2e630378b2e0224557aec07848240e6e",
+              "rank": 38
+            },
+            {
+              "lane": "embedding",
+              "query_text": "\"browser agent\" scheduling",
+              "task_key": "3d46f54ccee11c1a013d64f988c49f839d1229454154d547779af93685de1cfe",
+              "rank": 9
+            },
+            {
+              "lane": "embedding",
+              "query_text": "Polite web crawling per-host request budgets adaptive throttling server feedback and retry backoff",
+              "task_key": "adbc561f5093e0d623c5344422dba8133a7333b606e5d1c3f7afeea951a5a22e",
+              "rank": 10
+            },
+            {
+              "lane": "embedding",
+              "query_text": "Browser automation recovery from HTTP 429 Retry-After cooldown with shared sessions and coordinated tabs",
+              "task_key": "c943b9a9bb0b0c30e73139f1b615c2b6b484b03cea41348f1178da04b1d9b97a",
+              "rank": 17
+            },
+            {
+              "lane": "embedding",
+              "query_text": "Rate constrained web agent scheduling balancing task success completion time request cost and retry budgets",
+              "task_key": "dce550d0df207e01f67e96d23029f8d99e2c7b6b408f7d840605dd3333f99fa3",
+              "rank": 8
+            }
+          ]
+        }
+      ],
+      "sources": [
+        "arxiv"
+      ],
+      "route_aliases": [],
+      "rrf_score": 0.1083635615696266,
+      "rerank_score": 0.4478053152561188,
+      "score": 7,
+      "scope_match": true,
+      "evidence": "admission control, rate-limit tracking, AIMD backpressure with circuit breaking, token budget management, and priority queuing",
+      "reason": "该论文直接研究多智能体共享限流API的调度与背压机制，可迁移至网站访问调度。",
+      "bucket": "related",
+      "evidence_verified": true,
+      "scope_guard_passed": true,
+      "research_run_id": "20261030-731960a7c56e",
+      "research_mode": "365"
+    },
+    {
+      "id": "2603.13110v1",
+      "title": "AgentRM: An OS-Inspired Resource Manager for LLM Agent Systems",
+      "abstract": "Large Language Model (LLM) agent systems have experienced rapid adoption across diverse domains, yet they suffer from critical user experience problems that limit their practical deployment. Through an empirical analysis of over 40,000 GitHub issues from six major agent frameworks (OpenClaw, AutoGen, CrewAI, LangGraph, Codex, Claude Code), we identify two fundamental resource management challenges: (1) scheduling failures leading to system unresponsiveness due to blocking, zombie processes, and rate limit cascades, and (2) context degradation causing agent \"amnesia\" from unbounded memory growth and poor retention policies. Drawing inspiration from decades of operating systems research, we present AgentRM, a middleware resource manager that treats agent resources analogously to OS resources. AgentRM employs a Multi-Level Feedback Queue (MLFQ) scheduler with zombie reaping and rate-limit-aware admission control, coupled with a three-tier Context Lifecycle Manager that implements adaptive compaction and hibernation mechanisms. Our evaluation demonstrates significant improvements: AgentRM-MLFQ reduces P95 latency by 86%, decreases lane waste by 96%, and increases throughput by 168% while eliminating zombie agents (0 vs. 29 baseline). AgentRM-CLM achieves 100% key information retention with 95% quality score compared to 65.1% retention and 87% quality for existing approaches, albeit with higher compaction costs (34,330 vs. 17,212 tokens).",
+      "published": "2026-03-13T16:07:20+00:00",
+      "link": "https://arxiv.org/pdf/2603.13110v1",
+      "pdf_url": "https://arxiv.org/pdf/2603.13110v1",
+      "authors": [
+        "Jianshu She"
+      ],
+      "primary_category": "cs.OS",
+      "categories": [
+        "cs.OS"
+      ],
+      "source": "arxiv",
+      "similarity": 0.718075807266618,
+      "publication_date": "2026-03-13",
+      "publication_date_precision": "day",
+      "publication_date_source": "https://arxiv.org/pdf/2603.13110v1",
+      "publication_date_kind": "arxiv_first_submission",
+      "publication_window_status": "included",
+      "retrieval_source": "arxiv",
+      "retrieval_evidence": [
+        {
+          "lane": "embedding",
+          "query_text": "\"browser agent\" throttling",
+          "task_key": "b1e22833bdb75def41b459ce41d486476b70a349dc26a734f9721d4483179de1",
+          "rank": 2
+        },
+        {
+          "lane": "embedding",
+          "query_text": "\"web agent\" \"adaptive concurrency\"",
+          "task_key": "18ab214ed008a695f4848e23cf2e60765a5266455f01c3f5ab4299e6189f857d",
+          "rank": 14
+        },
+        {
+          "lane": "embedding",
+          "query_text": "\"web automation\" backoff",
+          "task_key": "3c7787479689f8cd4658634448960e68847493345bc8d42e710d29c7426d01ca",
+          "rank": 20
+        },
+        {
+          "lane": "embedding",
+          "query_text": "\"browser agent\" scheduling",
+          "task_key": "5119bae28199c43c0376a872cf979d62b337e5e21ed9953f898cb70df8a24d2c",
+          "rank": 5
+        },
+        {
+          "lane": "embedding",
+          "query_text": "Rate constrained web agent scheduling balancing task success completion time request cost and retry budgets",
+          "task_key": "1669b4baa4aba3aacfdff45ff257954e24fefbd7592b3a0fe0b4650b7bfb9c14",
+          "rank": 46
+        }
+      ],
+      "canonical_id": "arxiv:2603.13110",
+      "versions": [
+        {
+          "id": "2603.13110v1",
+          "title": "AgentRM: An OS-Inspired Resource Manager for LLM Agent Systems",
+          "abstract": "Large Language Model (LLM) agent systems have experienced rapid adoption across diverse domains, yet they suffer from critical user experience problems that limit their practical deployment. Through an empirical analysis of over 40,000 GitHub issues from six major agent frameworks (OpenClaw, AutoGen, CrewAI, LangGraph, Codex, Claude Code), we identify two fundamental resource management challenges: (1) scheduling failures leading to system unresponsiveness due to blocking, zombie processes, and rate limit cascades, and (2) context degradation causing agent \"amnesia\" from unbounded memory growth and poor retention policies. Drawing inspiration from decades of operating systems research, we present AgentRM, a middleware resource manager that treats agent resources analogously to OS resources. AgentRM employs a Multi-Level Feedback Queue (MLFQ) scheduler with zombie reaping and rate-limit-aware admission control, coupled with a three-tier Context Lifecycle Manager that implements adaptive compaction and hibernation mechanisms. Our evaluation demonstrates significant improvements: AgentRM-MLFQ reduces P95 latency by 86%, decreases lane waste by 96%, and increases throughput by 168% while eliminating zombie agents (0 vs. 29 baseline). AgentRM-CLM achieves 100% key information retention with 95% quality score compared to 65.1% retention and 87% quality for existing approaches, albeit with higher compaction costs (34,330 vs. 17,212 tokens).",
+          "published": "2026-03-13T16:07:20+00:00",
+          "link": "https://arxiv.org/pdf/2603.13110v1",
+          "pdf_url": "https://arxiv.org/pdf/2603.13110v1",
+          "authors": [
+            "Jianshu She"
+          ],
+          "primary_category": "cs.OS",
+          "categories": [
+            "cs.OS"
+          ],
+          "source": "arxiv",
+          "similarity": 0.718075807266618,
+          "publication_date": "2026-03-13",
+          "publication_date_precision": "day",
+          "publication_date_source": "https://arxiv.org/pdf/2603.13110v1",
+          "publication_date_kind": "arxiv_first_submission",
+          "publication_window_status": "included",
+          "retrieval_source": "arxiv",
+          "retrieval_evidence": [
+            {
+              "lane": "embedding",
+              "query_text": "\"browser agent\" throttling",
+              "task_key": "b1e22833bdb75def41b459ce41d486476b70a349dc26a734f9721d4483179de1",
+              "rank": 2
+            },
+            {
+              "lane": "embedding",
+              "query_text": "\"web agent\" \"adaptive concurrency\"",
+              "task_key": "18ab214ed008a695f4848e23cf2e60765a5266455f01c3f5ab4299e6189f857d",
+              "rank": 14
+            },
+            {
+              "lane": "embedding",
+              "query_text": "\"web automation\" backoff",
+              "task_key": "3c7787479689f8cd4658634448960e68847493345bc8d42e710d29c7426d01ca",
+              "rank": 20
+            },
+            {
+              "lane": "embedding",
+              "query_text": "\"browser agent\" scheduling",
+              "task_key": "5119bae28199c43c0376a872cf979d62b337e5e21ed9953f898cb70df8a24d2c",
+              "rank": 5
+            },
+            {
+              "lane": "embedding",
+              "query_text": "Rate constrained web agent scheduling balancing task success completion time request cost and retry budgets",
+              "task_key": "1669b4baa4aba3aacfdff45ff257954e24fefbd7592b3a0fe0b4650b7bfb9c14",
+              "rank": 46
+            }
+          ]
+        }
+      ],
+      "sources": [
+        "arxiv"
+      ],
+      "route_aliases": [],
+      "rrf_score": 0.06696112342034435,
+      "rerank_score": 0.0342269204556942,
+      "score": 6,
+      "scope_match": false,
+      "evidence": "rate limit cascades",
+      "reason": "论文涉及LLM代理系统的资源管理，包括速率限制感知的准入控制，但主要面向通用代理系统而非网站访问调度。",
+      "bucket": "related",
+      "evidence_verified": true,
+      "scope_guard_passed": true,
+      "research_run_id": "20261030-731960a7c56e",
+      "research_mode": "365"
+    },
+    {
+      "id": "2610.13321v1",
+      "title": "Host-Aware Web Crawling for LLM Pretraining Data",
+      "abstract": "Web crawling is a major source of large language model (LLM) pretraining data, yet data-selection pipelines discard a large share of crawled pages. We investigate how a crawler should allocate its budget across and within hosts to collect more high-quality pretraining data. Combining document-level quality classifier scores, web-graph centrality metrics, and Common Crawl's per-host crawl coverage, we find that roughly half of the variation in classifier scores occurs between hosts. In the crawls we analyze, a few pages from a host also provide a useful estimate of the quality of its remaining pages. Common Crawl uses harmonic centrality, a graph centrality metric, to guide its crawl allocation. In our simulations, using centrality to choose which hosts to crawl yields limited gains over random ordering and performs worse for some classifiers. For deciding how deeply to crawl each host, sampling a few pages and then fetching more from hosts with higher-scoring samples collects several times more high-quality pages per fetch than uniform depth or centrality-based allocation. Finally, Common Crawl's observed per-host coverage has little correlation with the evaluated quality signals. We estimate that tens of millions of high-quality pages remain among known but uncrawled URLs in each crawl examined, with most concentrated on a small share of hosts.",
+      "published": "2026-10-09T10:03:04+00:00",
+      "link": "https://arxiv.org/pdf/2610.13321v1",
+      "pdf_url": null,
+      "authors": [
+        "Malte Ostendorff"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "source": "arxiv",
+      "similarity": 0.719810430986622,
+      "publication_date": "2026-10-09",
+      "publication_date_precision": "day",
+      "publication_date_source": "https://arxiv.org/pdf/2610.13321v1",
+      "publication_date_kind": "arxiv_first_submission",
+      "publication_window_status": "included",
+      "retrieval_source": "arxiv",
+      "retrieval_evidence": [
+        {
+          "lane": "embedding",
+          "query_text": "\"web crawling\" \"rate limiting\"",
+          "task_key": "e1a777989dde883a8efd2f6d61ec008d3d6a593e7829ede4267554427e380c09",
+          "rank": 1
+        },
+        {
+          "lane": "embedding",
+          "query_text": "\"web crawler\" politeness",
+          "task_key": "21d471c54564dad32fe3344bea205caae01399511f7fdc502b65c018f130438b",
+          "rank": 1
+        },
+        {
+          "lane": "embedding",
+          "query_text": "Polite web crawling per-host request budgets adaptive throttling server feedback and retry backoff",
+          "task_key": "f591394844fd1a33fdd828c4f884c1e13dc63403b5da7495a9b47be18a39da4b",
+          "rank": 9
+        }
+      ],
+      "canonical_id": "arxiv:2610.13321",
+      "versions": [
+        {
+          "id": "2610.13321v1",
+          "title": "Host-Aware Web Crawling for LLM Pretraining Data",
+          "abstract": "Web crawling is a major source of large language model (LLM) pretraining data, yet data-selection pipelines discard a large share of crawled pages. We investigate how a crawler should allocate its budget across and within hosts to collect more high-quality pretraining data. Combining document-level quality classifier scores, web-graph centrality metrics, and Common Crawl's per-host crawl coverage, we find that roughly half of the variation in classifier scores occurs between hosts. In the crawls we analyze, a few pages from a host also provide a useful estimate of the quality of its remaining pages. Common Crawl uses harmonic centrality, a graph centrality metric, to guide its crawl allocation. In our simulations, using centrality to choose which hosts to crawl yields limited gains over random ordering and performs worse for some classifiers. For deciding how deeply to crawl each host, sampling a few pages and then fetching more from hosts with higher-scoring samples collects several times more high-quality pages per fetch than uniform depth or centrality-based allocation. Finally, Common Crawl's observed per-host coverage has little correlation with the evaluated quality signals. We estimate that tens of millions of high-quality pages remain among known but uncrawled URLs in each crawl examined, with most concentrated on a small share of hosts.",
+          "published": "2026-10-09T10:03:04+00:00",
+          "link": "https://arxiv.org/pdf/2610.13321v1",
+          "pdf_url": null,
+          "authors": [
+            "Malte Ostendorff"
+          ],
+          "primary_category": "cs.CL",
+          "categories": [
+            "cs.CL"
+          ],
+          "source": "arxiv",
+          "similarity": 0.719810430986622,
+          "publication_date": "2026-10-09",
+          "publication_date_precision": "day",
+          "publication_date_source": "https://arxiv.org/pdf/2610.13321v1",
+          "publication_date_kind": "arxiv_first_submission",
+          "publication_window_status": "included",
+          "retrieval_source": "arxiv",
+          "retrieval_evidence": [
+            {
+              "lane": "embedding",
+              "query_text": "\"web crawling\" \"rate limiting\"",
+              "task_key": "e1a777989dde883a8efd2f6d61ec008d3d6a593e7829ede4267554427e380c09",
+              "rank": 1
+            },
+            {
+              "lane": "embedding",
+              "query_text": "\"web crawler\" politeness",
+              "task_key": "21d471c54564dad32fe3344bea205caae01399511f7fdc502b65c018f130438b",
+              "rank": 1
+            },
+            {
+              "lane": "embedding",
+              "query_text": "Polite web crawling per-host request budgets adaptive throttling server feedback and retry backoff",
+              "task_key": "f591394844fd1a33fdd828c4f884c1e13dc63403b5da7495a9b47be18a39da4b",
+              "rank": 9
+            }
+          ]
+        }
+      ],
+      "sources": [
+        "arxiv"
+      ],
+      "route_aliases": [],
+      "rrf_score": 0.04727963886909005,
+      "rerank_score": 0.024577699601650238,
+      "score": 6,
+      "scope_match": false,
+      "evidence": "We investigate how a crawler should allocate its budget across and within hosts to collect more high-quality pretraining data.",
+      "reason": "研究爬虫预算分配而非限流与并发控制，仅间接涉及站点访问策略。",
+      "bucket": "related",
+      "evidence_verified": true,
+      "scope_guard_passed": true,
+      "research_run_id": "20261030-731960a7c56e",
+      "research_mode": "365"
+    }
+  ],
+  "selection_complete": true,
+  "order": "score_desc",
+  "reviewed_count": 300,
+  "result_limit": 100
+}

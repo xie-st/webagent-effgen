@@ -1,0 +1,105 @@
+{
+  "id": "8ed63eb9d774f28ba098cfa7bb4f8e9c",
+  "agent_name": "ypgf_v0",
+  "suite_version": "forum-practice-4-v1-300s-managed",
+  "status": "completed",
+  "total": 4,
+  "passed": 3,
+  "failed": 1,
+  "accuracy": 0.75,
+  "elapsed_seconds": 304.9,
+  "model_usage": {
+    "calls": 25,
+    "prompt_tokens": 93447,
+    "completion_tokens": 1597,
+    "cached_tokens": 18304,
+    "cost_usd": "0.024569124",
+    "unknown_cost_calls": 0,
+    "cost_complete": true,
+    "currency": "USD"
+  },
+  "source_sha256": "124c439f1cce7130f1954b84e08b3e73764e1b71db9ad304791fd71e22f2cb76",
+  "agent_framework": "EffGen",
+  "framework_evidence": "用户确认",
+  "harness_version": null,
+  "effgen_installation": null,
+  "git_commit": null,
+  "tasks": [
+    {
+      "id": "cc5ee02d66178fbffac2ffbc814ece1c",
+      "task_id": 399,
+      "score": 0.0,
+      "steps": 6,
+      "finish_reason": "stop",
+      "model_usage": {
+        "calls": 6,
+        "prompt_tokens": 16112,
+        "completion_tokens": 312,
+        "cached_tokens": 2560,
+        "cost_usd": "0.004455360",
+        "unknown_cost_calls": 0,
+        "cost_complete": true,
+        "currency": "USD"
+      },
+      "execution_started": 1793299609.2830338,
+      "execution_finished": 1793299630.6395454
+    },
+    {
+      "id": "5fdd31ec62a5e863092b255b6e4ed693",
+      "task_id": 404,
+      "score": 1.0,
+      "steps": 6,
+      "finish_reason": "stop",
+      "model_usage": {
+        "calls": 6,
+        "prompt_tokens": 30149,
+        "completion_tokens": 335,
+        "cached_tokens": 2688,
+        "cost_usd": "0.008656428",
+        "unknown_cost_calls": 0,
+        "cost_complete": true,
+        "currency": "USD"
+      },
+      "execution_started": 1793299667.3572598,
+      "execution_finished": 1793299705.4979596
+    },
+    {
+      "id": "04a4dd542574be6f2988198612e01e24",
+      "task_id": 650,
+      "score": 1.0,
+      "steps": 3,
+      "finish_reason": "stop",
+      "model_usage": {
+        "calls": 3,
+        "prompt_tokens": 10887,
+        "completion_tokens": 202,
+        "cached_tokens": 1920,
+        "cost_usd": "0.002944020",
+        "unknown_cost_calls": 0,
+        "cost_complete": true,
+        "currency": "USD"
+      },
+      "execution_started": 1793299758.3307412,
+      "execution_finished": 1793299790.5370026
+    },
+    {
+      "id": "250e0aa79fb0ee491266ef67d66761d7",
+      "task_id": 731,
+      "score": 1.0,
+      "steps": 8,
+      "finish_reason": "stop",
+      "model_usage": {
+        "calls": 10,
+        "prompt_tokens": 36299,
+        "completion_tokens": 748,
+        "cached_tokens": 11136,
+        "cost_usd": "0.008513316",
+        "unknown_cost_calls": 0,
+        "cost_complete": true,
+        "currency": "USD"
+      },
+      "execution_started": 1793299823.3803153,
+      "execution_finished": 1793299877.0079937
+    }
+  ]
+}
