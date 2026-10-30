@@ -1,0 +1,304 @@
+{
+  "kind": "m2_runtime_browser_scenario",
+  "scenario": "profile_append_repair",
+  "task": "profile",
+  "token": "rt10",
+  "note": "old plus target appended; exact replacement on recovery",
+  "expected_pass": true,
+  "actual_pass": true,
+  "matched": true,
+  "decision_source": "scripted_policy",
+  "runtime": "actual_Runtime.advance",
+  "browser": "Chromium via Playwright",
+  "model_calls": 0,
+  "official_score": false,
+  "fault_plan": {
+    "token": "rt10",
+    "seed": {
+      "bio": "旧简介"
+    },
+    "faults": {
+      "profile": {
+        "mode": "append_value",
+        "times": 1,
+        "note": "",
+        "fired": 1
+      }
+    },
+    "activations": [
+      {
+        "operation": "profile",
+        "mode": "append_value",
+        "times": 1,
+        "fired": 1,
+        "note": ""
+      }
+    ]
+  },
+  "seed": {
+    "bio": "旧简介"
+  },
+  "steps": 5,
+  "ended": "stop",
+  "seconds": 1.9554446999973152,
+  "script_error": null,
+  "stop_attempts": 1,
+  "stop_rejections": 0,
+  "guard_rejections": 0,
+  "stop_accepted": true,
+  "expected_stop_rejections": 0,
+  "expected_guard_rejections": 0,
+  "runtime_errors": [],
+  "runtime_state": {
+    "step": 4,
+    "task": "把个人简介改为 开发者-rt10",
+    "goals": [
+      {
+        "goal_id": "goal-1",
+        "description": "把个人简介改为 开发者-rt10",
+        "kind": "exact_equal",
+        "target": "开发者-rt10",
+        "source_quote": "把个人简介改为 开发者-rt10",
+        "field": "bio",
+        "baseline": null,
+        "status": "verified",
+        "attempts": 1,
+        "actual": null,
+        "reason": "field value is not exact",
+        "evidence": [
+          {
+            "source": "model",
+            "step": 2,
+            "url": "http://127.0.0.1:59294/forum",
+            "observation_version": 3,
+            "line": 8,
+            "element_id": "7",
+            "quote": "个人简介：旧简介开发者-rt10",
+            "actual": null,
+            "identity": "http://127.0.0.1:59294",
+            "deterministic": false,
+            "history_id": null
+          },
+          {
+            "source": "model",
+            "step": 4,
+            "url": "http://127.0.0.1:59294/forum",
+            "observation_version": 5,
+            "line": 8,
+            "element_id": "7",
+            "quote": "个人简介：开发者-rt10",
+            "actual": null,
+            "identity": "http://127.0.0.1:59294",
+            "deterministic": false,
+            "history_id": null
+          }
+        ],
+        "objects": []
+      }
+    ],
+    "pending": [],
+    "drafts": {
+      "9": {
+        "text": "开发者-rt10",
+        "step": 2,
+        "url": "http://127.0.0.1:59294/forum",
+        "observation_version": 3
+      }
+    },
+    "memory": "",
+    "identity": "http://127.0.0.1:59294",
+    "identity_changes": [],
+    "deadline": 1793355673.1556215,
+    "remaining_seconds": 58.48348617553711,
+    "recovery_count": 0,
+    "progress": {
+      "total": 1,
+      "verified": 1,
+      "failed": 0,
+      "unknown": 0,
+      "stale": 0,
+      "pending": 0
+    }
+  },
+  "runtime_child": {
+    "python": "3.12.7",
+    "executable": "D:\\HackathonWebAgent\\webagent-effgen\\.local\\browser-test-venv\\Scripts\\python.exe",
+    "effgen": null,
+    "harness_dir": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本",
+    "harness_version": {
+      "schema_version": 2,
+      "version": "当前版本",
+      "sdk_root": "sdk",
+      "based_on": "v1"
+    },
+    "runtime_file": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\web_agent\\runtime.py",
+    "runtime_sha256": "cf5e670245ef91775bec08548fd64f3c94e7b4d56b0bc8bf774f4232053e65ab",
+    "verify_file": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\web_agent\\verify.py",
+    "verify_sha256": "382872be6b37660b92d97bf1ce4129e910a2d034ad0e799e11360b23592d1512",
+    "policy": "scripted_policy",
+    "model_calls": 0
+  },
+  "actor_goal_checks_advisory_only": [
+    {
+      "goal_id": "goal-1",
+      "description": "把个人简介改为 开发者-rt10",
+      "kind": "exact_equal",
+      "target": "开发者-rt10",
+      "source_quote": "把个人简介改为 开发者-rt10",
+      "field": "bio",
+      "baseline": null,
+      "status": "verified",
+      "attempts": 1,
+      "actual": null,
+      "reason": "field value is not exact",
+      "evidence": [
+        {
+          "source": "model",
+          "step": 2,
+          "url": "http://127.0.0.1:59294/forum",
+          "observation_version": 3,
+          "line": 8,
+          "element_id": "7",
+          "quote": "个人简介：旧简介开发者-rt10",
+          "actual": null,
+          "identity": "http://127.0.0.1:59294",
+          "deterministic": false,
+          "history_id": null
+        },
+        {
+          "source": "model",
+          "step": 4,
+          "url": "http://127.0.0.1:59294/forum",
+          "observation_version": 5,
+          "line": 8,
+          "element_id": "7",
+          "quote": "个人简介：开发者-rt10",
+          "actual": null,
+          "identity": "http://127.0.0.1:59294",
+          "deterministic": false,
+          "history_id": null
+        }
+      ],
+      "objects": []
+    }
+  ],
+  "grade": {
+    "task": "profile",
+    "passed": true,
+    "requirements": [
+      {
+        "key": "profile_exact",
+        "description": "个人简介必须精确等于“开发者-rt10”，不能保留或追加旧内容",
+        "expected": "开发者-rt10",
+        "actual": "开发者-rt10",
+        "passed": true
+      }
+    ],
+    "write_rules": [
+      {
+        "operation": "profile",
+        "kind": "target",
+        "description": "profile 必须恰好提交 1 次达到要求的个人简介",
+        "expected": 1,
+        "actual": 1,
+        "target_value": "开发者-rt10",
+        "passed": true
+      }
+    ],
+    "write_counts": {
+      "profile": 2
+    },
+    "attempt_counts": {
+      "profile": 2
+    },
+    "faults": {
+      "token": "rt10",
+      "seed": {
+        "bio": "旧简介"
+      },
+      "faults": {
+        "profile": {
+          "mode": "append_value",
+          "times": 1,
+          "note": "",
+          "fired": 1
+        }
+      },
+      "activations": [
+        {
+          "operation": "profile",
+          "mode": "append_value",
+          "times": 1,
+          "fired": 1,
+          "note": ""
+        }
+      ]
+    },
+    "business_state": {
+      "token": "rt10",
+      "bio": "开发者-rt10",
+      "title": "",
+      "reply": "",
+      "subscribed": false,
+      "votes": 0,
+      "cart": [],
+      "ordered": false,
+      "orders": [],
+      "write_counts": {
+        "profile": 2
+      },
+      "attempt_counts": {
+        "profile": 2
+      },
+      "write_events": [
+        {
+          "operation": "profile",
+          "requested": "开发者-rt10",
+          "stored": "旧简介开发者-rt10",
+          "before": "旧简介",
+          "after": "旧简介开发者-rt10",
+          "fault": "append_value",
+          "committed": true
+        },
+        {
+          "operation": "profile",
+          "requested": "开发者-rt10",
+          "stored": "开发者-rt10",
+          "before": "旧简介开发者-rt10",
+          "after": "开发者-rt10",
+          "fault": "normal",
+          "committed": true
+        }
+      ],
+      "faults": {
+        "token": "rt10",
+        "seed": {
+          "bio": "旧简介"
+        },
+        "faults": {
+          "profile": {
+            "mode": "append_value",
+            "times": 1,
+            "note": "",
+            "fired": 1
+          }
+        },
+        "activations": [
+          {
+            "operation": "profile",
+            "mode": "append_value",
+            "times": 1,
+            "fired": 1,
+            "note": ""
+          }
+        ]
+      }
+    },
+    "actor_claims": null,
+    "actor_claims_ignored": false,
+    "judged_from": "actual_fixture_state_and_original_task_requirements",
+    "official_score": false,
+    "model_calls": null
+  },
+  "final_body_excerpt": "论坛电商资料 A资料 B\n技术论坛\n\n个人简介：开发者-rt10\n\n个人简介保存简介\n\n帖子：\n\n帖子标题发表帖子\n\n回复：\n\n回复内容发送回复\n\n订阅状态：未订阅\n\n订阅技术版块\n\n点赞数：0\n\n点赞技术帖子"
+}

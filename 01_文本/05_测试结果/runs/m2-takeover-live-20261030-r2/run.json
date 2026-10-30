@@ -1,0 +1,7 @@
+{
+  "kind": "official",
+  "code_ref": "f1eb8bc",
+  "environment": "Python3.12.7, EffGen1.3.0, non-locked test environment",
+  "status": "client_start_requested",
+  "platform_run_ids": []
+}

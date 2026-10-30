@@ -1,0 +1,28 @@
+{
+  "read_only_search": {
+    "url_after": "http://127.0.0.1:56771/?q=query",
+    "incorrect_pending": true,
+    "classification": {
+      "action": "type [3] [query] [1]",
+      "kind": "type",
+      "element_id": "3",
+      "role": "searchbox",
+      "name": "Search",
+      "url": null,
+      "is_write": true,
+      "is_read": false,
+      "is_draft": true,
+      "operation": "submit"
+    }
+  },
+  "autosave_checkbox": {
+    "unknown_write_pending": true,
+    "allowed": true,
+    "classified_draft": true,
+    "actual_business_writes": 1
+  },
+  "input_semantics_gap": {
+    "adapter_type_value": "New bio",
+    "browser_append_value": "Old bioNew bio"
+  }
+}
