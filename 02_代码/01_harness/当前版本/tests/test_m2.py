@@ -241,13 +241,22 @@ class ExactVerificationTests(unittest.TestCase):
         )
         good = frame(
             task=state.task,
-            text="[9] StaticText 'Original body'\n[10] StaticText 'EDIT: aged well'\n",
+            url="http://127.0.0.1:9876/f/test/comments/1",
+            text=(
+                "[1] heading 'Post body'\n"
+                "[9] StaticText 'Original body'\n"
+                "[10] StaticText 'EDIT: aged well'\n"
+            ),
         )
         self.assertEqual(verify.evaluate_goal(goal, verify.parse_ax(good), state)["status"],
                          "verified")
         extra = frame(
             task=state.task,
-            text="[9] StaticText 'Original body\\nEDIT: aged well\\nEXTRA'\n",
+            url="http://127.0.0.1:9876/f/test/comments/1",
+            text=(
+                "[1] heading 'Post body'\n"
+                "[9] StaticText 'Original body\\nEDIT: aged well\\nEXTRA'\n"
+            ),
         )
         self.assertEqual(verify.evaluate_goal(goal, verify.parse_ax(extra), state)["status"],
                          "failed")
@@ -255,7 +264,11 @@ class ExactVerificationTests(unittest.TestCase):
             "goal-2", state.task, "exact_append", "old",
             state.task, field="body", baseline="old body",
         )
-        duplicate_frame = frame(task=state.task, text="[9] StaticText 'old body'\n")
+        duplicate_frame = frame(
+            task=state.task,
+            url="http://127.0.0.1:9876/f/test/comments/1",
+            text="[1] heading 'Post body'\n[9] StaticText 'old body'\n",
+        )
         self.assertEqual(
             verify.evaluate_goal(duplicate, verify.parse_ax(duplicate_frame), state)["status"],
             "failed",
@@ -354,16 +367,23 @@ class RuntimeFlowTests(unittest.TestCase):
         self.assertEqual(state.get("_pending_actions", {}), {})
         self.assertEqual(state["_goal_checks"][0].status, "verified")
 
-    def test_no_effect_does_not_advance_and_allows_local_retry(self):
+    def test_unchanged_write_requires_readback_before_local_retry(self):
         runtime = Runtime(lambda context, state: {"action": state.data["_next"]})
         state = {"_next": "click [3]"}
         runtime.advance(frame(step=0), state)
         state["_next"] = "click [3]"
-        runtime.advance(frame(step=1), state)
+        with self.assertRaises(recover.WriteGuardError):
+            runtime.advance(frame(step=1), state)
+        self.assertEqual(state["_pending_actions"]["0"].step, 0)
+        self.assertEqual(state["_goal_checks"][0].status, "unknown")
+        state["_next"] = "goto [" + URL + "]"
+        runtime.advance(frame(step=2), state)
+        state["_next"] = "click [3]"
+        runtime.advance(frame(step=3), state)
         goal = state["_goal_checks"][0]
         self.assertEqual(goal.status, "failed")
         self.assertNotEqual(goal.status, "verified")
-        self.assertEqual(state["_pending_actions"]["0"].step, 1)
+        self.assertEqual(state["_pending_actions"]["0"].step, 3)
 
     def test_stop_with_missing_goal_is_corrected_not_accepted(self):
         policy = FakePolicy(
@@ -525,6 +545,7 @@ class DeadlineAndLifecycleTests(unittest.TestCase):
         runtime.advance(frame(step=1, text=SAVED_TEXT, deadline=deadline + 100), state)
         self.assertEqual(len(policy.verify_calls), 1)
         self.assertEqual(policy.verify_calls[0][0], deadline)
+        self.assertEqual(policy.verify_calls[0][1]["deadline"], deadline)
 
         legacy = {"_remaining_seconds": 10}
         first = agent_logic._execution_deadline(legacy)
@@ -628,6 +649,15 @@ class ProductionWiringTests(unittest.TestCase):
 
 
 class ExpandedSuiteCoverageTests(unittest.TestCase):
+    def test_order_and_post_resource_links_do_not_create_phantom_writes(self):
+        for label, path, expected in [
+            ("My Orders", "/sales/order/history", False),
+            ("Edit post", "/post/42/edit", False),
+            ("My Orders", "/order/delete", True),
+        ]:
+            view = frame(text=f"[1] link '{label}' url: http://127.0.0.1:9876{path}")
+            self.assertEqual(recover.classify_action("click [1]", view).is_write, expected)
+
     """New-suite requirements: fail closed, semantic scope, per-object effects."""
 
     def test_non_empty_task_can_never_stop_with_an_empty_checklist(self):
@@ -878,6 +908,451 @@ class ExpandedSuiteCoverageTests(unittest.TestCase):
             state,
         )
         self.assertEqual(len(state["_goal_checks"][0].objects), 1)
+
+class EvidenceScopeAndHistoryTests(unittest.TestCase):
+    """M2 evidence must bind to the requested field/object and bounded history."""
+
+    def _state(self, task, current):
+        state = TaskState()
+        state.set_task(task)
+        verify.ensure_goals(current, state)
+        return state
+
+    def test_same_value_in_unrelated_post_or_product_region_is_not_success(self):
+        bio_task = 'Change my bio to "I am a robot"'
+        bio_current = frame(
+            task=bio_task,
+            url="http://127.0.0.1:9876/f/test/comments/9",
+            text="[1] heading 'An unrelated post'\n[2] StaticText 'I am a robot'\n",
+        )
+        bio_state = self._state(bio_task, bio_current)
+        bio_goal = bio_state.goal_checks[0]
+        result = verify.evaluate_goal(bio_goal, verify.parse_ax(bio_current), bio_state)
+        self.assertEqual(result["status"], "unknown")
+        self.assertIn("unrelated", result["reason"])
+        fake_bio = json.dumps(
+            {
+                "checks": [
+                    {
+                        "goal_id": bio_goal.goal_id,
+                        "status": "confirmed",
+                        "actual": "I am a robot",
+                        "source_task_quote": bio_task,
+                        "evidence": [{"line": 2, "quote": "I am a robot"}],
+                    }
+                ]
+            }
+        )
+        parsed = verify.parse_verification(
+            fake_bio, bio_current, bio_state, mode="stop"
+        )
+        self.assertFalse(parsed["all_confirmed"])
+        self.assertIn("field/object region", " ".join(parsed["invalid"]))
+
+        cart_task = "把键盘加入购物车"
+        cart_current = frame(
+            task=cart_task,
+            url="http://127.0.0.1:9876/shop/products",
+            text=(
+                "[1] heading 'Products'\n"
+                "[2] StaticText '键盘'\n"
+                "[3] heading 'Shopping Cart'\n"
+                "[4] StaticText 'Empty'\n"
+            ),
+        )
+        cart_state = self._state(cart_task, cart_current)
+        cart_goal = cart_state.goal_checks[0]
+        self.assertEqual(cart_goal.kind, "item_exact")
+        result = verify.evaluate_goal(cart_goal, verify.parse_ax(cart_current), cart_state)
+        self.assertEqual(result["status"], "unknown")
+        self.assertIn("cart region", result["reason"])
+        fake_cart = json.dumps(
+            {
+                "checks": [
+                    {
+                        "goal_id": cart_goal.goal_id,
+                        "status": "confirmed",
+                        "actual": ["键盘"],
+                        "source_task_quote": cart_task,
+                        "evidence": [{"line": 2, "quote": "键盘"}],
+                    }
+                ]
+            }
+        )
+        parsed = verify.parse_verification(
+            fake_cart, cart_current, cart_state, mode="stop"
+        )
+        self.assertFalse(parsed["all_confirmed"])
+        self.assertIn("field/object region", " ".join(parsed["invalid"]))
+
+        bare_product = frame(
+            task=cart_task,
+            url="http://127.0.0.1:9876/shop/product/7",
+            text="[1] StaticText '键盘'\n",
+        )
+        self.assertEqual(
+            verify.evaluate_goal(
+                cart_goal, verify.parse_ax(bare_product), cart_state
+            )["status"],
+            "unknown",
+        )
+
+    def test_runtime_stop_is_blocked_for_the_two_same_value_counterexamples(self):
+        for task, url, text in (
+            (
+                'Change my bio to "I am a robot"',
+                "http://127.0.0.1:9876/f/test/comments/9",
+                "[1] heading 'An unrelated post'\n[2] StaticText 'I am a robot'\n",
+            ),
+            (
+                "把键盘加入购物车",
+                "http://127.0.0.1:9876/shop/products",
+                (
+                    "[1] heading 'Products'\n"
+                    "[2] StaticText '键盘'\n"
+                    "[3] heading 'Shopping Cart'\n"
+                    "[4] StaticText 'Empty'\n"
+                ),
+            ),
+        ):
+            runtime = Runtime(lambda context, state: "stop [done]")
+            with self.assertRaises(verify.GoalIncompleteError):
+                runtime.advance(frame(task=task, url=url, text=text), {})
+        # The correct business regions still permit a real stop.
+        runtime = Runtime(lambda context, state: "stop [done]")
+        result = runtime.advance(
+            frame(
+                task='Change my bio to "I am a robot"',
+                url="http://127.0.0.1:9876/user/me",
+                text=(
+                    "[1] heading 'Profile'\n"
+                    "[2] heading 'Biography'\n"
+                    "[3] StaticText 'I am a robot'\n"
+                ),
+            ),
+            {},
+        )
+        self.assertEqual(result, {"action": "stop [done]"})
+
+    def test_real_profile_cart_and_reply_regions_still_confirm(self):
+        bio_task = 'Change my bio to "I am a robot"'
+        bio_current = frame(
+            task=bio_task,
+            url="http://127.0.0.1:9876/user/me",
+            text=(
+                "[1] heading 'Profile'\n"
+                "[2] heading 'Biography'\n"
+                "[3] StaticText 'I am a robot'\n"
+            ),
+        )
+        bio_state = self._state(bio_task, bio_current)
+        bio_goal = bio_state.goal_checks[0]
+        self.assertEqual(
+            verify.evaluate_goal(
+                bio_goal, verify.parse_ax(bio_current), bio_state
+            )["status"],
+            "verified",
+        )
+        confirmed_bio = json.dumps(
+            {
+                "checks": [
+                    {
+                        "goal_id": bio_goal.goal_id,
+                        "status": "confirmed",
+                        "actual": "I am a robot",
+                        "source_task_quote": bio_task,
+                        "evidence": [{"line": 3, "quote": "I am a robot"}],
+                    }
+                ]
+            }
+        )
+        self.assertTrue(
+            verify.parse_verification(
+                confirmed_bio, bio_current, bio_state, mode="stop"
+            )["all_confirmed"]
+        )
+
+        cart_task = "把键盘加入购物车"
+        cart_current = frame(
+            task=cart_task,
+            url="http://127.0.0.1:9876/shop/cart",
+            text=(
+                "[1] heading 'Shopping Cart'\n"
+                "[2] StaticText '键盘'\n"
+                "[3] button 'Checkout'\n"
+            ),
+        )
+        cart_state = self._state(cart_task, cart_current)
+        cart_goal = cart_state.goal_checks[0]
+        self.assertEqual(
+            verify.evaluate_goal(
+                cart_goal, verify.parse_ax(cart_current), cart_state
+            )["status"],
+            "verified",
+        )
+        confirmed_cart = json.dumps(
+            {
+                "checks": [
+                    {
+                        "goal_id": cart_goal.goal_id,
+                        "status": "confirmed",
+                        "actual": ["键盘"],
+                        "source_task_quote": cart_task,
+                        "evidence": [{"line": 2, "quote": "键盘"}],
+                    }
+                ]
+            }
+        )
+        self.assertTrue(
+            verify.parse_verification(
+                confirmed_cart, cart_current, cart_state, mode="stop"
+            )["all_confirmed"]
+        )
+
+        reply_task = 'Reply to the post with my comment "I am a big fan"'
+        reply_current = frame(
+            task=reply_task,
+            url="http://127.0.0.1:9876/f/test/comments/1",
+            text="[1] heading 'Comments'\n[2] StaticText 'I am a big fan'\n",
+        )
+        reply_state = self._state(reply_task, reply_current)
+        self.assertEqual(
+            verify.evaluate_goal(
+                reply_state.goal_checks[0],
+                verify.parse_ax(reply_current),
+                reply_state,
+            )["status"],
+            "verified",
+        )
+
+    def test_price_and_prior_order_semantics_use_current_plus_real_history(self):
+        price_task = (
+            "Show the least expensive shoe storage with a minimum storage "
+            "capacity of 12 pairs."
+        )
+        history = [
+            {
+                "observation": {
+                    "url": "http://127.0.0.1:9876/shop/search",
+                    "text": (
+                        "[1] heading 'Shoe storage'\n"
+                        "[2] StaticText 'Rack A $29.00 10 pairs'\n"
+                        "[3] StaticText 'Rack B $39.00 12 pairs'\n"
+                        "[4] StaticText 'Rack C $49.00 16 pairs'\n"
+                    ),
+                },
+                "action": "search [shoe storage]",
+            }
+        ]
+        price_current = frame(
+            task=price_task,
+            url="http://127.0.0.1:9876/shop/product/9",
+            text=(
+                "[1] heading 'Shoe storage'\n"
+                "[2] StaticText '$39.00'\n"
+                "[3] StaticText '12 pairs capacity'\n"
+            ),
+            history=history,
+        )
+        price_state = self._state(price_task, price_current)
+        price_goal = price_state.goal_checks[0]
+        payload = verify.build_verify_payload(
+            price_current, price_state, mode="stop"
+        )
+        self.assertEqual(len(payload["history_evidence"]), 1)
+        source_id = payload["history_evidence"][0]["source_id"]
+        self.assertEqual(source_id, "h1")
+        self.assertIsNone(payload["history_evidence"][0]["step"])
+        self.assertIsNone(payload["history_evidence"][0]["observation_version"])
+        confirmed_price = json.dumps(
+            {
+                "checks": [
+                    {
+                        "goal_id": price_goal.goal_id,
+                        "status": "confirmed",
+                        "actual": "Rack B $39.00 with 12 pairs is the lowest qualifying item",
+                        "source_task_quote": price_task,
+                        "evidence": [
+                            {"line": 2, "quote": "$39.00"},
+                            {"history_id": source_id,
+                             "quote": "Rack B $39.00 12 pairs"},
+                        ],
+                    }
+                ]
+            }
+        )
+        parsed = verify.parse_verification(
+            confirmed_price, price_current, price_state, mode="stop"
+        )
+        self.assertTrue(parsed["all_confirmed"], parsed["invalid"])
+        semantic = parsed["checks"][0]["evidence"]
+        self.assertEqual(semantic[1].history_id, source_id)
+        self.assertEqual(semantic[1].url, "http://127.0.0.1:9876/shop/search")
+
+        order_task = (
+            "I previously ordered some a mattress foundation around Feb or "
+            "March 2023 and later cancelled. Can you reorder it for me?"
+        )
+        order_history = [
+            {
+                "observation": {
+                    "url": "http://127.0.0.1:9876/orders",
+                    "text": (
+                        "[1] heading 'Past orders'\n"
+                        "[2] StaticText 'mattress foundation ordered February 2023'\n"
+                        "[3] StaticText 'Cancelled'\n"
+                    ),
+                },
+                "action": "goto [orders]",
+            }
+        ]
+        order_current = frame(
+            task=order_task,
+            url="http://127.0.0.1:9876/orders/123",
+            text=(
+                "[1] heading 'Order confirmation'\n"
+                "[2] StaticText 'Order #123 placed'\n"
+                "[3] StaticText 'mattress foundation'\n"
+            ),
+            history=order_history,
+        )
+        order_state = self._state(order_task, order_current)
+        self.assertEqual(
+            [goal.kind for goal in order_state.goal_checks],
+            ["semantic", "order_once", "semantic"],
+        )
+        payload = verify.build_verify_payload(
+            order_current, order_state, mode="stop"
+        )
+        source_id = payload["history_evidence"][0]["source_id"]
+        confirmed_order = json.dumps(
+            {
+                "checks": [
+                    {
+                        "goal_id": "goal-1",
+                        "status": "confirmed",
+                        "actual": "mattress foundation ordered in 2023",
+                        "source_task_quote": (
+                            "I previously ordered some a mattress foundation "
+                            "around Feb or March 2023"
+                        ),
+                        "evidence": [
+                            {"line": 3, "quote": "mattress foundation"},
+                            {"history_id": source_id,
+                             "quote": "mattress foundation ordered February 2023"},
+                        ],
+                    },
+                    {
+                        "goal_id": "goal-2",
+                        "status": "confirmed",
+                        "actual": 1,
+                        "source_task_quote": "later cancelled. Can you reorder it for me?",
+                        "evidence": [{"line": 2, "quote": "Order #123 placed"}],
+                    },
+                    {
+                        "goal_id": "goal-3",
+                        "status": "confirmed",
+                        "actual": "prior order was cancelled and this order was placed",
+                        "source_task_quote": "later cancelled. Can you reorder it for me?",
+                        "evidence": [
+                            {"line": 2, "quote": "Order #123 placed"},
+                            {"history_id": source_id, "quote": "Cancelled"},
+                        ],
+                    },
+                ]
+            }
+        )
+        parsed = verify.parse_verification(
+            confirmed_order, order_current, order_state, mode="stop"
+        )
+        self.assertTrue(parsed["all_confirmed"], parsed["invalid"])
+
+    def test_forged_or_out_of_scope_history_evidence_is_rejected(self):
+        task = (
+            "Show the least expensive shoe storage with a minimum storage "
+            "capacity of 12 pairs."
+        )
+        history = [
+            {
+                "observation": {
+                    "url": "http://127.0.0.1:9876/shop/search",
+                    "text": "[1] StaticText 'Rack A $29.00 10 pairs'\n",
+                },
+                "action": "search",
+            },
+            {
+                "run_id": "another-run",
+                "observation": {
+                    "url": "http://127.0.0.1:9876/shop/search",
+                    "text": "[1] StaticText 'Rack X $1.00 12 pairs'\n",
+                },
+                "action": "search",
+            },
+        ]
+        current = frame(
+            task=task,
+            url="http://127.0.0.1:9876/shop/product/9",
+            text="[1] StaticText '$39.00'\n[2] StaticText '12 pairs capacity'\n",
+            history=history,
+        )
+        state = self._state(task, current)
+        goal = state.goal_checks[0]
+        payload = verify.build_verify_payload(current, state, mode="stop")
+        self.assertEqual(
+            [entry["source_id"] for entry in payload["history_evidence"]],
+            ["h1"],
+        )
+        for evidence in (
+            {"history_id": "h99", "quote": "$39.00"},
+            {"history_id": "h2", "quote": "Rack X $1.00 12 pairs"},
+            {"history_id": "h1", "quote": "Rack Z $1.00"},
+            {"history_id": "h1", "quote": "$29.00", "step": 9},
+            {"history_id": "h1", "quote": "$29.00", "url": "http://evil.test/x"},
+        ):
+            raw = json.dumps(
+                {
+                    "checks": [
+                        {
+                            "goal_id": goal.goal_id,
+                            "status": "confirmed",
+                            "actual": "invented comparison",
+                            "source_task_quote": task,
+                            "evidence": [
+                                {"line": 1, "quote": "$39.00"},
+                                evidence,
+                            ],
+                        }
+                    ]
+                }
+            )
+            parsed = verify.parse_verification(
+                raw, current, state, mode="stop"
+            )
+            self.assertFalse(parsed["all_confirmed"])
+            self.assertIn("history", " ".join(parsed["invalid"]).casefold())
+
+        # A history quote cannot stand in for current business evidence.
+        history_only = json.dumps(
+            {
+                "checks": [
+                    {
+                        "goal_id": goal.goal_id,
+                        "status": "confirmed",
+                        "actual": "invented comparison",
+                        "source_task_quote": task,
+                        "evidence": [
+                            {"history_id": "h1", "quote": "$29.00 10 pairs"},
+                        ],
+                    }
+                ]
+            }
+        )
+        parsed = verify.parse_verification(
+            history_only, current, state, mode="stop"
+        )
+        self.assertFalse(parsed["all_confirmed"])
+        self.assertIn("current", " ".join(parsed["invalid"]).casefold())
+
 
 if __name__ == "__main__":
     unittest.main()

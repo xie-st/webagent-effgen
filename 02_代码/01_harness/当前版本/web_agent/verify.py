@@ -120,6 +120,71 @@ _MULTI_OBJECT = re.compile(
     r"comments?|articles?)\b",
     re.I,
 )
+# A field value is only evidence when it sits in that field's business region.
+# These are generic UI/URL words, not task ids, answers or site-specific paths.
+_FIELD_MARKERS: dict[str, tuple[str, ...]] = {
+    "bio": ("bio", "biography", "profile", "about", "简介", "个人简介", "个人资料"),
+    "title": ("title", "标题"),
+    "body": ("body", "post", "thread", "selftext", "content", "正文", "内容", "帖子"),
+    "comment": ("comment", "comments", "reply", "replies", "回复", "评论"),
+    "reply": ("comment", "comments", "reply", "replies", "回复", "评论"),
+    "name": ("name", "username", "account", "profile", "姓名", "用户名", "名称"),
+    "cart": (
+        "cart", "basket", "shopping cart", "checkout", "subtotal",
+        "购物车", "结算", "小计",
+    ),
+}
+_FIELD_URL_MARKERS: dict[str, tuple[str, ...]] = {
+    "bio": ("bio", "biography", "profile", "user", "account"),
+    "title": ("post", "thread", "topic", "question", "comment"),
+    "body": ("post", "thread", "topic", "comment"),
+    "comment": ("comment", "reply", "post"),
+    "reply": ("comment", "reply", "post"),
+    "name": ("profile", "account", "user", "settings"),
+    "cart": ("cart", "basket", "checkout"),
+}
+# A candidate under one of these headings is in a different object region even
+# if the same text (or a cart label) appears elsewhere on the page.
+_UNRELATED_SECTIONS: dict[str, tuple[str, ...]] = {
+    "bio": ("post", "posts", "article", "thread", "comment", "product", "products",
+            "cart", "帖子", "文章", "商品", "产品", "购物车"),
+    "title": ("product", "products", "cart", "shopping cart", "商品", "产品", "购物车"),
+    "body": ("product", "products", "cart", "shopping cart", "商品", "产品", "购物车"),
+    "comment": ("product", "products", "cart", "shopping cart", "商品", "产品", "购物车"),
+    "reply": ("product", "products", "cart", "shopping cart", "商品", "产品", "购物车"),
+    "name": ("post", "article", "product", "products", "cart", "帖子", "文章", "商品"),
+    "cart": ("product", "products", "catalog", "listing", "search results",
+             "商品", "产品", "搜索结果"),
+}
+_HISTORY_PAGE_LIMIT = 3
+_HISTORY_TEXT_LIMIT = 6_000
+_HISTORY_LINE_LIMIT = 80
+_HISTORY_ID_KINDS = frozenset({"semantic"})
+_HISTORY_TERMS = (
+    "price", "cost", "capacity", "order", "orders", "cancelled", "canceled",
+    "cancel", "cart", "checkout", "total", "date", "pairs", "价格", "容量",
+    "订单", "取消", "购物车", "结算", "日期",
+)
+_STOPWORDS = frozenset(
+    {
+        "a", "an", "the", "and", "or", "for", "with", "from", "into", "onto",
+        "this", "that", "these", "those", "my", "me", "to", "of", "in", "on",
+        "at", "is", "are", "was", "were", "be", "please", "can", "you", "it",
+        "least", "most", "show", "find", "open", "add", "change", "update",
+        "把", "将", "我的", "一个", "一些", "请", "帮我",
+    }
+)
+_HISTORY_REQUIRED = re.compile(
+    r"(?:least|cheapest|lowest|minimum|at\s+least)[^.;]{0,100}"
+    r"(?:price|cost|capacity)|"
+    r"(?:previous|previously|earlier|past|cancel(?:l)?ed)[^.;]{0,100}"
+    r"(?:order|purchase|bought|reorder)|"
+    r"(?:最低|least|cheapest|lowest)[^。;]{0,80}(?:价|容量)|"
+    r"容量[^。;]{0,80}(?:最低|least|cheapest|lowest)|"
+    r"重购|重新购买|历史订单|"
+    r"(?:取消|cancel(?:l)?ed?)[^。;]{0,60}(?:重购|重新购买|reorder)",
+    re.I,
+)
 
 
 class GoalIncompleteError(ValueError):
@@ -287,6 +352,217 @@ class AXView:
         return quote in self.lines[line - 1]
 
 
+def _marker_in(text: str, markers: Iterable[str]) -> bool:
+    value = text.casefold()
+    return any(marker.casefold() in value for marker in markers)
+
+
+def _nearest_section(view: AXView, atom: AXAtom) -> AXAtom | None:
+    """Return the closest preceding heading that owns this atom's section."""
+    found: AXAtom | None = None
+    for candidate in view.atoms:
+        if candidate.line_no >= atom.line_no:
+            break
+        if (
+            candidate.role == "heading"
+            and candidate.indent <= atom.indent
+            and atom.line_no - candidate.line_no <= 80
+        ):
+            found = candidate
+    return found
+
+
+def _field_scope_ok(view: AXView, atom: AXAtom | None, field: str | None) -> bool:
+    """Bind an exact value to its field/business region, not just its text.
+
+    The candidate must be under a matching section/ancestor/control or on a
+    matching route.  A heading for a different object region (a product listing,
+    an unrelated post, another cart area) blocks the same text elsewhere on the
+    page.  These markers are generic UI vocabulary; no task id, answer or site
+    path is consulted.
+    """
+    if atom is None or field not in _FIELD_MARKERS:
+        return False
+    markers = _FIELD_MARKERS[field]
+    section = _nearest_section(view, atom)
+    if section is not None:
+        if _marker_in(section.name, markers):
+            return True
+        if _marker_in(section.name, _UNRELATED_SECTIONS[field]):
+            return False
+    # A field control/region wrapping the text is stronger than a neighbouring
+    # label, so check enclosing structure first.
+    for other in reversed(view.atoms):
+        if other.line_no >= atom.line_no:
+            continue
+        if other.indent < atom.indent:
+            if _marker_in(other.name, markers):
+                return True
+            if other.indent == 0:
+                break
+    for other in view.atoms:
+        if other.line_no == atom.line_no:
+            continue
+        if (
+            abs(other.line_no - atom.line_no) <= 8
+            and other.role in {
+                "heading", "button", "link", "textbox", "searchbox",
+                "combobox", "listbox", "menuitem",
+            }
+            and _marker_in(other.name, markers)
+        ):
+            return True
+    if _marker_in(view.frame.url, _FIELD_URL_MARKERS[field]):
+        return True
+    return False
+
+
+def _scope_blocked(view: AXView, atom: AXAtom | None, field: str | None) -> bool:
+    """Explain a same-value match that belongs to another field/object."""
+    if atom is None or field not in _FIELD_MARKERS:
+        return False
+    section = _nearest_section(view, atom)
+    return (
+        section is not None
+        and not _marker_in(section.name, _FIELD_MARKERS[field])
+        and _marker_in(section.name, _UNRELATED_SECTIONS[field])
+    )
+
+
+def _history_terms(goals: Iterable[GoalCheck]) -> tuple[str, ...]:
+    terms = set(_HISTORY_TERMS)
+    for goal in goals:
+        source = f"{goal.description} {goal.target} {goal.field or ''}"
+        for token in re.findall(
+            r"[A-Za-z][A-Za-z0-9_-]{2,}|[\u4e00-\u9fff]{2,}|\d{2,}", source
+        ):
+            lowered = token.casefold()
+            if lowered not in _STOPWORDS and len(lowered) >= 2:
+                terms.add(lowered)
+    return tuple(sorted(terms))
+
+
+def _history_excerpt(text: str, terms: tuple[str, ...]) -> str:
+    """Keep only bounded, relevant lines from one historical observation."""
+    lines = text.splitlines()
+    keep: set[int] = set()
+    for index, line in enumerate(lines):
+        lowered = line.casefold()
+        if _marker_in(lowered, terms) or re.search(
+            r"[$€£¥]\s*\d|\d+(?:\.\d+)?\s*(?:pairs?|items?|orders?)", lowered
+        ):
+            keep.update(range(max(0, index - 1), min(len(lines), index + 2)))
+    if not keep:
+        return text[:_HISTORY_TEXT_LIMIT]
+    selected = [line for index, line in enumerate(lines) if index in keep]
+    excerpt = "\n".join(selected[:_HISTORY_LINE_LIMIT])
+    return excerpt[:_HISTORY_TEXT_LIMIT]
+
+
+def history_observations(frame: Frame, state: TaskState) -> list[dict[str, Any]]:
+    """Select bounded, source-bound historical observations for verification.
+
+    IDs are local ``hN`` labels over the supplied Frame.history.  A step or
+    observation version that the platform did not provide stays ``None``; none
+    is invented.  These records are evidence-only and are never action targets.
+    """
+    terms = _history_terms(state.goal_checks)
+    candidates: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for index, item in enumerate(frame.history):
+        if not isinstance(item, Mapping):
+            continue
+        observation = item.get("observation")
+        if not isinstance(observation, Mapping):
+            continue
+        url = observation.get("url")
+        text = observation.get("text")
+        if not isinstance(url, str) or not isinstance(text, str) or not text.strip():
+            continue
+        if url == frame.url and text == frame.ax:
+            continue
+        run_id = item.get("run_id", observation.get("run_id"))
+        if (
+            isinstance(run_id, str)
+            and run_id
+            and frame.run_id
+            and run_id != frame.run_id
+        ):
+            continue
+        key = (url, text)
+        if key in seen:
+            continue
+        seen.add(key)
+        lowered = text.casefold()
+        score = sum(1 for term in terms if term in lowered)
+        score += len(re.findall(r"[$€£¥]\s*\d|\borders?\b|购物车|订单", lowered))
+        step = item.get("step", observation.get("step"))
+        if type(step) is not int:
+            step = None
+        version = item.get(
+            "observation_version",
+            observation.get("observation_version", observation.get("version")),
+        )
+        action = item.get("action")
+        candidates.append(
+            {
+                "index": index,
+                "score": score,
+                "source_id": f"h{index + 1}",
+                "url": url,
+                "text": text,
+                "excerpt": _history_excerpt(text, terms),
+                "step": step,
+                "observation_version": version,
+                "action": action if isinstance(action, str) else None,
+                "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            }
+        )
+    if not candidates:
+        return []
+    selected = sorted(
+        candidates, key=lambda entry: (entry["score"], entry["index"]), reverse=True
+    )[:_HISTORY_PAGE_LIMIT]
+    selected.sort(key=lambda entry: entry["index"])
+    return [
+        {
+            "source_id": entry["source_id"],
+            "url": entry["url"],
+            "text": entry["excerpt"],
+            "step": entry["step"],
+            "observation_version": entry["observation_version"],
+            "action": entry["action"],
+            "text_sha256": entry["text_sha256"],
+        }
+        for entry in selected
+    ]
+
+
+def _history_required(goal: GoalCheck) -> bool:
+    return goal.kind == "semantic" and bool(
+        _HISTORY_REQUIRED.search(f"{goal.target} {goal.description}")
+    )
+
+
+def _history_evidence(
+    observation: Mapping[str, Any],
+    *,
+    quote: str,
+    actual: Any,
+) -> GoalEvidence:
+    return GoalEvidence(
+        source="history",
+        step=observation.get("step"),
+        url=str(observation.get("url", "")),
+        observation_version=observation.get("observation_version"),
+        quote=quote,
+        actual=actual,
+        identity=identity_key(str(observation.get("url", ""))),
+        deterministic=False,
+        history_id=str(observation.get("source_id", "")),
+    )
+
+
 def _protected_split(task: str) -> list[str]:
     spans: list[str] = []
     pieces: list[str] = []
@@ -334,6 +610,11 @@ def _field(text: str) -> str | None:
         ("comment", "comment"),
         ("回复", "reply"),
         ("reply", "reply"),
+        ("display name", "name"),
+        ("username", "name"),
+        ("用户名", "name"),
+        ("姓名", "name"),
+        ("name", "name"),
     ):
         if marker in lowered:
             return name
@@ -602,10 +883,14 @@ def evaluate_goal(goal: GoalCheck, view: AXView, state: TaskState) -> dict[str, 
                     "reason": "target already existed in the preserved baseline",
                 }
             expected = {base + "\n" + target, base + target}
-            texts = [(atom, _normalize_text(atom.name)) for atom in view.business_texts()]
+            scoped = [
+                atom for atom in view.business_texts()
+                if _field_scope_ok(view, atom, goal.field)
+            ]
+            texts = [(atom, _normalize_text(atom.name)) for atom in scoped]
             # A body may be rendered as consecutive AX text lines.
             blocks: list[tuple[AXAtom, str]] = []
-            business = view.business_texts()
+            business = scoped
             for start in range(len(business)):
                 joined = _normalize_text(business[start].name)
                 for end in range(start + 1, len(business)):
@@ -654,11 +939,13 @@ def evaluate_goal(goal: GoalCheck, view: AXView, state: TaskState) -> dict[str, 
                 return {"status": "failed", "reason": "append had no visible effect"}
         else:
             for atom in view.business_texts():
-                if _normalize_text(atom.name) == target:
+                if _normalize_text(atom.name) != target:
+                    continue
+                if _field_scope_ok(view, atom, goal.field):
                     return {
                         "status": "verified",
                         "actual": atom.name,
-                        "reason": "exact business value visible",
+                        "reason": "exact value visible in the requested field",
                         "evidence": [
                             _evidence(
                                 state=state,
@@ -671,6 +958,17 @@ def evaluate_goal(goal: GoalCheck, view: AXView, state: TaskState) -> dict[str, 
                             )
                         ],
                     }
+            if any(
+                _normalize_text(atom.name) == target
+                and _scope_blocked(view, atom, goal.field)
+                for atom in view.business_texts()
+            ):
+                return {
+                    "status": "unknown",
+                    "reason": (
+                        "the same text appears in an unrelated field/object region"
+                    ),
+                }
         # Draft text, input values and save toasts are not persistence evidence.
         for atom, value in view.form_values():
             if target and target in _normalize_text(value):
@@ -703,11 +1001,11 @@ def evaluate_goal(goal: GoalCheck, view: AXView, state: TaskState) -> dict[str, 
         target = _normalize_text(goal.target)
         for atom in view.business_texts():
             value = _normalize_text(atom.name)
-            if value == target:
+            if value == target and _field_scope_ok(view, atom, "cart"):
                 return {
                     "status": "verified",
                     "actual": value,
-                    "reason": "exact item visible in business state",
+                    "reason": "exact item visible in the cart region",
                     "evidence": [
                         _evidence(
                             state=state,
@@ -720,6 +1018,15 @@ def evaluate_goal(goal: GoalCheck, view: AXView, state: TaskState) -> dict[str, 
                         )
                     ],
                 }
+        if any(
+            _normalize_text(atom.name) == target
+            and _scope_blocked(view, atom, "cart")
+            for atom in view.business_texts()
+        ):
+            return {
+                "status": "unknown",
+                "reason": "the product name appears outside the cart region",
+            }
         return {"status": "unknown", "reason": "item state needs semantic verification"}
     return {"status": "unknown", "reason": "goal requires semantic verification"}
 
@@ -817,6 +1124,33 @@ def _evidence_from_model(
     )
 
 
+def _history_evidence_from_model(
+    observation: Mapping[str, Any],
+    entry: Mapping[str, Any],
+) -> GoalEvidence | None:
+    """Validate one historical quote against the supplied, source-bound text."""
+    quote = entry.get("quote")
+    if (
+        not isinstance(quote, str)
+        or not quote
+        or quote not in str(observation.get("text", ""))
+    ):
+        return None
+    for key in ("url", "history_url"):
+        if key in entry and entry[key] != observation.get("url"):
+            return None
+    for key in ("step", "observation_version"):
+        if key in entry:
+            actual = observation.get(key)
+            if actual is None or entry[key] != actual:
+                return None
+    return _history_evidence(
+        observation,
+        quote=quote,
+        actual=entry.get("actual"),
+    )
+
+
 def _exact_actual_ok(goal: GoalCheck, actual: Any) -> bool:
     target = _normalize_text(goal.target)
     value = _normalize_text(actual)
@@ -839,9 +1173,11 @@ def parse_verification(
 ) -> dict[str, Any]:
     """Strictly validate an independent model verification response.
 
-    Every confirmed check needs a current AX line and an exact quote plus the
-    original task quote.  Exact kinds are recomputed here, so a model cannot
-    turn a draft, toast or ``contains`` match into success.
+    Every confirmed check needs a current business-state line and an exact quote
+    plus the original task quote.  Exact kinds are recomputed here, so a model
+    cannot turn a draft, toast or ``contains`` match into success.  Historical
+    evidence is limited to semantic checks, must cite a supplied ``hN`` source
+    and quote its text verbatim, and can never replace current evidence.
     """
     invalid: list[str] = []
     try:
@@ -868,6 +1204,10 @@ def parse_verification(
             "all_confirmed": False,
         }
     view = parse_ax(frame)
+    history_by_id = {
+        observation["source_id"]: observation
+        for observation in history_observations(frame, state)
+    }
     valid_checks: list[dict[str, Any]] = []
     goals = {goal.goal_id: goal for goal in state.goal_checks}
     covered: set[str] = set()
@@ -902,29 +1242,67 @@ def parse_verification(
             evidence_entries = []
         evidence: list[GoalEvidence] = []
         evidence_invalid = False
+        history_invalid = False
         for item in evidence_entries:
             if not isinstance(item, Mapping):
                 evidence_invalid = True
                 continue
-            record = _evidence_from_model(
-                state=state, frame=frame, view=view, entry=item
-            )
-            if record is None:
-                evidence_invalid = True
-                continue
-            evidence.append(record)
+            source = str(item.get("source", "")).casefold()
+            history_id = item.get("history_id", item.get("source_id"))
+            is_history = history_id is not None or source in {
+                "history", "historical", "past",
+            }
+            if is_history:
+                observation = (
+                    history_by_id.get(history_id)
+                    if isinstance(history_id, str)
+                    else None
+                )
+                record = (
+                    _history_evidence_from_model(observation, item)
+                    if observation is not None
+                    else None
+                )
+                if record is None:
+                    history_invalid = True
+                    continue
+                evidence.append(record)
+            else:
+                record = _evidence_from_model(
+                    state=state, frame=frame, view=view, entry=item
+                )
+                if record is None:
+                    evidence_invalid = True
+                    continue
+                evidence.append(record)
         if evidence_invalid:
             invalid.append(f"goal {goal_id} cites a non-current AX quote")
             status = "unknown"
+        if history_invalid:
+            invalid.append(
+                f"goal {goal_id} cites a history source/quote outside the supplied history"
+            )
+            status = "unknown"
+        current_evidence = [
+            record for record in evidence if record.history_id is None
+        ]
+        history_evidence = [
+            record for record in evidence if record.history_id is not None
+        ]
         if status == "confirmed":
             if goal.kind not in _KNOWN_KINDS:
                 invalid.append(f"goal {goal_id} has an unsupported check kind")
                 status = "unknown"
-            elif not evidence:
-                invalid.append(f"goal {goal_id} confirmed without AX evidence")
+            elif not current_evidence:
+                invalid.append(f"goal {goal_id} confirmed without current AX evidence")
+                status = "unknown"
+            elif history_evidence and goal.kind not in _HISTORY_ID_KINDS:
+                invalid.append(
+                    f"goal {goal_id} uses history for a current-value check"
+                )
                 status = "unknown"
             else:
-                for record in evidence:
+                for record in current_evidence:
                     atom = view.by_line.get(record.line or 0)
                     if atom is None:
                         status = "unknown"
@@ -936,6 +1314,27 @@ def parse_verification(
                             f"goal {goal_id} relies on a draft/status area, not business state"
                         )
                         break
+                    field = (
+                        "cart" if goal.kind == "item_exact" else goal.field
+                    )
+                    if goal.kind in _EXACT_KINDS and not _field_scope_ok(
+                        view, atom, field
+                    ):
+                        status = "unknown"
+                        invalid.append(
+                            f"goal {goal_id} cites the value outside its field/object region"
+                        )
+                        break
+                if (
+                    status == "confirmed"
+                    and goal.kind == "semantic"
+                    and _history_required(goal)
+                    and not history_evidence
+                ):
+                    status = "unknown"
+                    invalid.append(
+                        f"goal {goal_id} needs historical comparison evidence"
+                    )
                 if status == "confirmed":
                     actual = entry.get("actual")
                     if goal.kind in _VALUE_KINDS and not _exact_actual_ok(goal, actual):
@@ -951,7 +1350,7 @@ def parse_verification(
                         cited_text = _normalize_text(
                             "\n".join(
                                 view.lines[record.line - 1]
-                                for record in evidence
+                                for record in current_evidence
                                 if record.line is not None
                                 and 1 <= record.line <= len(view.lines)
                             )
@@ -1266,7 +1665,16 @@ def resolve_pending(
         if goal.goal_id not in confirmed_ids and goal.status != "verified"
     ]
     unchanged = pending.source.get("ax_fingerprint") == view.fingerprint
-    if unresolved and unchanged and not confirmed_ids:
+    readback_step = pending.expected.get("readback_step")
+    queried = type(readback_step) is int and pending.step <= readback_step < frame.step
+    if unresolved and unchanged and not confirmed_ids and not queried:
+        # Missing receipts and an unchanged page do not disprove a commit.
+        # Require an explicit readback before a no-effect retry is permitted.
+        for goal in unresolved:
+            goal.status = "unknown"
+            goal.reason = "unchanged result requires read-only verification before retry"
+        source = "ax_unchanged_unconfirmed"
+    elif unresolved and unchanged and not confirmed_ids:
         for goal in unresolved:
             if goal.kind == "count_per_object":
                 # A vote that changed nothing is a local miss, not a reason to
@@ -1465,6 +1873,7 @@ def build_verify_payload(
     mode: str,
 ) -> dict[str, Any]:
     view = parse_ax(frame)
+    history = history_observations(frame, state)
     return {
         "mode": "independent_m2_verification",
         "check_kind": mode,
@@ -1479,6 +1888,12 @@ def build_verify_payload(
         "goal_checks_from_original_task": [
             goal.as_dict() for goal in state.goal_checks
         ],
+        "history_evidence": history,
+        "history_evidence_note": (
+            "source_id hN is a local, evidence-only label over the supplied "
+            "Frame.history; step/observation_version are null when the platform "
+            "did not provide them"
+        ),
         "pending_action": (
             state.pending_for(frame.tab).as_dict()
             if state.pending_for(frame.tab) is not None
@@ -1493,7 +1908,9 @@ def build_verify_payload(
                     "source_task_quote": "exact substring of task",
                     "evidence": [
                         {"line": "1-based line number from accessibility_tree",
-                         "quote": "exact substring of that AX line"}
+                         "quote": "exact substring of that AX line"},
+                        {"history_id": "hN from history_evidence",
+                         "quote": "exact substring of that history text"},
                     ],
                     "reason": "short reason",
                 }
@@ -1505,7 +1922,13 @@ def build_verify_payload(
             "Input drafts, save toasts, success messages and visual evidence are not persistence.",
             "For exact replacement report actual and require equality, never substring.",
             "For append require the preserved original plus exactly the requested addition.",
+            "Exact field/cart values need current AX evidence inside that field/object region; "
+            "the same text in an unrelated post, product listing or empty region is not proof.",
             "Never invent goals, line numbers or quotes; missing evidence must be unknown.",
+            "History IDs hN are verification evidence only, never action targets. Every history "
+            "quote must occur in the supplied history_evidence text for that ID.",
+            "Current AX evidence is still required; history can only add prior comparison/order "
+            "facts to a semantic check. Step/version null means unknown, not invented.",
             "Counts/states must be observed in the current AX, not inferred from the click.",
             "For multi-object requirements confirm one object per action with evidence.",
         ],
@@ -1589,6 +2012,7 @@ __all__ = [
     "evaluate_goal",
     "extract_goal_checks",
     "goal_signature",
+    "history_observations",
     "judge_goals",
     "object_key",
     "parse_ax",

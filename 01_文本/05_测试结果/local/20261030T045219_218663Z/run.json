@@ -1,0 +1,21 @@
+{
+  "kind": "local_synthetic_result",
+  "run_id": "20261030T045219_218663Z",
+  "agent": "smoke_test:profile_driver",
+  "task": "profile",
+  "scenario": "normal",
+  "official_score": false,
+  "agent_sha256": "0dce2b78b093ee16f68815f0942aecfc3ec2b76967db044bc3cbabad12c4ec75",
+  "runner_sha256": "1ddfc6bdf99225958122c1d6138340d16fac385eaed78a0da18f2b3669286827",
+  "status": "completed",
+  "summary": {
+    "kind": "local_synthetic_result",
+    "agent": "smoke_test:profile_driver",
+    "task": "profile",
+    "scenario": "normal",
+    "passed": true,
+    "seconds": 0.893720000050962,
+    "steps": 3,
+    "official_score": false
+  }
+}

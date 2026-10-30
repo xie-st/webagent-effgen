@@ -1,0 +1,23 @@
+Tab 0 (current): WebAgent 本地练习站
+[1] navigation
+[2] link '论坛' url: http://127.0.0.1:6149/forum
+[3] link '电商' url: http://127.0.0.1:6149/shop
+[4] link '资料 A' url: http://127.0.0.1:6149/slow/a
+[5] link '资料 B' url: http://127.0.0.1:6149/slow/b
+[6] heading '技术论坛' level: 1
+[7] paragraph '个人简介：开发者-rt09'
+[8] StaticText '个人简介'
+[9] textbox '个人简介'
+[10] button '保存简介'
+[11] paragraph '帖子：'
+[12] StaticText '帖子标题'
+[13] textbox '帖子标题'
+[14] button '发表帖子'
+[15] paragraph '回复：'
+[16] StaticText '回复内容'
+[17] textbox '回复内容'
+[18] button '发送回复'
+[19] paragraph '订阅状态：未订阅'
+[20] button '订阅技术版块'
+[21] paragraph '点赞数：0'
+[22] button '点赞技术帖子'

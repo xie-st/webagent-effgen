@@ -1,0 +1,13 @@
+Tab 0 (current): WebAgent 本地练习站
+[1] navigation
+[2] link '论坛' url: http://127.0.0.1:58007/forum
+[3] link '电商' url: http://127.0.0.1:58007/shop
+[4] link '资料 A' url: http://127.0.0.1:58007/slow/a
+[5] link '资料 B' url: http://127.0.0.1:58007/slow/b
+[6] heading '电商商城' level: 1
+[7] heading '键盘' level: 2
+[8] paragraph '价格：199 元'
+[9] button '键盘加入购物车'
+[10] paragraph '购物车：键盘'
+[11] paragraph '订单：已提交（1 个）'
+[12] button '提交订单'

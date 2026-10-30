@@ -1,0 +1,34 @@
+{
+  "harness": {
+    "agent_logic.py": "48fd474dfefc654e18db43a02a510aa924d15d10c8731945d4b035e94c7efa5e",
+    "my_agent.py": "77bbb6c86a3c546157ea6231d0e6578436184c9a3ff3ee3f30815f20e5e63ab7",
+    "version.json": "957d5c1dd90bafab238c66a10166a4300a6cf5a0949ecdbd804808df64c0185d",
+    "web_agent/__init__.py": "105f763e16301affa82858d34e795804e3bec20261628d91ba238b2f543a6cf6",
+    "web_agent/actions.py": "98855252a06ed194b36939a85904b1b6ce2d108c7c584217df8592bdcee7befb",
+    "web_agent/adapters/__init__.py": "ed3ede198e35e5993ed9f23e9ea404ecd31c69483246c3d02f04ea90faa41bff",
+    "web_agent/adapters/official.py": "c7b7100602b34d09b30ea2dd46ce7fcb9690f93b16c48beb8e4664a61b51bd09",
+    "web_agent/baseline.py": "2bf3e4bf51fc6d4d985e20150e78c655813ae45755bbeac089c7159683a25e51",
+    "web_agent/contracts.py": "644cae98043c2df05b59e41b0b5bf40b06e7a86552e3c836ba81b0e63ea3bac9",
+    "web_agent/environment.py": "10f8ae62e8325f4ff8871653a79449c7081012bbbeb6550819072c99c213b727",
+    "web_agent/model_port.py": "bab36494719ae280069a306454c23c4247abde745836c9208315abd314cbe57c",
+    "web_agent/observe.py": "f02e7a6793e75b79adb6498dfe25c93dc4a097e669dd8203d52d0d273e76c7b1",
+    "web_agent/policy.py": "330c4fd2de91ccf318eed4d22299da99eb6d1482b9533d5fbecb0a15e797f3df",
+    "web_agent/recover.py": "97095296e83cada57dd436a2e5b82192f87ff6bc30d07b8f94036736873d5a18",
+    "web_agent/runtime.py": "30ad62298e2e28b4cb85bc374b10aabef767fcad291394e9a56e5171b0579e1d",
+    "web_agent/screenshots.py": "55fc6a699401d86f3364dcc72c9bbff7e7548279f08aab019bb6247cdb34e370",
+    "web_agent/state.py": "43b98ac039e5a753d6a8a8f21547ee9998687ab89095b20616500fb77d7896a7",
+    "web_agent/telemetry.py": "b1d688dd8ab4b38cb350861930e0ce40c6d0273eb89e3135b521ecfaa53d1868",
+    "web_agent/verify.py": "bdbba91402d572142d20e3c44ccecfd2042c902e1a17480468f2b91b59611234"
+  },
+  "local": {
+    "local_official_adapter.py": "c996289837fa7144f1598ae4457399cc492ebd3f1a02eb47a2eedfe29c30b575",
+    "m2_ax_text.py": "0c079b145409d6dc8af4d6518697e1d8912d007adba6c5c9b4431d1e65c5c10e",
+    "m2_faults.py": "d49a6448c6e67bd08e00af7293584da33da24d26943098fb5f2a95a7d3ab7aba",
+    "m2_grading.py": "0f444a993183aaef5aef9653b87bdaa4fb99c3d30308a6f27a8d1612b65d144e",
+    "m2_runtime_bridge.py": "34c11fdbf1b70114a06fd8c02062a0c08df84e3de68a5c496eb28feab2e56af8",
+    "m2_runtime_host.py": "da0d14b66eb64b6ea9817cc10584eb31121a3b62924c031b12257bcb3f1d4be9",
+    "m2_runtime_policy.py": "c6caaf0fe204002e141ec29076a292fe387dd8a1380e2bb8b01cbff82e377131",
+    "sandbox.py": "c2db6837ff92de9f7c1db0459c2e268578d3b913eecea1c6dde96357be0e6988",
+    "test_m2_runtime_bridge.py": "b103964f5d207a2246a16dc65dfc3142c84d6e1b475cc04327f1fd6615b6ea7d"
+  }
+}

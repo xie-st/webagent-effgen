@@ -157,15 +157,16 @@ class GoalEvidence:
     """
 
     source: str
-    step: int
+    step: int | None
     url: str
-    observation_version: int | str
+    observation_version: int | str | None
     line: int | None = None
     element_id: str | None = None
     quote: str = ""
     actual: Any = None
     identity: str = ""
     deterministic: bool = False
+    history_id: str | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -179,13 +180,15 @@ class GoalEvidence:
             "actual": self.actual,
             "identity": self.identity,
             "deterministic": self.deterministic,
+            "history_id": self.history_id,
         }
 
     @classmethod
     def from_dict(cls, data: Mapping[str, Any]) -> "GoalEvidence":
+        step = data.get("step", 0)
         return cls(
             source=str(data.get("source", "")),
-            step=int(data.get("step", 0)),
+            step=int(step) if type(step) is int else None,
             url=str(data.get("url", "")),
             observation_version=data.get("observation_version", 0),
             line=data.get("line"),
@@ -194,6 +197,11 @@ class GoalEvidence:
             actual=data.get("actual"),
             identity=str(data.get("identity", "")),
             deterministic=bool(data.get("deterministic", False)),
+            history_id=(
+                str(data["history_id"])
+                if isinstance(data.get("history_id"), str)
+                else None
+            ),
         )
 
 

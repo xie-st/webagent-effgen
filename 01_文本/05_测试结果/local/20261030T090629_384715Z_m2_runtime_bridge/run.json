@@ -1,0 +1,66 @@
+{
+  "kind": "m2_runtime_browser_integration",
+  "official_score": false,
+  "model_calls": 0,
+  "decision_source": "scripted_policy",
+  "runtime": "actual_Runtime.advance",
+  "browser": "Chromium via Playwright",
+  "harness_dir": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\02_代码\\01_harness\\当前版本",
+  "harness_ref": "working-after-scope-and-pending-fix",
+  "harness_snapshot_hashes": {
+    "runtime_sha256": "30ad62298e2e28b4cb85bc374b10aabef767fcad291394e9a56e5171b0579e1d",
+    "verify_sha256": "bdbba91402d572142d20e3c44ccecfd2042c902e1a17480468f2b91b59611234"
+  },
+  "runtime_child": {
+    "python": "3.12.9",
+    "executable": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\.local\\m1a-lock-venv\\Scripts\\python.exe",
+    "effgen": "1.3.0",
+    "harness_dir": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\02_代码\\01_harness\\当前版本",
+    "harness_version": {
+      "schema_version": 2,
+      "version": "当前版本",
+      "sdk_root": "sdk",
+      "based_on": "v1"
+    },
+    "runtime_file": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\02_代码\\01_harness\\当前版本\\web_agent\\runtime.py",
+    "runtime_sha256": "30ad62298e2e28b4cb85bc374b10aabef767fcad291394e9a56e5171b0579e1d",
+    "verify_file": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\02_代码\\01_harness\\当前版本\\web_agent\\verify.py",
+    "verify_sha256": "bdbba91402d572142d20e3c44ccecfd2042c902e1a17480468f2b91b59611234",
+    "policy": "scripted_policy",
+    "model_calls": 0
+  },
+  "interpreters": {
+    "browser": {
+      "python": "3.12.9",
+      "executable": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\02_代码\\02_本地测试环境\\.venv\\Scripts\\python.exe",
+      "playwright": "1.64.1",
+      "flask": "3.1.3"
+    },
+    "runtime": {
+      "executable": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\.local\\m1a-lock-venv\\Scripts\\python.exe",
+      "effgen": "1.3.0"
+    }
+  },
+  "started_at": "2026-10-30T09:06:29.741613+00:00",
+  "seconds": 14.598773799953051,
+  "all_matched": true,
+  "scenario_count": 14,
+  "scenarios": [
+    "profile_normal",
+    "post_normal",
+    "reply_normal",
+    "subscribe_normal",
+    "vote_normal",
+    "vote_unknown_no_resend",
+    "cart_normal",
+    "checkout_normal",
+    "profile_no_effect_recovery",
+    "profile_append_repair",
+    "profile_unknown_no_resend",
+    "checkout_unknown_no_resend",
+    "profile_post_partial",
+    "profile_premature_stop"
+  ],
+  "evidence_dir": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\01_文本\\05_测试结果\\local\\20261030T090629_384715Z_m2_runtime_bridge",
+  "command": "python.exe m2_runtime_bridge.py --harness-dir ..\\01_harness\\当前版本 --harness-ref working-after-scope-and-pending-fix"
+}

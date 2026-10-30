@@ -27,12 +27,17 @@ VERIFY_SYSTEM = '''You are an independent verification judge for one web task.
 Return JSON only: {"checks":[{"goal_id":"existing id","status":"confirmed|failed|unknown",
 "actual":"exact observed value/count/state","source_task_quote":"exact task substring",
 "evidence":[{"line":1,"quote":"exact substring of that AX line"}],"reason":"short"}]}.
-Use only the supplied original-task goals and the current accessibility_tree.
-A draft input, save toast, success message, visual evidence presence or actor claim is not
-persistence. For replacement require exact equality, never substring. For append require
-the preserved original plus exactly the requested addition. If a fact is not directly
-visible, return unknown rather than guessing. Never invent line numbers or quotes and never
-return a webpage action.'''
+Use only the supplied original-task goals, the current accessibility_tree and the
+bounded history_evidence. A draft input, save toast, success message, visual evidence
+presence or actor claim is not persistence. Exact field/cart values need current AX
+evidence inside that field/object region, not the same text in an unrelated post,
+product listing or empty region. For replacement require exact equality, never
+substring. For append require the preserved original plus exactly the requested addition.
+Historical comparison or prior-order facts may use {"history_id":"hN","quote":"exact
+substring of that history_evidence text"}; current AX evidence is still required and
+history IDs are evidence labels, never actions. Never invent lines, history IDs, step,
+version or quotes. If a fact is not directly visible, return unknown rather than
+guessing. Never return a webpage action.'''
 
 
 class DeadlineExceeded(TimeoutError):

@@ -1,0 +1,382 @@
+{
+  "kind": "m2_runtime_browser_scenario",
+  "scenario": "profile_post_partial",
+  "task": "profile_post",
+  "token": "rt13",
+  "note": "profile prefix preserved; post recovers locally",
+  "expected_pass": true,
+  "actual_pass": true,
+  "matched": true,
+  "decision_source": "scripted_policy",
+  "runtime": "actual_Runtime.advance",
+  "browser": "Chromium via Playwright",
+  "model_calls": 0,
+  "official_score": false,
+  "fault_plan": {
+    "token": "rt13",
+    "seed": {
+      "title": "旧帖子"
+    },
+    "faults": {
+      "post": {
+        "mode": "no_effect_success",
+        "times": 1,
+        "note": "",
+        "fired": 1
+      }
+    },
+    "activations": [
+      {
+        "operation": "post",
+        "mode": "no_effect_success",
+        "times": 1,
+        "fired": 1,
+        "note": ""
+      }
+    ]
+  },
+  "seed": {
+    "title": "旧帖子"
+  },
+  "steps": 7,
+  "ended": "stop",
+  "seconds": 1.0975477999309078,
+  "script_error": null,
+  "stop_attempts": 1,
+  "stop_rejections": 0,
+  "guard_rejections": 0,
+  "stop_accepted": true,
+  "expected_stop_rejections": 0,
+  "expected_guard_rejections": 0,
+  "runtime_errors": [],
+  "runtime_state": {
+    "step": 6,
+    "task": "把个人简介改为 开发者-rt13，并发表标题为 并行调度-rt13 的帖子",
+    "goals": [
+      {
+        "goal_id": "goal-1",
+        "description": "把个人简介改为 开发者-rt13",
+        "kind": "exact_equal",
+        "target": "开发者-rt13",
+        "source_quote": "把个人简介改为 开发者-rt13",
+        "field": "bio",
+        "baseline": null,
+        "status": "verified",
+        "attempts": 0,
+        "actual": null,
+        "reason": "",
+        "evidence": [
+          {
+            "source": "model",
+            "step": 2,
+            "url": "http://127.0.0.1:42543/forum",
+            "observation_version": 3,
+            "line": 8,
+            "element_id": "7",
+            "quote": "个人简介：开发者-rt13",
+            "actual": null,
+            "identity": "http://127.0.0.1:42543",
+            "deterministic": false
+          }
+        ],
+        "objects": []
+      },
+      {
+        "goal_id": "goal-2",
+        "description": "发表标题为 并行调度-rt13 的帖子",
+        "kind": "exact_equal",
+        "target": "并行调度-rt13",
+        "source_quote": "发表标题为 并行调度-rt13 的帖子",
+        "field": "title",
+        "baseline": null,
+        "status": "verified",
+        "attempts": 1,
+        "actual": null,
+        "reason": "field value is not exact",
+        "evidence": [
+          {
+            "source": "model",
+            "step": 4,
+            "url": "http://127.0.0.1:42543/forum",
+            "observation_version": 5,
+            "line": 12,
+            "element_id": "11",
+            "quote": "帖子：旧帖子",
+            "actual": null,
+            "identity": "http://127.0.0.1:42543",
+            "deterministic": false
+          },
+          {
+            "source": "model",
+            "step": 6,
+            "url": "http://127.0.0.1:42543/forum",
+            "observation_version": 7,
+            "line": 12,
+            "element_id": "11",
+            "quote": "帖子：并行调度-rt13",
+            "actual": null,
+            "identity": "http://127.0.0.1:42543",
+            "deterministic": false
+          }
+        ],
+        "objects": []
+      }
+    ],
+    "pending": [],
+    "drafts": {
+      "9": {
+        "text": "开发者-rt13",
+        "step": 0,
+        "url": "http://127.0.0.1:42543/forum",
+        "observation_version": 1
+      },
+      "13": {
+        "text": "并行调度-rt13",
+        "step": 4,
+        "url": "http://127.0.0.1:42543/forum",
+        "observation_version": 5
+      }
+    },
+    "memory": "",
+    "identity": "http://127.0.0.1:42543",
+    "identity_changes": [],
+    "deadline": 1793350930.7944493,
+    "remaining_seconds": 59.379342794418335,
+    "recovery_count": 0,
+    "progress": {
+      "total": 2,
+      "verified": 2,
+      "failed": 0,
+      "unknown": 0,
+      "stale": 0,
+      "pending": 0
+    }
+  },
+  "runtime_child": {
+    "python": "3.12.9",
+    "executable": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\.local\\m1a-lock-venv\\Scripts\\python.exe",
+    "effgen": "1.3.0",
+    "harness_dir": "C:\\Users\\hiyad\\AppData\\Local\\Temp\\webagent-m2-freeze-33d1a18\\02_代码\\01_harness\\当前版本",
+    "harness_version": {
+      "schema_version": 2,
+      "version": "当前版本",
+      "sdk_root": "sdk",
+      "based_on": "v1"
+    },
+    "runtime_file": "C:\\Users\\hiyad\\AppData\\Local\\Temp\\webagent-m2-freeze-33d1a18\\02_代码\\01_harness\\当前版本\\web_agent\\runtime.py",
+    "runtime_sha256": "30ad62298e2e28b4cb85bc374b10aabef767fcad291394e9a56e5171b0579e1d",
+    "verify_file": "C:\\Users\\hiyad\\AppData\\Local\\Temp\\webagent-m2-freeze-33d1a18\\02_代码\\01_harness\\当前版本\\web_agent\\verify.py",
+    "verify_sha256": "fae42b91b62be080b36f6b00cbafcc9af0b8b81de714fb1c6713a659c3f799f8",
+    "policy": "scripted_policy",
+    "model_calls": 0
+  },
+  "actor_goal_checks_advisory_only": [
+    {
+      "goal_id": "goal-1",
+      "description": "把个人简介改为 开发者-rt13",
+      "kind": "exact_equal",
+      "target": "开发者-rt13",
+      "source_quote": "把个人简介改为 开发者-rt13",
+      "field": "bio",
+      "baseline": null,
+      "status": "verified",
+      "attempts": 0,
+      "actual": null,
+      "reason": "",
+      "evidence": [
+        {
+          "source": "model",
+          "step": 2,
+          "url": "http://127.0.0.1:42543/forum",
+          "observation_version": 3,
+          "line": 8,
+          "element_id": "7",
+          "quote": "个人简介：开发者-rt13",
+          "actual": null,
+          "identity": "http://127.0.0.1:42543",
+          "deterministic": false
+        }
+      ],
+      "objects": []
+    },
+    {
+      "goal_id": "goal-2",
+      "description": "发表标题为 并行调度-rt13 的帖子",
+      "kind": "exact_equal",
+      "target": "并行调度-rt13",
+      "source_quote": "发表标题为 并行调度-rt13 的帖子",
+      "field": "title",
+      "baseline": null,
+      "status": "verified",
+      "attempts": 1,
+      "actual": null,
+      "reason": "field value is not exact",
+      "evidence": [
+        {
+          "source": "model",
+          "step": 4,
+          "url": "http://127.0.0.1:42543/forum",
+          "observation_version": 5,
+          "line": 12,
+          "element_id": "11",
+          "quote": "帖子：旧帖子",
+          "actual": null,
+          "identity": "http://127.0.0.1:42543",
+          "deterministic": false
+        },
+        {
+          "source": "model",
+          "step": 6,
+          "url": "http://127.0.0.1:42543/forum",
+          "observation_version": 7,
+          "line": 12,
+          "element_id": "11",
+          "quote": "帖子：并行调度-rt13",
+          "actual": null,
+          "identity": "http://127.0.0.1:42543",
+          "deterministic": false
+        }
+      ],
+      "objects": []
+    }
+  ],
+  "grade": {
+    "task": "profile_post",
+    "passed": true,
+    "requirements": [
+      {
+        "key": "profile_exact",
+        "description": "个人简介必须精确等于“开发者-rt13”，不能保留或追加旧内容",
+        "expected": "开发者-rt13",
+        "actual": "开发者-rt13",
+        "passed": true
+      },
+      {
+        "key": "post_exact",
+        "description": "帖子标题必须精确等于“并行调度-rt13”",
+        "expected": "并行调度-rt13",
+        "actual": "并行调度-rt13",
+        "passed": true
+      }
+    ],
+    "write_rules": [
+      {
+        "operation": "profile",
+        "kind": "target",
+        "description": "profile 必须恰好提交 1 次达到要求的个人简介",
+        "expected": 1,
+        "actual": 1,
+        "target_value": "开发者-rt13",
+        "passed": true
+      },
+      {
+        "operation": "post",
+        "kind": "target",
+        "description": "post 必须恰好提交 1 次达到要求的帖子标题",
+        "expected": 1,
+        "actual": 1,
+        "target_value": "并行调度-rt13",
+        "passed": true
+      }
+    ],
+    "write_counts": {
+      "profile": 1,
+      "post": 1
+    },
+    "attempt_counts": {
+      "profile": 1,
+      "post": 2
+    },
+    "faults": {
+      "token": "rt13",
+      "seed": {
+        "title": "旧帖子"
+      },
+      "faults": {
+        "post": {
+          "mode": "no_effect_success",
+          "times": 1,
+          "note": "",
+          "fired": 1
+        }
+      },
+      "activations": [
+        {
+          "operation": "post",
+          "mode": "no_effect_success",
+          "times": 1,
+          "fired": 1,
+          "note": ""
+        }
+      ]
+    },
+    "business_state": {
+      "token": "rt13",
+      "bio": "开发者-rt13",
+      "title": "并行调度-rt13",
+      "reply": "",
+      "subscribed": false,
+      "votes": 0,
+      "cart": [],
+      "ordered": false,
+      "orders": [],
+      "write_counts": {
+        "profile": 1,
+        "post": 1
+      },
+      "attempt_counts": {
+        "profile": 1,
+        "post": 2
+      },
+      "write_events": [
+        {
+          "operation": "profile",
+          "requested": "开发者-rt13",
+          "stored": "开发者-rt13",
+          "before": "",
+          "after": "开发者-rt13",
+          "fault": "normal",
+          "committed": true
+        },
+        {
+          "operation": "post",
+          "requested": "并行调度-rt13",
+          "stored": "并行调度-rt13",
+          "before": "旧帖子",
+          "after": "并行调度-rt13",
+          "fault": "normal",
+          "committed": true
+        }
+      ],
+      "faults": {
+        "token": "rt13",
+        "seed": {
+          "title": "旧帖子"
+        },
+        "faults": {
+          "post": {
+            "mode": "no_effect_success",
+            "times": 1,
+            "note": "",
+            "fired": 1
+          }
+        },
+        "activations": [
+          {
+            "operation": "post",
+            "mode": "no_effect_success",
+            "times": 1,
+            "fired": 1,
+            "note": ""
+          }
+        ]
+      }
+    },
+    "actor_claims": null,
+    "actor_claims_ignored": false,
+    "judged_from": "actual_fixture_state_and_original_task_requirements",
+    "official_score": false,
+    "model_calls": null
+  },
+  "final_body_excerpt": "论坛电商资料 A资料 B\n技术论坛\n\n个人简介：开发者-rt13\n\n个人简介保存简介\n\n帖子：并行调度-rt13\n\n帖子标题发表帖子\n\n回复：\n\n回复内容发送回复\n\n订阅状态：未订阅\n\n订阅技术版块\n\n点赞数：0\n\n点赞技术帖子"
+}

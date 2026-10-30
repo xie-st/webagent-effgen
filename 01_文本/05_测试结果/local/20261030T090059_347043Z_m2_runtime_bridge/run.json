@@ -1,0 +1,66 @@
+{
+  "kind": "m2_runtime_browser_integration",
+  "official_score": false,
+  "model_calls": 0,
+  "decision_source": "scripted_policy",
+  "runtime": "actual_Runtime.advance",
+  "browser": "Chromium via Playwright",
+  "harness_dir": "C:\\Users\\hiyad\\AppData\\Local\\Temp\\webagent-m2-freeze-33d1a18\\02_代码\\01_harness\\当前版本",
+  "harness_ref": "33d1a18",
+  "harness_snapshot_hashes": {
+    "runtime_sha256": "30ad62298e2e28b4cb85bc374b10aabef767fcad291394e9a56e5171b0579e1d",
+    "verify_sha256": "fae42b91b62be080b36f6b00cbafcc9af0b8b81de714fb1c6713a659c3f799f8"
+  },
+  "runtime_child": {
+    "python": "3.12.9",
+    "executable": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\.local\\m1a-lock-venv\\Scripts\\python.exe",
+    "effgen": "1.3.0",
+    "harness_dir": "C:\\Users\\hiyad\\AppData\\Local\\Temp\\webagent-m2-freeze-33d1a18\\02_代码\\01_harness\\当前版本",
+    "harness_version": {
+      "schema_version": 2,
+      "version": "当前版本",
+      "sdk_root": "sdk",
+      "based_on": "v1"
+    },
+    "runtime_file": "C:\\Users\\hiyad\\AppData\\Local\\Temp\\webagent-m2-freeze-33d1a18\\02_代码\\01_harness\\当前版本\\web_agent\\runtime.py",
+    "runtime_sha256": "30ad62298e2e28b4cb85bc374b10aabef767fcad291394e9a56e5171b0579e1d",
+    "verify_file": "C:\\Users\\hiyad\\AppData\\Local\\Temp\\webagent-m2-freeze-33d1a18\\02_代码\\01_harness\\当前版本\\web_agent\\verify.py",
+    "verify_sha256": "fae42b91b62be080b36f6b00cbafcc9af0b8b81de714fb1c6713a659c3f799f8",
+    "policy": "scripted_policy",
+    "model_calls": 0
+  },
+  "interpreters": {
+    "browser": {
+      "python": "3.12.9",
+      "executable": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\02_代码\\02_本地测试环境\\.venv\\Scripts\\python.exe",
+      "playwright": "1.64.1",
+      "flask": "3.1.3"
+    },
+    "runtime": {
+      "executable": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\.local\\m1a-lock-venv\\Scripts\\python.exe",
+      "effgen": "1.3.0"
+    }
+  },
+  "started_at": "2026-10-30T09:00:59.651505+00:00",
+  "seconds": 13.202389599988237,
+  "all_matched": true,
+  "scenario_count": 14,
+  "scenarios": [
+    "profile_normal",
+    "post_normal",
+    "reply_normal",
+    "subscribe_normal",
+    "vote_normal",
+    "vote_unknown_no_resend",
+    "cart_normal",
+    "checkout_normal",
+    "profile_no_effect_recovery",
+    "profile_append_repair",
+    "profile_unknown_no_resend",
+    "checkout_unknown_no_resend",
+    "profile_post_partial",
+    "profile_premature_stop"
+  ],
+  "evidence_dir": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\01_文本\\05_测试结果\\local\\20261030T090059_347043Z_m2_runtime_bridge",
+  "command": "python.exe m2_runtime_bridge.py --harness-dir C:\\Users\\hiyad\\AppData\\Local\\Temp\\webagent-m2-freeze-33d1a18\\02_代码\\01_harness\\当前版本 --harness-ref 33d1a18"
+}

@@ -1,0 +1,219 @@
+{
+  "kind": "m2_runtime_browser_scenario",
+  "scenario": "cart_normal",
+  "task": "cart",
+  "token": "rt07",
+  "note": "normal cart add",
+  "expected_pass": true,
+  "actual_pass": true,
+  "matched": true,
+  "decision_source": "scripted_policy",
+  "runtime": "actual_Runtime.advance",
+  "browser": "Chromium via Playwright",
+  "model_calls": 0,
+  "official_score": false,
+  "fault_plan": {
+    "token": "rt07",
+    "seed": {},
+    "faults": {},
+    "activations": []
+  },
+  "seed": {},
+  "steps": 3,
+  "ended": "stop",
+  "seconds": 0.9798993999138474,
+  "script_error": null,
+  "stop_attempts": 1,
+  "stop_rejections": 0,
+  "guard_rejections": 0,
+  "stop_accepted": true,
+  "expected_stop_rejections": 0,
+  "expected_guard_rejections": 0,
+  "runtime_errors": [],
+  "runtime_state": {
+    "step": 2,
+    "task": "把键盘加入购物车",
+    "goals": [
+      {
+        "goal_id": "goal-1",
+        "description": "把键盘加入购物车",
+        "kind": "item_exact",
+        "target": "键盘",
+        "source_quote": "把键盘加入购物车",
+        "field": "cart",
+        "baseline": null,
+        "status": "verified",
+        "attempts": 0,
+        "actual": null,
+        "reason": "",
+        "evidence": [
+          {
+            "source": "ax_exact",
+            "step": 2,
+            "url": "http://127.0.0.1:14140/shop",
+            "observation_version": 3,
+            "line": 8,
+            "element_id": "7",
+            "quote": "键盘",
+            "actual": "键盘",
+            "identity": "http://127.0.0.1:14140",
+            "deterministic": true,
+            "history_id": null
+          }
+        ],
+        "objects": []
+      }
+    ],
+    "pending": [],
+    "drafts": {},
+    "memory": "",
+    "identity": "http://127.0.0.1:14140",
+    "identity_changes": [],
+    "deadline": 1793351255.8444283,
+    "remaining_seconds": 59.48410677909851,
+    "recovery_count": 0,
+    "progress": {
+      "total": 1,
+      "verified": 1,
+      "failed": 0,
+      "unknown": 0,
+      "stale": 0,
+      "pending": 0
+    }
+  },
+  "runtime_child": {
+    "python": "3.12.9",
+    "executable": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\.local\\m1a-lock-venv\\Scripts\\python.exe",
+    "effgen": "1.3.0",
+    "harness_dir": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\02_代码\\01_harness\\当前版本",
+    "harness_version": {
+      "schema_version": 2,
+      "version": "当前版本",
+      "sdk_root": "sdk",
+      "based_on": "v1"
+    },
+    "runtime_file": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\02_代码\\01_harness\\当前版本\\web_agent\\runtime.py",
+    "runtime_sha256": "30ad62298e2e28b4cb85bc374b10aabef767fcad291394e9a56e5171b0579e1d",
+    "verify_file": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\02_代码\\01_harness\\当前版本\\web_agent\\verify.py",
+    "verify_sha256": "bdbba91402d572142d20e3c44ccecfd2042c902e1a17480468f2b91b59611234",
+    "policy": "scripted_policy",
+    "model_calls": 0
+  },
+  "actor_goal_checks_advisory_only": [
+    {
+      "goal_id": "goal-1",
+      "description": "把键盘加入购物车",
+      "kind": "item_exact",
+      "target": "键盘",
+      "source_quote": "把键盘加入购物车",
+      "field": "cart",
+      "baseline": null,
+      "status": "verified",
+      "attempts": 0,
+      "actual": null,
+      "reason": "",
+      "evidence": [
+        {
+          "source": "ax_exact",
+          "step": 2,
+          "url": "http://127.0.0.1:14140/shop",
+          "observation_version": 3,
+          "line": 8,
+          "element_id": "7",
+          "quote": "键盘",
+          "actual": "键盘",
+          "identity": "http://127.0.0.1:14140",
+          "deterministic": true,
+          "history_id": null
+        }
+      ],
+      "objects": []
+    }
+  ],
+  "grade": {
+    "task": "cart",
+    "passed": true,
+    "requirements": [
+      {
+        "key": "cart_exact",
+        "description": "购物车必须恰好包含一件“键盘”",
+        "expected": [
+          "键盘"
+        ],
+        "actual": [
+          "键盘"
+        ],
+        "passed": true
+      }
+    ],
+    "write_rules": [
+      {
+        "operation": "cart",
+        "kind": "total",
+        "description": "cart 必须恰好提交 1 次加入购物车",
+        "expected": 1,
+        "actual": 1,
+        "target_value": null,
+        "passed": true
+      }
+    ],
+    "write_counts": {
+      "cart": 1
+    },
+    "attempt_counts": {
+      "cart": 1
+    },
+    "faults": {
+      "token": "rt07",
+      "seed": {},
+      "faults": {},
+      "activations": []
+    },
+    "business_state": {
+      "token": "rt07",
+      "bio": "",
+      "title": "",
+      "reply": "",
+      "subscribed": false,
+      "votes": 0,
+      "cart": [
+        "键盘"
+      ],
+      "ordered": false,
+      "orders": [],
+      "write_counts": {
+        "cart": 1
+      },
+      "attempt_counts": {
+        "cart": 1
+      },
+      "write_events": [
+        {
+          "operation": "cart",
+          "requested": "键盘",
+          "stored": [
+            "键盘"
+          ],
+          "before": [],
+          "after": [
+            "键盘"
+          ],
+          "fault": "normal",
+          "committed": true
+        }
+      ],
+      "faults": {
+        "token": "rt07",
+        "seed": {},
+        "faults": {},
+        "activations": []
+      }
+    },
+    "actor_claims": null,
+    "actor_claims_ignored": false,
+    "judged_from": "actual_fixture_state_and_original_task_requirements",
+    "official_score": false,
+    "model_calls": null
+  },
+  "final_body_excerpt": "论坛电商资料 A资料 B\n电商商城\n键盘\n\n价格：199 元\n\n键盘加入购物车\n\n购物车：键盘\n\n订单：未提交（0 个）\n\n提交订单"
+}

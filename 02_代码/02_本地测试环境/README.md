@@ -14,6 +14,12 @@
 | `m2_faults.py` | 按写操作配置的可复现故障计划与激活记录 |
 | `m2_grading.py` | 七类及复合任务的独立判定（实际状态+写入次数） |
 | `m2_acceptance.py` | M2 浏览器验收运行器；脚本套件或注入 `decide` |
+| `m2_runtime_bridge.py` | M2 Runtime 联调器；真实 `Runtime.advance` + 真实 Chromium 故障页 |
+| `m2_runtime_host.py` | 联调子进程；在锁定 EffGen 解释器中持有 Runtime/TaskState |
+| `m2_runtime_policy.py` | 确定性脚本 policy 与 AX 语义核验桩；不读 Fixture 真值 |
+| `m2_ax_text.py` | 官方可访问性树文本解析（编号、区域、字段） |
+| `local_official_adapter.py` | 本地测试专用官方协议 AX/动作适配；从实际 DOM 采集 |
+| `test_m2_runtime_bridge.py` | 联调桥纯函数测试（解析、证据范围、提前 stop） |
 | `test_m2_fixtures.py` | 故障、判定与复合任务单元测试 |
 | `m2_fault_plans/` | 可复现故障计划示例，可直接传给验收运行器 |
 | `evidence/` | M2 手工证据，供主线程归档；不自动进入项目结果目录 |
@@ -49,7 +55,24 @@ M2 本地单元只扩展本目录，不改 harness。故障按写操作配置，
 
 `--suite scripted` 是脚本化浏览器环境检查，`model_calls` 恒为 0；`--agent` 注入决策函数，任一步调用量未知时汇总为 null。默认写 `01_文本/05_测试结果/local/<UTC时间>_<标签>/`，不覆盖旧结果。判定器只读取实际 Fixture 业务状态和原任务要求，actor 的 `goal_checks` 仅作附注。故障 API、判定语义和故障计划格式见[M2 本地故障环境](M2本地故障环境.md)。
 
-## 结果
+## M2 Runtime 联调
+
+`m2_runtime_bridge.py` 把真实 harness `Runtime.advance` 接到真实 Chromium 故障页，用确定性脚本 policy 和本地 AX 语义核验桩完成动作、Pending、guard、verify/recover，最后由 `m2_grading.grade` 从实际 Fixture 状态独立判定。它不是模型结果，不是官方成绩。
+
+```powershell
+.\.venv\Scripts\python.exe m2_runtime_bridge.py `
+  --harness-dir ..\01_harness\当前版本 `
+  --harness-ref <冻结提交>
+```
+
+- `--harness-dir` 指定固定源码目录，默认当前版本；主线程可用最终 harness 路径重跑。
+- 父进程 `.venv` 负责 Flask/Playwright；子进程固定 `.local\m1a-lock-venv` 解释器并只加载指定 harness，两套依赖不混装。
+- 只从原任务、当前 AX 和 Runtime 自身状态决策；不向 Runtime 传 Fixture 业务状态、fault_plan、write_counts 或 grade。
+- 结果写入 `01_文本/05_测试结果/local/<UTC>_m2_runtime_bridge/`，含 harness/本地源码快照与哈希、逐动作日志、Runtime 状态事件、最终 AX、独立 grade。
+- 套件 14 例：七类正常闭环、无效果、追加旧值、结果未知（简介/点赞/订单）、复合任务局部失败保留前缀、guard 拒绝未知提交、故意提前 stop 被 Runtime 拒绝。
+
+`item_exact` 在 33d1a18 上仍可能把商品标题当作购物车证据；本联调由独立 grade 核对实际写入，证据范围修复由 harness 并行单元处理。
+
 
 所有新结果统一写入项目 `01_文本/05_测试结果/`：浏览器运行器写入 `local/<运行ID>/`，环境检查写入 `environment/<运行ID>/`。保留 `run.json`、摘要及回放；旧结果不移动。
 

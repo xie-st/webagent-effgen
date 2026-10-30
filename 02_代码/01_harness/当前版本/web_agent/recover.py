@@ -159,6 +159,18 @@ def classify_action(action: str, frame: Frame) -> ActionInfo:
             return ActionInfo(action, "click", element_id, role, name, url,
                               is_read=False, is_draft=True, operation="draft")
         if role == "link":
+            # Resource navigation is not a submission merely because an order
+            # or post noun occurs in its label/URL. Mutating URLs still win.
+            read_resource = re.fullmatch(
+                r"(?:my\s+)?(?:orders?|order history|cart|shopping cart|posts?|comments?)"
+                r"|edit\s+(?:post|profile|bio|biography|comment)", name.strip(), re.I,
+            )
+            mutating_url = re.search(
+                r"delete|remove|submit|save|reorder|upvote|downvote|add[_/-]", url or "", re.I,
+            )
+            if read_resource and url and not mutating_url:
+                return ActionInfo(action, "click", element_id, role, name, url,
+                                  is_read=True, operation="read")
             if _commit_control(atom):
                 return ActionInfo(action, "click", element_id, role, name, url,
                                   is_write=True, is_read=False, operation="commit")
@@ -339,6 +351,10 @@ def register_action(
                 },
             )
     if not info.is_write:
+        pending = state.pending_for(frame.tab)
+        if pending is not None and pending.status == "unknown" and info.is_read:
+            if action.startswith("goto [") or (info.kind == "click" and info.role == "link"):
+                pending.expected = {**pending.expected, "readback_step": frame.step}
         return None
     rewritten = _verified_write(state, info)
     if rewritten is not None:
