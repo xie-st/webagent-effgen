@@ -1,0 +1,25 @@
+{
+  "phase": "M1b",
+  "status": "running",
+  "run_id": "20261030T025026_355479Z_当前版本_66091f22",
+  "accepted_code_commit": "396bcb62bbb6d44c6935678e7c6161f0577bb74c",
+  "launcher_commit": "f698f6806b6221036c8f01edc100033f3ee23af7",
+  "python": "3.12.9 (tags/v3.12.9:fdb8142, Feb  4 2025, 15:27:58) [MSC v.1942 64 bit (AMD64)]",
+  "python_executable": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\.local\\m1a-lock-venv\\Scripts\\python.exe",
+  "requirements_lock_sha256": "e52d22e1fea4a74f0bc7fe31a1ac49e585acc0b861d22639adfbd821db334d48",
+  "agent_id": "db20f11e49eeb231b46554f3c55ab992",
+  "agent_name": "EffGen M1b 396bcb6",
+  "model_policy": "server_managed_messages_only",
+  "site": "forum",
+  "suite_version": "forum-practice-4-v1-300s-managed",
+  "task_seconds": 300,
+  "task_ids": [
+    399,
+    404,
+    650,
+    731
+  ],
+  "platform_batch_id": "0c72da8ee1729843b4ddf5364a851221",
+  "client_exec_session_id": 9952,
+  "submission_started_at": "2026-10-30T02:51:50.810989+00:00"
+}
