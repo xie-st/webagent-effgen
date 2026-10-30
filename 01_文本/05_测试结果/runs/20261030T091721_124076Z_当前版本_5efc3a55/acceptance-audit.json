@@ -1,0 +1,51 @@
+{
+  "status": "diagnostic_cancelled",
+  "source_files": 42,
+  "artifacts": 16,
+  "screenshots_verified": 34,
+  "tasks": [
+    {
+      "task_id": 605,
+      "status": "cancelled",
+      "score": null,
+      "local_calls": 0,
+      "platform_calls": 0
+    },
+    {
+      "task_id": 650,
+      "status": "cancelled",
+      "score": null,
+      "local_calls": 0,
+      "platform_calls": 0
+    },
+    {
+      "task_id": 399,
+      "status": "completed",
+      "score": 0.0,
+      "local_calls": 124,
+      "platform_calls": 124
+    },
+    {
+      "task_id": 731,
+      "status": "cancelled",
+      "score": null,
+      "local_calls": 0,
+      "platform_calls": 0
+    },
+    {
+      "task_id": 404,
+      "status": "failed",
+      "score": null,
+      "local_calls": 88,
+      "platform_calls": 88
+    },
+    {
+      "task_id": 717,
+      "status": "cancelled",
+      "score": null,
+      "local_calls": 0,
+      "platform_calls": 0
+    }
+  ],
+  "note": "First task deadline; second cancelled after confirmed blockers; remaining four skipped. Not final acceptance."
+}
