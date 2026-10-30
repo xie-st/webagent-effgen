@@ -8,7 +8,7 @@
 python3 -m third_party_agent connect --connection-file agent-connection.json --agent my_agent:MyAgent
 ```
 
-看到 `Agent connected` 后保持终端运行，网页选择在线 Agent 开始整批评测。包内 `agent_logic.py` 是可运行 baseline，直接使用平台模型；无需模型 SDK、模型 API key 或本机浏览器。
+看到 `Agent connected` 后保持终端运行，网页选择在线 Agent 开始整批评测。包内 `agent_logic.py` 是最简接入示例，每步向平台模型发起一次调用；无需模型 SDK、模型 API key 或本机浏览器。
 
 ## 只改算法入口
 
@@ -21,7 +21,7 @@ def decide(*, task, observation, history, action_history, state):
     return parse_action(reply.text)
 ```
 
-`build_prompt` 和 `parse_action` 表示你的算法；可直接参考包内 baseline。`messages` 是非空列表，每项只含 `role` 和字符串 `content`，role 为 system/user/assistant。总输入 JSON 最多 1 MiB，最多 256 条消息。`generate` 只接受 messages，不接受模型名、temperature、输出上限、工具参数、服务地址或密钥。模型及推理参数由服务器固定；接口只返回 `.text` 和平台 `.request_id`，不返回供应商模型标识。
+`build_prompt` 和 `parse_action` 表示你的算法；可直接参考包内最简示例。`messages` 是非空列表，每项只含 `role` 和字符串 `content`，role 为 system/user/assistant。总输入 JSON 最多 1 MiB，最多 256 条消息。`generate` 只接受 messages，不接受模型名、temperature、输出上限、工具参数、服务地址或密钥。模型及推理参数由服务器固定；接口只返回 `.text` 和平台 `.request_id`，不返回供应商模型标识。
 
 每任务最多一个模型调用同时执行；调用供应商的网络等待上限为 90 秒且不超过任务剩余时间。调用失败不自动重新请求供应商，避免重复计费。需要重试可由算法在剩余预算内再次调用。平台记录 token 用量、按管理员定价计算费用，usage 或定价缺失会显示费用待核对。
 
@@ -30,7 +30,7 @@ def decide(*, task, observation, history, action_history, state):
 ## 输入和动作
 
 - task：当前任务文字，不含隐藏判分条件。
-- observation：type=`accessibility_tree`、url、text。text 为当前视口带编号的页面树；不含截图或完整 DOM。
+- observation：type=`accessibility_tree`、url、text。text 为当前视口带编号的页面树；截图通过可选 screenshot 元数据单独下载，不含完整 DOM。
 - history：先前观察和动作；action_history：文字动作描述。
 - state：仅在本项任务内复用的本地字典，新任务清空。
 
@@ -59,3 +59,64 @@ URL 的 `127.0.0.1:动态端口` 指服务器内部网站，不可从选手本�
 旧版 `WEBARENA_AGENT_WAIT`、本地模型 .env、24 步规则不再适用，请重新下载客户端。同一连接文件只运行一个客户端。停止可在网页取消整批或按 Ctrl+C。
 
 本地执行模式无法从技术上阻止自带模型或外部网络；正式比赛应配套规则审计，需要强约束时使用平台受控容器。
+
+## 当前视口截图
+
+支持截图的服务器会在每次 `observation` 中附加 `screenshot` 元数据，包含 `image_id`、`width`、`height`、`mime_type`、`step`、`byte_size` 和 `sha256`。它对应本次观察已经采集的 PNG，不是执行到一半时重新拍摄的页面。旧服务器可能没有此字段。
+
+```python
+from third_party_agent import browser
+
+# 在 Agent.step(request) 内调用；与 model.generate 使用相同的任务上下文。
+metadata = request['observation'].get('screenshot')
+if metadata:
+    image_bytes = browser.get_screenshot(metadata['image_id'])
+    # image_bytes 是 PNG 字节，可以交给自己安装的 OCR 或图像处理库。
+```
+
+下载接口为 `GET /api/client/screenshots/{image_id}?job_id=...&run_id=...`，SDK 自动附加当前任务信息和连接令牌。图片只对拥有该任务且仍在执行中的 Agent 开放；跨任务访问返回 404，会话失效或超过执行时间返回 409。SDK 不跟随重定向，不接受任意文件路径；PNG 最大 4 MiB，单边最大 4096 像素，总像素最大 4194304。实际尺寸以元数据为准，目前浏览器统一使用 1280×720、缩放比例 1。
+
+截图发布、下载和本地处理都消耗同一 300 秒执行预算，不增加步数限制。历史观察中仅保存图片元数据，不嵌入图片二进制。图片保存在服务端对应运行目录，随该目录的运维保留及清理策略管理，不放在公开静态目录。
+
+此接口不开放 CDP、JavaScript、任意 HTTP 请求或坐标动作。统一模型网关仍然只接收文本，不能直接将 PNG 字节或图片消息传入 `model.generate`。使用更新后的客户端下载包才能导入 `third_party_agent.browser`；原纯文本 Agent 可以忽略新增字段。
+
+## 获取截图并接入算法
+
+请从平台重新下载客户端 ZIP；已有连接文件可继续使用，但同一令牌先停止旧客户端，再启动新版。无需在本机安装浏览器、Docker 或图像处理库。
+
+算法中的最小用法（在 `decide()` 内）：
+
+```python
+from third_party_agent import browser
+
+metadata = observation.get('screenshot')
+if metadata:
+    png_bytes = browser.get_screenshot(metadata['image_id'])
+    # 在这里交给自己的 OCR 或图像处理逻辑。
+```
+
+截图为当前观察对应的视口 PNG，实际尺寸以元数据为准，默认 1280×720。它与这一步的页面树一起产生；下载不会再次拍摄、滚动或执行动作。下载及本地处理都计入 300 秒预算。只能在所属任务执行期间下载，跨任务不可访问；旧服务可能不提供此字段。只能读取 PNG，当前不开放任意 HTTP、JS 注入、CDP 或坐标动作。统一模型接口目前只接受文本，不能把图片直接传给 `model.generate`。
+
+### 在原 Demo 中保存截图
+
+仍使用原来的 `my_agent:MyAgent`。默认不自动下载图片；需要每步保存时，在启动前设置本机输出目录：
+
+Linux / macOS：
+
+```sh
+export WEBARENA_SCREENSHOT_DIR=./screenshots
+python3 -m third_party_agent connect --connection-file agent-connection.json --agent my_agent:MyAgent
+```
+
+Windows PowerShell：
+
+```powershell
+$env:WEBARENA_SCREENSHOT_DIR=".\screenshots"
+python -m third_party_agent connect --connection-file agent-connection.json --agent my_agent:MyAgent
+```
+
+在网页开始评测后，PNG 会保存到本机指定目录，文件名为 `<image_id>.png`。Demo 保存前核对 PNG 格式、宽高、字节数和 SHA-256，并在算法的 `state["_screenshot_path"]` 中提供本次图片路径；没有截图时不会沿用上一帧路径。保存图片不会替换原有 `decide()`、动作或模型调用，也不会自动提升任务成功率。
+
+也可在自己的 `decide()` 中按需调用 `browser.save_screenshot(observation, "./screenshots")`，返回 `Path`，旧服务没有截图字段时返回 `None`。只想取得 PNG 字节进行 OCR 时继续使用 `browser.get_screenshot(image_id)`。不要同时开启自动保存又重复下载同一帧，除非算法确有需要。
+
+同一连接文件先停止旧客户端再启动新版本。截图与本地计算都计入原有 300 秒预算；文件可能包含业务内容，请妥善保管，不要把截图、连接文件或令牌提交到 GitHub。不要在回调返回后另起后台任务下载，任务上下文和下载权限会随执行结束失效。

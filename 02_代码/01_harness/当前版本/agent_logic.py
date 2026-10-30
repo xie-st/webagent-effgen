@@ -19,6 +19,7 @@ from web_agent import actions, policy
 from web_agent.adapters import official
 from web_agent.model_port import SdkModelPort
 from web_agent.runtime import Runtime
+from web_agent.screenshots import ScreenshotPort
 from web_agent.state import TaskState
 from web_agent.telemetry import Telemetry
 
@@ -28,7 +29,10 @@ validate_action = actions.validate_action
 
 def _default_runtime(*, telemetry: Telemetry) -> Runtime:
     port = SdkModelPort(sdk=model, telemetry=telemetry)
-    return Runtime(policy=policy.EffGenPolicy(model_port=port, telemetry=telemetry))
+    return Runtime(
+        policy=policy.EffGenPolicy(model_port=port, telemetry=telemetry),
+        screenshot_port=ScreenshotPort.from_env(telemetry=telemetry),
+    )
 
 
 def _state_data(state) -> MutableMapping[str, Any]:

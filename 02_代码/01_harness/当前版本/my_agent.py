@@ -8,6 +8,7 @@ from web_agent.adapters import official
 from web_agent.model_port import SdkModelPort
 from web_agent.policy import EffGenPolicy
 from web_agent.runtime import Runtime
+from web_agent.screenshots import ScreenshotPort
 from web_agent.telemetry import Telemetry
 
 
@@ -18,10 +19,12 @@ class MyAgent:
         *,
         model_port: SdkModelPort | None = None,
         telemetry: Telemetry | None = None,
+        screenshot_port: ScreenshotPort | None = None,
     ):
         self._fixed_runtime = runtime
         self._model_port = model_port
         self._injected_telemetry = telemetry
+        self._screenshot_port = screenshot_port
         self.runtime = runtime
         self.run_id: str | None = None
         self.state: dict[str, Any] = {}
@@ -30,6 +33,7 @@ class MyAgent:
         self._owned_runtime = False
         self._last_error: BaseException | None = None
         self._last_action: str | None = None
+        self._last_frame = None
         self._stopped = False
 
     def reset(self, request):
@@ -40,6 +44,7 @@ class MyAgent:
         self._step = 0
         self._last_error = None
         self._last_action = None
+        self._last_frame = None
         self._stopped = False
 
         if (
@@ -67,7 +72,10 @@ class MyAgent:
         else:
             port = self._model_port or SdkModelPort(telemetry=self._telemetry)
             policy = EffGenPolicy(model_port=port, telemetry=self._telemetry)
-            self.runtime = Runtime(policy=policy)
+            screenshot_port = self._screenshot_port or ScreenshotPort.from_env(
+                telemetry=self._telemetry
+            )
+            self.runtime = Runtime(policy=policy, screenshot_port=screenshot_port)
             self._owned_runtime = True
 
     def step(self, request):
@@ -80,6 +88,7 @@ class MyAgent:
         deadline = request.get("execution_deadline")
         self.state["_remaining_seconds"] = max(0, deadline - time.time()) if deadline else None
         frame = official.frame_from_request(request, step=self._step)
+        self._last_frame = frame
         if self._telemetry is not None:
             self._telemetry.observation(
                 step=frame.step,
@@ -118,6 +127,28 @@ class MyAgent:
         self._step = frame.step + 1
         return {"action": action}
 
+    def request_screenshot(
+        self,
+        *,
+        reason: str = "diagnostic",
+        frame=None,
+        directory: str | None = None,
+    ):
+        """Explicit current-frame screenshot request; ordinary steps never call it."""
+        if self.runtime is None:
+            raise ValueError("reset is required")
+        target = frame if frame is not None else self._last_frame
+        if target is None:
+            raise ValueError("no current observation is available")
+        if not hasattr(self.runtime, "request_screenshot"):
+            raise TypeError("runtime does not expose a screenshot port")
+        return self.runtime.request_screenshot(
+            target,
+            self.state,
+            reason=reason,
+            directory=directory,
+        )
+
     def close(self):
         self._end_run("close")
 
@@ -145,6 +176,7 @@ class MyAgent:
         self._step = 0
         self._last_error = None
         self._last_action = None
+        self._last_frame = None
         self._stopped = False
 
 

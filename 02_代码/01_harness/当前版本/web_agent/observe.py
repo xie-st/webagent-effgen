@@ -75,4 +75,5 @@ def build_context(frame: Frame, state: TaskState) -> Context:
         unchanged_count=unchanged_count,
         repeated_action=repeated_action,
         last_action=raw_actions[-1] if raw_actions else None,
+        screenshot=frame.screenshot,
     )

@@ -13,6 +13,7 @@ from typing import Any
 from . import observe
 from .actions import validate_action
 from .contracts import Context, Frame
+from .screenshots import ScreenshotCapture, ScreenshotPort
 from .state import MAX_MEMORY, TaskState
 
 DecisionPort = Callable[[Context, TaskState], str | Mapping[str, Any]]
@@ -26,6 +27,7 @@ class Runtime:
         decision_port: DecisionPort | None = None,
         *,
         policy=None,
+        screenshot_port: ScreenshotPort | None = None,
     ):
         if (decision_port is None) == (policy is None):
             raise ValueError("Provide exactly one of decision_port or policy")
@@ -33,10 +35,26 @@ class Runtime:
             raise TypeError("decision_port must be callable")
         self.decision_port = decision_port
         self.policy = policy
+        self.screenshot_port = screenshot_port
 
-    def advance(self, frame: Frame, state: TaskState | dict[str, Any]) -> dict[str, str]:
+    def advance(
+        self,
+        frame: Frame,
+        state: TaskState | dict[str, Any],
+        *,
+        screenshot_reason: str | None = None,
+    ) -> dict[str, str]:
         task_state = state if isinstance(state, TaskState) else TaskState(state)
         task_state.update_deadline(frame.deadline)
+        task_state.invalidate_screenshot(frame)
+        if screenshot_reason is not None:
+            # Explicit demand only: ordinary decisions keep the text-only path
+            # and never download a PNG.
+            self.request_screenshot(
+                frame,
+                task_state,
+                reason=screenshot_reason,
+            )
         context = observe.build_context(frame, task_state)
         if self.policy is None:
             proposal = self.decision_port(context, task_state)
@@ -76,6 +94,36 @@ class Runtime:
                     return {"action": recovery_actions[index % len(recovery_actions)]}
                 invalid_outputs.add(raw)
                 raw = self.policy.correct(context, state, raw, exc)
+
+    def request_screenshot(
+        self,
+        frame: Frame,
+        state: TaskState | dict[str, Any] | None = None,
+        *,
+        reason: str = "diagnostic",
+        directory: str | None = None,
+    ) -> ScreenshotCapture:
+        """Explicitly fetch this frame's PNG, defaulting to no request at all.
+
+        A failure other than the absolute deadline returns a failed capture and
+        leaves the normal AX decision path intact.  Only verified metadata/path
+        references enter TaskState.
+        """
+        task_state = (
+            state if isinstance(state, TaskState)
+            else TaskState({} if state is None else state)
+        )
+        task_state.invalidate_screenshot(frame)
+        if self.screenshot_port is None:
+            task_state.set_screenshot_reference(None)
+            return ScreenshotCapture(result="disabled", reference=frame.screenshot)
+        capture = self.screenshot_port.capture(
+            frame,
+            reason=reason,
+            directory=directory,
+        )
+        task_state.set_screenshot_reference(capture.as_state())
+        return capture
 
     def close(self) -> None:
         if self.policy is not None and hasattr(self.policy, "close"):

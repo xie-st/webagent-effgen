@@ -71,6 +71,11 @@ class Telemetry:
         self._successful = 0
         self._failed = 0
         self._by_purpose: dict[str, int] = {}
+        self._screenshot_requests = 0
+        self._screenshot_cache_hits = 0
+        self._screenshot_saved = 0
+        self._screenshot_failed = 0
+        self._screenshot_bytes = 0
         self._finished = False
         self.end_reason: str | None = None
 
@@ -317,6 +322,68 @@ class Telemetry:
             },
         )
 
+    def screenshot(
+        self,
+        *,
+        step: int,
+        url: str,
+        observation_version: int | str,
+        result: str,
+        requested: bool = True,
+        cache_hit: bool = False,
+        duration_ms: float | None = None,
+        run_id: str | None = None,
+        image_id: str | None = None,
+        reason: str = "diagnostic",
+        byte_size: int | None = None,
+        sha256: str | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        path: str | None = None,
+        http_status: int | None = None,
+        error_type: str | None = None,
+        error: str | None = None,
+    ) -> dict[str, Any]:
+        """Record one explicit screenshot request with its observation binding.
+
+        Cache hits are requests too, but they never increase downloaded bytes.
+        The event deliberately contains only metadata and a local path; PNG
+        bytes and base64 never enter telemetry or model messages.
+        """
+        with self._lock:
+            self._screenshot_requests += 1
+            if cache_hit:
+                self._screenshot_cache_hits += 1
+            if result == "saved":
+                self._screenshot_saved += 1
+                if byte_size is not None:
+                    self._screenshot_bytes += byte_size
+            elif result not in ("cached",):
+                self._screenshot_failed += 1
+        return self._append(
+            "screenshot",
+            {
+                "run_id": run_id or self.run_id,
+                "step": step,
+                "url": url,
+                "observation_version": observation_version,
+                "reason": reason,
+                "result": result,
+                "requested": requested,
+                "cache_hit": cache_hit,
+                "duration_ms": duration_ms,
+                "image_id": image_id,
+                "byte_size": byte_size,
+                "sha256": sha256,
+                "width": width,
+                "height": height,
+                "path": path,
+                "http_status": http_status,
+                "error_type": error_type,
+                "error": error,
+            },
+        )
+
     def step_error(self, *, step: int, error: BaseException) -> None:
         self._append(
             "step_error",
@@ -352,6 +419,11 @@ class Telemetry:
                     0, self._model_calls - self._successful - self._failed
                 ),
                 "by_purpose": dict(sorted(self._by_purpose.items())),
+                "screenshot_requests": self._screenshot_requests,
+                "screenshot_cache_hits": self._screenshot_cache_hits,
+                "screenshot_saved": self._screenshot_saved,
+                "screenshot_failed": self._screenshot_failed,
+                "screenshot_bytes": self._screenshot_bytes,
                 "successful": self._successful,
                 "failed": self._failed,
                 "prompt_tokens": None,
@@ -383,6 +455,11 @@ class Telemetry:
                     0, self._model_calls - self._successful - self._failed
                 ),
                 "by_purpose": dict(sorted(self._by_purpose.items())),
+                "screenshot_requests": self._screenshot_requests,
+                "screenshot_cache_hits": self._screenshot_cache_hits,
+                "screenshot_saved": self._screenshot_saved,
+                "screenshot_failed": self._screenshot_failed,
+                "screenshot_bytes": self._screenshot_bytes,
                 "successful": self._successful,
                 "failed": self._failed,
                 "prompt_tokens": None,

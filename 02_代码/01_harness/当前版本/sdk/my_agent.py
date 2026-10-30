@@ -1,5 +1,7 @@
 """Universal adapter: implement decide() in agent_logic.py for your own Agent."""
+import os
 import time
+from third_party_agent import browser
 from agent_logic import decide
 
 
@@ -13,6 +15,12 @@ class MyAgent:
             raise ValueError("run_id mismatch; reset is required")
         deadline = request.get("execution_deadline")
         self.state["_remaining_seconds"] = max(0, deadline-time.time()) if deadline else None
+        self.state.pop('_screenshot_path', None)
+        directory = os.getenv('WEBARENA_SCREENSHOT_DIR')
+        if directory:
+            path = browser.save_screenshot(request['observation'], directory)
+            if path is not None:
+                self.state['_screenshot_path'] = str(path)
         result = decide(
             task=request["task"],
             observation=request["observation"],
