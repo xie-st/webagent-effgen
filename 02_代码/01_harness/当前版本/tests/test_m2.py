@@ -657,6 +657,9 @@ class ExpandedSuiteCoverageTests(unittest.TestCase):
         ]:
             view = frame(text=f"[1] link '{label}' url: http://127.0.0.1:9876{path}")
             self.assertEqual(recover.classify_action("click [1]", view).is_write, expected)
+        view = frame()
+        self.assertTrue(recover.classify_action(
+            "goto [http://127.0.0.1:9876/account/%64elete]", view).is_write)
 
     """New-suite requirements: fail closed, semantic scope, per-object effects."""
 

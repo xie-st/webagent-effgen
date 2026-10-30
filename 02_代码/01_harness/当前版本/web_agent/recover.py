@@ -11,6 +11,7 @@ import re
 from dataclasses import dataclass
 from typing import Any
 from uuid import uuid4
+from urllib.parse import unquote
 
 from .contracts import Frame, GoalCheck, PendingAction
 from .state import TaskState
@@ -134,6 +135,13 @@ def _commit_control(atom) -> bool:
     return any(word in f"{atom.name} {atom.raw}".casefold() for word in verify._COMMIT_WORDS)
 
 
+def _mutating_url(url: str | None) -> bool:
+    return bool(re.search(
+        r"delete|remove|submit|save|reorder|upvote|downvote|add[_/-]",
+        unquote(url or ""), re.I,
+    ))
+
+
 def classify_action(action: str, frame: Frame) -> ActionInfo:
     """Classify click/Enter conservatively; never relabel a potential submit as a read."""
     view = verify.parse_ax(frame)
@@ -142,6 +150,10 @@ def classify_action(action: str, frame: Frame) -> ActionInfo:
     if action in {"go_back", "go_forward", "scroll [up]", "scroll [down]"}:
         return ActionInfo(action, "navigate", is_read=True, operation="read")
     if action.startswith("goto ["):
+        target = action[len("goto ["):-1]
+        if _mutating_url(target):
+            return ActionInfo(action, "navigate", url=target,
+                              is_write=True, is_read=False, operation="commit")
         return ActionInfo(action, "navigate", is_read=True, operation="read")
     if action.startswith("hover ["):
         return ActionInfo(action, "hover", is_read=True, operation="read")
@@ -165,9 +177,7 @@ def classify_action(action: str, frame: Frame) -> ActionInfo:
                 r"(?:my\s+)?(?:orders?|order history|cart|shopping cart|posts?|comments?)"
                 r"|edit\s+(?:post|profile|bio|biography|comment)", name.strip(), re.I,
             )
-            mutating_url = re.search(
-                r"delete|remove|submit|save|reorder|upvote|downvote|add[_/-]", url or "", re.I,
-            )
+            mutating_url = _mutating_url(url)
             if read_resource and url and not mutating_url:
                 return ActionInfo(action, "click", element_id, role, name, url,
                                   is_read=True, operation="read")
