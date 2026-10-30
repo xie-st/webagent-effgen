@@ -220,6 +220,8 @@ def plan(action: str, frame: Frame, state: TaskState) -> Plan:
             if _is_read_control(node):
                 return Plan(text, "read", node=node, reason="navigation")
             return Plan(text, "read", node=node, reason="resource navigation")
+        if node.role in {"button", "menuitem"} and node.name.strip().casefold() in {'search', '搜索', '查找'}:
+            return Plan(text, 'search', node=node, reason='explicit search control')
         if node.role in {"button", "menuitem"} and node.inside_form:
             return Plan(text, "commit", write=True, node=node,
                         object_key=tree.object_key(node), commit_kind=_commit_kind(node.name),
