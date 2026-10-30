@@ -1,0 +1,43 @@
+{
+  "path": "telemetry.jsonl",
+  "run_ids": [
+    "close",
+    "correct",
+    "legacy-75727589094d4522ae13f9f34b3a5195",
+    "limit",
+    "memory",
+    "one",
+    "recover",
+    "spy",
+    "two"
+  ],
+  "run_count": 9,
+  "model_calls": 17,
+  "rejected_calls": 0,
+  "completed_calls": 17,
+  "incomplete_calls": 0,
+  "by_purpose": {
+    "decision": 12,
+    "correction": 5
+  },
+  "successful": 17,
+  "failed": 0,
+  "end_reason": null,
+  "end_reasons": [
+    "close",
+    "close",
+    "close",
+    "close",
+    "close",
+    "close",
+    "reset",
+    "close",
+    "close",
+    "reset",
+    "close"
+  ],
+  "prompt_tokens": null,
+  "completion_tokens": null,
+  "total_tokens": null,
+  "cost_usd": null
+}

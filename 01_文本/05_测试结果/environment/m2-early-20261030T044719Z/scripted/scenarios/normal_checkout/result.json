@@ -1,0 +1,141 @@
+{
+  "kind": "m2_scripted_browser_scenario",
+  "scenario": "normal_checkout",
+  "task": "checkout",
+  "note": "normal cart plus order",
+  "expected_pass": true,
+  "actual_pass": true,
+  "matched": true,
+  "script_error": null,
+  "decision_source": "scripted_browser_no_model",
+  "model_calls": 0,
+  "official_score": false,
+  "fault_plan": {
+    "token": "m2normalcheckout",
+    "seed": {},
+    "faults": {},
+    "activations": []
+  },
+  "grade": {
+    "task": "checkout",
+    "passed": true,
+    "requirements": [
+      {
+        "key": "cart_exact",
+        "description": "购物车必须恰好包含一件“键盘”",
+        "expected": [
+          "键盘"
+        ],
+        "actual": [
+          "键盘"
+        ],
+        "passed": true
+      },
+      {
+        "key": "one_order",
+        "description": "必须恰好生成 1 个订单",
+        "expected": 1,
+        "actual": 1,
+        "passed": true
+      },
+      {
+        "key": "order_submitted",
+        "description": "订单必须处于已提交状态",
+        "expected": true,
+        "actual": true,
+        "passed": true
+      }
+    ],
+    "write_rules": [
+      {
+        "operation": "cart",
+        "kind": "total",
+        "description": "cart 必须恰好提交 1 次加入购物车",
+        "expected": 1,
+        "actual": 1,
+        "target_value": null,
+        "passed": true
+      },
+      {
+        "operation": "checkout",
+        "kind": "total",
+        "description": "checkout 必须恰好提交 1 次提交订单",
+        "expected": 1,
+        "actual": 1,
+        "target_value": null,
+        "passed": true
+      }
+    ],
+    "write_counts": {
+      "cart": 1,
+      "checkout": 1
+    },
+    "attempt_counts": {
+      "cart": 1,
+      "checkout": 1
+    },
+    "faults": {
+      "token": "m2normalcheckout",
+      "seed": {},
+      "faults": {},
+      "activations": []
+    },
+    "business_state": {
+      "token": "m2normalcheckout",
+      "bio": "",
+      "title": "",
+      "reply": "",
+      "subscribed": false,
+      "votes": 0,
+      "cart": [
+        "键盘"
+      ],
+      "ordered": true,
+      "orders": [
+        "order-1-6b669b"
+      ],
+      "write_counts": {
+        "cart": 1,
+        "checkout": 1
+      },
+      "attempt_counts": {
+        "cart": 1,
+        "checkout": 1
+      },
+      "write_events": [
+        {
+          "operation": "cart",
+          "requested": "键盘",
+          "before": [],
+          "after": [
+            "键盘"
+          ],
+          "fault": "normal",
+          "committed": true
+        },
+        {
+          "operation": "checkout",
+          "requested": "提交订单",
+          "before": [],
+          "after": [
+            "order-1-6b669b"
+          ],
+          "fault": "normal",
+          "committed": true
+        }
+      ],
+      "faults": {
+        "token": "m2normalcheckout",
+        "seed": {},
+        "faults": {},
+        "activations": []
+      }
+    },
+    "actor_claims": null,
+    "actor_claims_ignored": false,
+    "judged_from": "actual_fixture_state_and_original_task_requirements",
+    "official_score": false,
+    "model_calls": null
+  },
+  "final_body_excerpt": "论坛电商资料 A资料 B\n电商商城\n键盘\n\n价格：199 元\n\n键盘加入购物车\n\n购物车：键盘\n\n订单：已提交（1 个）\n\n提交订单"
+}

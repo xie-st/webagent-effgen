@@ -1,0 +1,153 @@
+{
+  "kind": "m2_scripted_browser_scenario",
+  "scenario": "append_correction",
+  "task": "profile",
+  "note": "old value plus target, verify then exact replace",
+  "expected_pass": true,
+  "actual_pass": true,
+  "matched": true,
+  "script_error": null,
+  "decision_source": "scripted_browser_no_model",
+  "model_calls": 0,
+  "official_score": false,
+  "fault_plan": {
+    "token": "m2appendcorrection",
+    "seed": {
+      "bio": "旧简介"
+    },
+    "faults": {
+      "profile": {
+        "mode": "append_value",
+        "times": 1,
+        "note": "",
+        "fired": 1
+      }
+    },
+    "activations": [
+      {
+        "operation": "profile",
+        "mode": "append_value",
+        "times": 1,
+        "fired": 1,
+        "note": ""
+      }
+    ]
+  },
+  "grade": {
+    "task": "profile",
+    "passed": true,
+    "requirements": [
+      {
+        "key": "profile_exact",
+        "description": "个人简介必须精确等于“开发者-m2appendcorrection”，不能保留或追加旧内容",
+        "expected": "开发者-m2appendcorrection",
+        "actual": "开发者-m2appendcorrection",
+        "passed": true
+      }
+    ],
+    "write_rules": [
+      {
+        "operation": "profile",
+        "kind": "target",
+        "description": "profile 必须恰好提交 1 次达到要求的个人简介",
+        "expected": 1,
+        "actual": 1,
+        "target_value": "开发者-m2appendcorrection",
+        "passed": true
+      }
+    ],
+    "write_counts": {
+      "profile": 2
+    },
+    "attempt_counts": {
+      "profile": 2
+    },
+    "faults": {
+      "token": "m2appendcorrection",
+      "seed": {
+        "bio": "旧简介"
+      },
+      "faults": {
+        "profile": {
+          "mode": "append_value",
+          "times": 1,
+          "note": "",
+          "fired": 1
+        }
+      },
+      "activations": [
+        {
+          "operation": "profile",
+          "mode": "append_value",
+          "times": 1,
+          "fired": 1,
+          "note": ""
+        }
+      ]
+    },
+    "business_state": {
+      "token": "m2appendcorrection",
+      "bio": "开发者-m2appendcorrection",
+      "title": "",
+      "reply": "",
+      "subscribed": false,
+      "votes": 0,
+      "cart": [],
+      "ordered": false,
+      "orders": [],
+      "write_counts": {
+        "profile": 2
+      },
+      "attempt_counts": {
+        "profile": 2
+      },
+      "write_events": [
+        {
+          "operation": "profile",
+          "requested": "旧简介开发者-m2appendcorrection",
+          "before": "旧简介",
+          "after": "旧简介开发者-m2appendcorrection",
+          "fault": "append_value",
+          "committed": true
+        },
+        {
+          "operation": "profile",
+          "requested": "开发者-m2appendcorrection",
+          "before": "旧简介开发者-m2appendcorrection",
+          "after": "开发者-m2appendcorrection",
+          "fault": "normal",
+          "committed": true
+        }
+      ],
+      "faults": {
+        "token": "m2appendcorrection",
+        "seed": {
+          "bio": "旧简介"
+        },
+        "faults": {
+          "profile": {
+            "mode": "append_value",
+            "times": 1,
+            "note": "",
+            "fired": 1
+          }
+        },
+        "activations": [
+          {
+            "operation": "profile",
+            "mode": "append_value",
+            "times": 1,
+            "fired": 1,
+            "note": ""
+          }
+        ]
+      }
+    },
+    "actor_claims": null,
+    "actor_claims_ignored": false,
+    "judged_from": "actual_fixture_state_and_original_task_requirements",
+    "official_score": false,
+    "model_calls": null
+  },
+  "final_body_excerpt": "论坛电商资料 A资料 B\n技术论坛\n\n个人简介：开发者-m2appendcorrection\n\n个人简介保存简介\n\n帖子：\n\n帖子标题发表帖子\n\n回复：\n\n回复内容发送回复\n\n订阅状态：未订阅\n\n订阅技术版块\n\n点赞数：0\n\n点赞技术帖子"
+}

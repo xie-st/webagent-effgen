@@ -1,0 +1,142 @@
+{
+  "kind": "m2_scripted_browser_scenario",
+  "scenario": "missing_subscribe_vote",
+  "task": "subscribe_vote",
+  "note": "composite with one missing target must fail",
+  "expected_pass": false,
+  "actual_pass": false,
+  "matched": false,
+  "script_error": "AssertionError: ",
+  "decision_source": "scripted_browser_no_model",
+  "model_calls": 0,
+  "official_score": false,
+  "fault_plan": {
+    "token": "m2missingsubscribevote",
+    "seed": {},
+    "faults": {
+      "subscribe": {
+        "mode": "missing_target",
+        "times": 1,
+        "note": "",
+        "fired": 1
+      }
+    },
+    "activations": [
+      {
+        "operation": "subscribe",
+        "mode": "missing_target",
+        "times": 1,
+        "fired": 1,
+        "note": ""
+      }
+    ]
+  },
+  "grade": {
+    "task": "subscribe_vote",
+    "passed": false,
+    "requirements": [
+      {
+        "key": "subscribed",
+        "description": "技术版块必须处于已订阅状态",
+        "expected": true,
+        "actual": false,
+        "passed": false
+      },
+      {
+        "key": "one_vote",
+        "description": "技术帖子必须恰好有 1 次点赞",
+        "expected": 1,
+        "actual": 0,
+        "passed": false
+      }
+    ],
+    "write_rules": [
+      {
+        "operation": "subscribe",
+        "kind": "total",
+        "description": "subscribe 必须恰好提交 1 次订阅",
+        "expected": 1,
+        "actual": 0,
+        "target_value": null,
+        "passed": false
+      },
+      {
+        "operation": "vote",
+        "kind": "total",
+        "description": "vote 必须恰好提交 1 次点赞",
+        "expected": 1,
+        "actual": 0,
+        "target_value": null,
+        "passed": false
+      }
+    ],
+    "write_counts": {},
+    "attempt_counts": {
+      "subscribe": 1
+    },
+    "faults": {
+      "token": "m2missingsubscribevote",
+      "seed": {},
+      "faults": {
+        "subscribe": {
+          "mode": "missing_target",
+          "times": 1,
+          "note": "",
+          "fired": 1
+        }
+      },
+      "activations": [
+        {
+          "operation": "subscribe",
+          "mode": "missing_target",
+          "times": 1,
+          "fired": 1,
+          "note": ""
+        }
+      ]
+    },
+    "business_state": {
+      "token": "m2missingsubscribevote",
+      "bio": "",
+      "title": "",
+      "reply": "",
+      "subscribed": false,
+      "votes": 0,
+      "cart": [],
+      "ordered": false,
+      "orders": [],
+      "write_counts": {},
+      "attempt_counts": {
+        "subscribe": 1
+      },
+      "write_events": [],
+      "faults": {
+        "token": "m2missingsubscribevote",
+        "seed": {},
+        "faults": {
+          "subscribe": {
+            "mode": "missing_target",
+            "times": 1,
+            "note": "",
+            "fired": 1
+          }
+        },
+        "activations": [
+          {
+            "operation": "subscribe",
+            "mode": "missing_target",
+            "times": 1,
+            "fired": 1,
+            "note": ""
+          }
+        ]
+      }
+    },
+    "actor_claims": null,
+    "actor_claims_ignored": false,
+    "judged_from": "actual_fixture_state_and_original_task_requirements",
+    "official_score": false,
+    "model_calls": null
+  },
+  "final_body_excerpt": "论坛电商资料 A资料 B\n目标版块不存在\n\n技术版块缺项，未订阅。"
+}

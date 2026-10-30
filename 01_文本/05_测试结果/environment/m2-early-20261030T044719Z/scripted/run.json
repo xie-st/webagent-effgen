@@ -1,0 +1,23 @@
+{
+  "kind": "m2_scripted_environment_check",
+  "decision_source": "scripted_browser_no_model",
+  "model_calls": 0,
+  "official_score": false,
+  "started_at": "2026-10-30T04:47:20.695629+00:00",
+  "seconds": 39.27347700006794,
+  "all_matched": false,
+  "scenario_count": 10,
+  "scenarios": [
+    "normal_profile",
+    "normal_checkout",
+    "no_effect_recovery",
+    "append_correction",
+    "unknown_profile",
+    "unknown_checkout",
+    "partial_profile_post",
+    "missing_subscribe_vote",
+    "duplicate_vote",
+    "missing_checkout"
+  ],
+  "evidence_dir": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\01_文本\\05_测试结果\\environment\\m2-early-20261030T044719Z\\scripted"
+}
