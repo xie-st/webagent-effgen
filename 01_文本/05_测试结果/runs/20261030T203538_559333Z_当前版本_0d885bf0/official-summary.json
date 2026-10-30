@@ -1,0 +1,93 @@
+{
+  "frozen_commit": "c82551efba03c0e4642ba85c3b7d3bf85ab74903",
+  "official": true,
+  "batch_ids": [
+    "cebd0dcfd6be2bbfaba37cdbb479a629",
+    "ab32b081424140cfab0c3b51f10b98e4",
+    "e4b1f06a8a92bc2e8835a5a203b6c519"
+  ],
+  "suites": [
+    "forum-practice-webarena-8-v3-300s-managed",
+    "forum-practice-webarena-8-v3-300s-managed",
+    "shopping-practice-webarena-8-v3-300s-managed"
+  ],
+  "total": 8,
+  "passed": 3,
+  "errors": 0,
+  "timed_out": 0,
+  "cancelled": 0,
+  "model_calls": 167,
+  "cost_complete": false,
+  "tasks": [
+    {
+      "task_id": 399,
+      "score": 1.0,
+      "steps": 10,
+      "finish_reason": "stop",
+      "execution_seconds": 41.397,
+      "model_calls": 8
+    },
+    {
+      "task_id": 404,
+      "score": 1.0,
+      "steps": 19,
+      "finish_reason": "stop",
+      "execution_seconds": 142.677,
+      "model_calls": 20
+    },
+    {
+      "task_id": 650,
+      "score": 1.0,
+      "steps": 7,
+      "finish_reason": "stop",
+      "execution_seconds": 82.762,
+      "model_calls": 5
+    },
+    {
+      "task_id": 731,
+      "score": 0.0,
+      "steps": 41,
+      "finish_reason": "stop",
+      "execution_seconds": 139.093,
+      "model_calls": 48
+    },
+    {
+      "task_id": 605,
+      "score": 0.0,
+      "steps": 13,
+      "finish_reason": "stop",
+      "execution_seconds": 47.404,
+      "model_calls": 12
+    },
+    {
+      "task_id": 717,
+      "score": 0.0,
+      "steps": 10,
+      "finish_reason": "stop",
+      "execution_seconds": 29.559,
+      "model_calls": 12
+    },
+    {
+      "task_id": 284,
+      "score": 0.0,
+      "steps": 5,
+      "finish_reason": "stop",
+      "execution_seconds": 30.049,
+      "model_calls": 5
+    },
+    {
+      "task_id": 436,
+      "score": 0.0,
+      "steps": 41,
+      "finish_reason": "stop",
+      "execution_seconds": 262.91,
+      "model_calls": 57
+    }
+  ],
+  "raw_sha256": {
+    "batch-final-two.json": "a96db7a8464c8e676c4dd33d3aea21d1825ff773b5f32909e9c2b2e66ec96be9",
+    "forum-four-final.json": "fed1f130f00dc192a045efeef7917560258f60fde313e116c2953442a9996d50",
+    "shopping-final.json": "e2acf6ef4cfc674f18403e0ecd2ef20ffea28b516103180fb02e5421676fcc4e"
+  },
+  "accuracy": 0.375
+}

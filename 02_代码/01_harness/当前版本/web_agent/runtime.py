@@ -163,6 +163,7 @@ class Runtime:
         blocked = operations.guard(plan, frame, state, telemetry=self._telemetry)
         if blocked is not None:
             return blocked.action, False
+        state.data.pop('_guard_block_streak', None)
         typed = re.fullmatch(r"type \[(\d+)\] \[(.*)\] \[([01])\]", action, re.S)
         if typed and input_mode in {"append", "replace"}:
             # One primitive now; subsequent callbacks supply fresh IDs/observations.
