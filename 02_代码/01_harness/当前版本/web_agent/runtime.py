@@ -1,19 +1,22 @@
-"""One-decision runtime with M2 effect registration, verification and recovery.
+"""One-decision runtime with local M2 operation readback.
 
-The runtime owns ordering: extract goals from the original task, resolve any
-previous per-tab pending write against the new observation, assemble context,
-obtain exactly one decision, validate it, apply the read-only write guard,
-verify a success stop, register the new pending effect, then merge memory.
-All model traffic still goes through the injected policy/ModelPort.
+The default path asks EffGen exactly once per ordinary step.  A malformed
+action may get one correction call.  There is no separate verification model,
+no task-goal regex extraction and no model-written proof object.  The runtime
+resolves the previous operation from the next AX, applies a small read-only
+write guard, registers the new operation, and enforces one absolute deadline
+plus a bounded no-progress exit.
 """
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Callable, Mapping
 from dataclasses import replace
 from typing import Any
 
-from . import observe, recover, verify
+from . import observe, operations
+from .ax import AXTree
 from .actions import validate_action
 from .contracts import Context, Frame
 from .screenshots import ScreenshotCapture, ScreenshotPort
@@ -23,6 +26,12 @@ DecisionPort = Callable[[Context, TaskState], str | Mapping[str, Any]]
 
 # Bound repairs of one observation, not the number of task/browser steps.
 MAX_DECISION_CORRECTIONS = 1
+# Hand control back before the platform's own transport timeout.
+DEADLINE_RESERVE_SECONDS = 6.0
+# Consecutive unchanged observations without a local effect before Incomplete.
+MAX_STALLED_STEPS = 3
+# Hard step ceiling; the 300-second deadline remains the primary budget.
+MAX_TASK_STEPS = 40
 
 
 class Runtime:
@@ -48,7 +57,6 @@ class Runtime:
         self._active_frame: Frame | None = None
         self._active_state: TaskState | None = None
         self._verification_screenshot_done = False
-        self._decision_checks = None
 
     def advance(
         self,
@@ -63,55 +71,54 @@ class Runtime:
             frame = replace(frame, deadline=effective_deadline)
         task_state.invalidate_screenshot(frame)
         task_state.observe_identity(frame)
-        verify.ensure_goals(frame, task_state, telemetry=self._telemetry)
         if (task_state.remaining_seconds is not None
-                and 0 < task_state.remaining_seconds < 5):
-            # This is explicitly an incomplete finish, not a successful stop.
-            # Leave time for transport and the platform's final-state grading.
+                and 0 < task_state.remaining_seconds < DEADLINE_RESERVE_SECONDS):
+            # Reserve transport and platform grading time; this is Incomplete,
+            # never a successful stop.
             return {"action": "stop [Incomplete: execution time is nearly exhausted]"}
         self._active_frame = frame
         self._active_state = task_state
         self._verification_screenshot_done = False
-        self._decision_checks = None
         if screenshot_reason is not None:
-            # Explicit demand only: ordinary decisions keep the text-only path
-            # and never download a PNG.
             self.request_screenshot(frame, task_state, reason=screenshot_reason)
         try:
             pending = task_state.pending_for(frame.tab)
             if pending is not None and pending.step < frame.step:
-                verify.resolve_pending(
-                    frame,
-                    task_state,
-                    semantic_verify=self._semantic_verify,
-                    telemetry=self._telemetry,
-                    screenshot_request=(lambda: self._request_verification_screenshot(
-                        frame, task_state
-                    )) if hasattr(self.policy, "verify") else None,
-                )
+                operations.resolve(frame, task_state, telemetry=self._telemetry)
+
+            stalled = task_state.note_observation(observe.fingerprint(frame.ax))
+            step_count = task_state.note_step()
+            if stalled >= MAX_STALLED_STEPS:
+                return {"action": (
+                    "stop [Incomplete: no observable progress for "
+                    f"{stalled} consecutive observations]"
+                )}
+            if step_count > MAX_TASK_STEPS:
+                return {"action": (
+                    "stop [Incomplete: local step ceiling "
+                    f"{MAX_TASK_STEPS} reached]"
+                )}
+
+            continuation = self._resume_input(frame, task_state)
+            if continuation is not None:
+                return {"action": continuation}
+
             context = observe.build_context(frame, task_state)
-            context = replace(context, history_evidence=tuple(
-                verify.history_observations(frame, task_state)
-            ))
             if self.policy is None:
                 proposal = self.decision_port(context, task_state)
                 action, memory = _unpack(proposal)
                 action = validate_action(action, frame.as_observation())
                 if memory is not None and len(memory) > MAX_MEMORY:
                     raise ValueError("Memory must be a string of at most 10000 characters")
-                self._accept_action(frame, task_state, action)
-                decision = {"action": action}
-                if memory is not None:
-                    decision["memory"] = memory
-            else:
-                decision = self._policy_decision(context, task_state, frame)
-            memory = decision.get("memory")
-            if memory is not None:
-                task_state.memory = memory
+                selected, accepted = self._finalize(frame, task_state, action)
+                if accepted and memory is not None:
+                    task_state.memory = memory
+                return {"action": selected}
+
+            decision = self._policy_decision(context, task_state, frame)
             return {"action": decision["action"]}
         except Exception:
-            # AX failure/diagnostic only; this never turns an image into success
-            # and never delays the final response with a background download.
+            # Diagnostic only; a screenshot never turns an action into success.
             try:
                 self._request_verification_screenshot(frame, task_state, reason="diagnostic")
             except Exception:
@@ -121,24 +128,56 @@ class Runtime:
             self._active_frame = None
             self._active_state = None
 
-    def _accept_action(self, frame: Frame, state: TaskState, action: str) -> None:
-        # The normal decision may also settle the previous write. Reuse that
-        # answer; never ask the default policy to run a second model judge.
-        if self._decision_checks is not None and state.pending_for(frame.tab) is not None:
-            verify.resolve_pending(frame, state, semantic_verify=self._semantic_verify,
-                                   telemetry=self._telemetry)
-        recover.guard_action(frame, state, action, telemetry=self._telemetry)
-        if action.startswith("stop ["):
-            verify.assert_stop(
-                frame,
-                state,
-                semantic_verify=self._semantic_verify,
-                telemetry=self._telemetry,
-                screenshot_request=(lambda: self._request_verification_screenshot(
-                    frame, state, reason="verify"
-                )) if hasattr(self.policy, "verify") else None,
-            )
-        recover.register_action(frame, state, action, telemetry=self._telemetry)
+    def _resume_input(self, frame: Frame, state: TaskState) -> str | None:
+        sequence = state.data.get("_input_sequence")
+        if not isinstance(sequence, dict):
+            return None
+        node = AXTree(frame).find_field(sequence["field_key"])
+        if frame.url != sequence["url"] or node is None:
+            state.data.pop("_input_sequence", None)
+            state.mark_unresolved("replacement interrupted; locate the original field again")
+            return "stop [Incomplete: input target changed during replacement]"
+        focused = AXTree(frame).focused_field()
+        if focused is not None and focused.field_key != node.field_key:
+            state.data.pop("_input_sequence", None)
+            state.mark_unresolved("focus moved to another field; replacement cancelled")
+            return "stop [Incomplete: focus changed before replacement]"
+        if sequence["phase"] in {"select", "end"}:
+            action = "press [Ctrl+A]" if sequence["phase"] == "select" else "press [Ctrl+End]"
+            sequence["phase"] = "type"
+        else:
+            state.data.pop("_input_sequence", None)
+            action = f'type [{node.element_id}] [{sequence["text"]}] [{sequence["enter"]}]'
+        selected, _ = self._finalize(frame, state, action)
+        return selected
+
+    def _finalize(self, frame: Frame, state: TaskState, action: str,
+                  input_mode: str | None = None) -> tuple[str, bool]:
+        action = action.strip()
+        plan = operations.plan(action, frame, state)
+        blocked = operations.guard(plan, frame, state, telemetry=self._telemetry)
+        if blocked is not None:
+            return blocked.action, False
+        typed = re.fullmatch(r"type \[(\d+)\] \[(.*)\] \[([01])\]", action, re.S)
+        if typed and (input_mode == "append" or
+                      input_mode == "replace" and not state.replace_armed(plan.field_key)):
+            # One primitive now; subsequent callbacks supply fresh IDs/observations.
+            state.data["_input_sequence"] = {
+                "field_key": plan.field_key, "url": frame.url,
+                "text": typed.group(2), "enter": typed.group(3),
+                "phase": "end" if input_mode == "append" else "select",
+            }
+            if input_mode == "append":
+                state.clear_replace()
+            focus_action = f"click [{typed.group(1)}]"
+            operations.register(operations.plan(focus_action, frame, state), frame, state)
+            state.mark_activity()
+            return focus_action, True
+        if plan.kind == "stop":
+            state.set_last_result("stop", "local effect checks passed", step=frame.step)
+            return action, True
+        operations.register(plan, frame, state, telemetry=self._telemetry)
+        return action, True
 
     def _policy_decision(
         self,
@@ -151,11 +190,12 @@ class Runtime:
         raw = self.policy.generate(context, state)
         while True:
             try:
-                self._decision_checks = None
                 decision = _parse_decision(raw, frame.as_observation(), context, state)
-                self._decision_checks = decision.pop("checks", None)
-                self._accept_action(frame, state, decision["action"])
-                return decision
+                selected, accepted = self._finalize(frame, state, decision["action"],
+                                                     decision.get("input_mode", "replace"))
+                if accepted and decision.get("memory") is not None:
+                    state.memory = decision["memory"]
+                return {"action": selected}
             except (ValueError, TypeError) as exc:
                 if not isinstance(raw, str):
                     raise ValueError("Policy must return a string decision") from exc
@@ -168,39 +208,20 @@ class Runtime:
                     )
                     index = state.next_recovery()
                     action = recovery_actions[index % len(recovery_actions)]
-                    self._accept_action(frame, state, action)
-                    return {"action": action}
+                    selected, _ = self._finalize(frame, state, action)
+                    return {"action": selected}
                 invalid_outputs.add(raw)
                 corrections += 1
                 raw = self.policy.correct(context, state, raw, exc)
-
-    def _semantic_verify(
-        self,
-        frame: Frame,
-        state: TaskState,
-        mode: str,
-    ) -> dict[str, Any] | None:
-        if self._decision_checks is not None:
-            return verify.parse_verification(
-                json.dumps({"checks": self._decision_checks}), frame, state, mode=mode
-            )
-        # Compatibility for injected local scripted policies. EffGenPolicy
-        # intentionally has no verify method or separate verification call.
-        if self.policy is None or not hasattr(self.policy, "verify"):
-            return None
-        context = observe.build_context(frame, state)
-        payload = verify.build_verify_payload(frame, state, mode=mode)
-        raw = self.policy.verify(context, state, payload)
-        return verify.parse_verification(raw, frame, state, mode=mode)
 
     def _request_verification_screenshot(
         self,
         frame: Frame,
         state: TaskState,
         *,
-        reason: str = "verify",
+        reason: str = "diagnostic",
     ) -> ScreenshotCapture | None:
-        """Fetch one current-frame PNG only when AX verification is inconclusive."""
+        """Fetch one current-frame PNG only on an explicit diagnostic path."""
         if not frame.capabilities.screenshot:
             return None
         if self._verification_screenshot_done or state.screenshot_requested(frame.step):
@@ -217,12 +238,7 @@ class Runtime:
         reason: str = "diagnostic",
         directory: str | None = None,
     ) -> ScreenshotCapture:
-        """Explicitly fetch this frame's PNG, defaulting to no request at all.
-
-        A failure other than the absolute deadline returns a failed capture and
-        leaves the normal AX decision path intact.  Only verified metadata/path
-        references enter TaskState.
-        """
+        """Explicitly fetch this frame's PNG, defaulting to no request at all."""
         task_state = (
             state if isinstance(state, TaskState)
             else TaskState({} if state is None else state)
@@ -234,15 +250,14 @@ class Runtime:
         if self.screenshot_port is None:
             task_state.set_screenshot_reference(None)
             return ScreenshotCapture(result="disabled", reference=frame.screenshot)
-        capture = self.screenshot_port.capture(
-            frame,
-            reason=reason,
-            directory=directory,
-        )
+        capture = self.screenshot_port.capture(frame, reason=reason, directory=directory)
         task_state.set_screenshot_reference(capture.as_state())
         return capture
 
     def close(self) -> None:
+        self._active_frame = None
+        self._active_state = None
+        self._verification_screenshot_done = False
         if self.policy is not None and hasattr(self.policy, "close"):
             self.policy.close()
 
@@ -264,7 +279,7 @@ def _parse_decision(
     if (
         not isinstance(result, dict)
         or "action" not in result
-        or set(result) - {"action", "memory", "checks"}
+        or set(result) - {"action", "memory", "input_mode"}
     ):
         raise ValueError("Return action and optional memory; put the ID inside the action string")
     action = validate_action(result["action"], observation)
@@ -285,12 +300,12 @@ def _parse_decision(
         if not isinstance(memory, str) or len(memory) > MAX_MEMORY:
             raise ValueError("Memory must be a string of at most 10000 characters")
     decision = {"action": action}
+    if "input_mode" in result:
+        if result["input_mode"] not in {"replace", "append"} or not action.startswith("type ["):
+            raise ValueError("input_mode is replace or append and applies only to type")
+        decision["input_mode"] = result["input_mode"]
     if memory is not None:
         decision["memory"] = memory
-    if "checks" in result:
-        if not isinstance(result["checks"], list):
-            raise ValueError("checks must be a list of current-page evidence")
-        decision["checks"] = result["checks"]
     return decision
 
 
@@ -311,4 +326,11 @@ def _unpack(proposal: str | Mapping[str, Any]) -> tuple[str, str | None]:
     return action, memory
 
 
-__all__ = ["DecisionPort", "Runtime"]
+__all__ = [
+    "DEADLINE_RESERVE_SECONDS",
+    "MAX_DECISION_CORRECTIONS",
+    "MAX_STALLED_STEPS",
+    "MAX_TASK_STEPS",
+    "DecisionPort",
+    "Runtime",
+]

@@ -271,7 +271,8 @@ class BudgetDeadlineTests(unittest.TestCase):
             log = Path(temporary) / "telemetry.jsonl"
             clock = FakeClock()
             fake_time = SimpleNamespace(time=clock)
-            state = {"_remaining_seconds": 10}
+            # Stay above the short-fix's normal Incomplete reserve on both calls.
+            state = {"_remaining_seconds": 30}
             sdk = FakeSdk([
                 reply("click [17]", request_id="first"),
                 reply("click [18]", request_id="second"),
@@ -290,23 +291,23 @@ class BudgetDeadlineTests(unittest.TestCase):
                     task="Read page", observation=OBS, history=[],
                     action_history=[], state=state,
                 )
-                clock.now = 1011.0
+                clock.now = 1031.0
                 with self.assertRaises(TimeoutError):
                     agent_logic.decide(
                         task="Read page", observation=OBS, history=[],
                         action_history=[], state=state,
                     )
 
-            self.assertEqual(state["_execution_deadline"], 1010.0)
+            self.assertEqual(state["_execution_deadline"], 1030.0)
             self.assertEqual(len(sdk.calls), 2)
             events = read_events(log)
             observations = [e for e in events if e["event"] == "observation"]
             starts = [e for e in events if e["event"] == "model_call_start"]
             rejected = [e for e in events if e["event"] == "model_call_rejected"]
-            self.assertEqual([e["deadline"] for e in observations], [1010.0] * 3)
-            self.assertEqual([e["deadline"] for e in starts], [1010.0] * 2)
+            self.assertEqual([e["deadline"] for e in observations], [1030.0] * 3)
+            self.assertEqual([e["deadline"] for e in starts], [1030.0] * 2)
             self.assertGreaterEqual(len(rejected), 1)
-            self.assertTrue(all(e["deadline"] == 1010.0 for e in rejected))
+            self.assertTrue(all(e["deadline"] == 1030.0 for e in rejected))
             self.assertTrue(all(not e["sdk_invoked"] for e in rejected))
             end = [e for e in events if e["event"] == "run_end"][-1]
             self.assertEqual(end["end_reason"], "deadline")

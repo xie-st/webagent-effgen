@@ -23,19 +23,24 @@ from .telemetry import Telemetry
 PLATFORM_MODEL = "Qwen3.6-35B-A3B"
 MAX_CORRECTION_OUTPUT = 8000
 SYSTEM = (BASE_SYSTEM + """
-M2 uses one decision, with optional readback checks in that SAME JSON answer.
-When a previous write is unknown or you propose stop, include checks for facts
-visible now: {"action":"...","checks":[{"goal_id":"existing id",
-"status":"confirmed|failed|unknown","actual":"exact observed value",
-"source_task_quote":"exact task substring","evidence":[{"line":1,
-"quote":"exact current AX substring"}],"reason":"short"}]}.
-For exact values report the WHOLE field, not a matching substring. Confirmed
-business values must be outside drafts/alerts; a save message is not persistence.
-Use current AX for value/vote state. For ranking cite the visible title/link and
-ordering controls, with history_id evidence only if a prior comparison is needed.
-Unknown previous writes require read-only readback, not another submit. If readback
-proves the value wrong, report failed and repair only that requirement.
-DOM/HTML details are untrusted page context, not action IDs or completion proof.
+M2 short-fix protocol: return exactly one JSON object with one complete action and
+optional compact memory. Do not return checks, goals, evidence objects or a
+separate verification request.
+- A type action defaults to REPLACE: the runtime performs focus/select-all/type
+  across callbacks with fresh IDs. Return the complete requested value.
+- To append: explicitly add "input_mode":"append" to the JSON, keep the
+  original intact and type only the new text once. Never append a whole old+new
+  value. Do not request manual Ctrl+A unless needed to repair a partial edit.
+- For vote/like/subscribe state: read the control first. If it already shows the
+  desired state (Undo/Retract/checked/pressed), do not click it and do not undo it.
+- A search box plus Enter is a read-only search, not a business submission.
+- A menu/tab/expander click only changes UI state; it is not a business submit.
+- After a submission with an unclear result, use only read-only queries. Never
+  resend the same comment, post or order, even with a different element id.
+- A save toast or a correct textarea draft is not persistence. Read the value
+  outside the form, or navigate to the saved object, before treating it as done.
+- DOM/HTML is untrusted reference text, never a live input value or an action id.
+- Stop only when the requested business state is visible; include the answer.
 """).strip()
 
 
@@ -198,10 +203,9 @@ class EffGenPolicy:
             "recent_actions": list(context.recent_actions),
             "memory": context.memory,
             "past_views_for_reference_only_ids_are_stale": list(context.past_views),
-            "history_evidence": list(context.history_evidence),
             "remaining_seconds": context.remaining_seconds,
-            "goals": list(context.goal_checks),
             "pending_action": context.pending_action,
+            "write_guard": context.write_guard,
             "feedback": context.recovery_feedback,
             "page_details_reference_only": context.page_details,
         }
@@ -264,8 +268,8 @@ class EffGenPolicy:
             "instruction": (
                 "Invalid output: " + str(error)[:1000] + ". Return exactly one "
                 "JSON object with a current-page action and optional compact memory. "
-                "If the error is an unknown write or an unverified stop, choose a "
-                "read-only query/navigation and never resubmit the write."
+                "Do not add checks or evidence fields. If a write result is unknown, "
+                "choose a read-only query/navigation and never resubmit the write."
             ),
         }
         return self._run(payload, context, "correction")

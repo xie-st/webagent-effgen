@@ -1,154 +1,54 @@
-# 当前版本
+# 当前版本：M2短期修补
 
-## M2 简化接续（2026-10-30）
+默认路径：当前网页 → 一次EffGen决策 → 局部操作保护 → 一个官方动作 → 下一观察读回。无独立verify模型、无通用目标正则抽取、无模型证明JSON。M3暂停。
 
-默认流程为：观察 → 一次 EffGen 决策（可附带本次读回 checks）→ 程序检查 → 一个动作。默认策略已移除独立 `verify` 模型调用；格式/动作错误最多补问一次。精确值、未知提交不重发及完成前检查继续保留，复杂语义仍需可核对的当前页面证据。保留旧注入 policy 的本地核验回调，仅供兼容联调工具。
+本轮状态及验证限制见根目录[M2短期修补交付](../../../M2短期修补交付.md)。官方成绩尚未产生，不将离线通过当成线上验收。
 
-替换输入后，若实际字段仍是旧值或拼接值，先阻止保存并提示 Ctrl+A；距离截止不足5秒时明确返回 Incomplete，给平台最终判分留出时间。这不是成功声明，也不保证已在途的调用能准时返回。
+## 从仓库根目录启动
 
-SDK 已导入用户下载的官方原始 ZIP `ec1a6697…`，完整指纹见 sdk/SOURCE.json；旧版本与测试快照保留。`observation.dom.root` 直接读取；DOM缺失时可在回调内按 `observation.html` 下载HTML并核对step、字节数和SHA。页面资料仅在输入后/待确认结果时准备，精简为最多6000字符；没有新字段仍走AX。HTML属性不保证是实时输入值，DOM nodeId不是动作编号，所有动作仍绑定当前AX编号。
-
-本段为最新行为；下文M1接线、旧截图升级记录保留为历史上下文。简化后的在线结果仍待实测，不能沿用旧冻结代码成绩。
-
-日常开发代码，初始复制自 v1；M0 骨架保留，M1a 已接入真实 EffGen v1.3.0。官方单步入口仍是 `MyAgent.reset/step/close`：每个请求映射为 `Frame`，由 `Runtime` 组装观察、调用 EffGen policy、解析 JSON、校验动作并合并 memory，最终只返回一个动作。
-
-M1a/M1b均已验收，官方固定基线3/4、75%，证据见[M1结案](../../../01_文本/06_开发框架/M1结案.md)。平台[视口PNG已开放](../../../01_文本/01_比赛要求/结构化资料/06_网页截图能力更新.md)，当前目录已按归档官方ZIP `23c08362` 精确升级SDK（新增`third_party_agent/browser.py`），并接入可空的截图引用与按需端口；M1的`v1`与旧运行快照保持原样。接入与验收安排见开发方案，本项目入口仍是EffGen，不被官方demo覆盖。
-
-当前版本的 M2 核心已接通：Runtime 从原 task 抽取 goal_checks，TaskState 保存唯一进度；动作发出后按 Tab 登记预期效果，下一帧确认后才推进；未知写入只允许只读核验，最后写入与 stop 均需业务状态证据。M2 的本地回归已加入 `tests/test_m2.py`，官方平台成绩尚未在本轮产生。
-
-## 运行环境
-
-- Python 3.11+；本机固定环境为项目 `.local/m1a-lock-venv`（验收入口）和 `.local/m1a-venv`（日常），均为 Python 3.12.9。
-- 依赖已完整锁定在 `requirements.lock`；顶层约束见 `requirements.txt`。
-- 在项目根安装：`.\.local\m1a-lock-venv\Scripts\python.exe -m pip install -r ".\02_代码\01_harness\当前版本\requirements.lock"`。
-- 启动检查会核对 Python、EffGen 版本与公开接口、`requirements.lock` 全部包版本、SDK 原件哈希；不会连接平台。
-
-在项目根运行：
+使用已按本目录`requirements.lock`安装依赖的Python 3.11+解释器；EffGen固定1.3.0。
 
 ```powershell
-.\.local\m1a-lock-venv\Scripts\python.exe .\webagent.py check
-.\.local\m1a-lock-venv\Scripts\python.exe .\webagent.py test
+python webagent.py check
+python webagent.py test
+python webagent.py connect --connection-file '实际连接文件绝对路径'
 ```
 
-在本目录运行：
+本机专用环境位于修补工作树`.local/m2-lock-venv/Scripts/python.exe`。连接配置和环境不进Git。旧版本加`--version v1`；完整版本内也可直接运行`python run.py check/test/connect`。
 
-```powershell
-& "..\..\..\.local\m1a-lock-venv\Scripts\python.exe" run.py check
-& "..\..\..\.local\m1a-lock-venv\Scripts\python.exe" run.py test
-```
+## 动作与输入语义
 
-## M1a 接线
+决策返回`{"action":"完整动作","memory":"可选短记忆"}`。原始官方动作语法保持不变。
 
-```text
-MyAgent.step
-  → official.frame_from_request
-  → Runtime（TaskState、观察、解析、校验、memory 合并）
-  → EffGenPolicy（AgentConfig + Agent.run，单 Agent、空工具）
-  → PlatformModel（自定义 BaseModel）
-  → ModelPort.generate(messages, purpose, deadline)
-  → third_party_agent.model.generate(messages)（当前绑定线程）
-```
+- `type`默认replace，程序跨回调执行聚焦、全选、输入；下一观察读回完整值。每个回调仅返回一个动作，元素ID逐步重新绑定。
+- 追加时显式返回`{"action":"type [当前ID] [新增文字] [0]","input_mode":"append"}`。程序先聚焦并移到末尾，基线＋增量作为全文期望；同一已观察到的追加不重复执行。
+- 写入后提交前检查编辑全文，提交后查业务结果。输入框正确、保存提示或截图存在均不单独证明持久化。
+- 点赞/订阅等状态按同一对象读回，已生效不得重复撤销；对象缺失不拿其他对象顶替。
+- 未决业务提交期间阻止其他写入及可能覆盖待确认状态的草稿输入，允许只读查询。确定效果未生效可有限重试，未知结果不重发。
+- 普通步骤不另起模型裁判；格式错误最多一次纠错。连续3次无变化观察或本地40步上限以Incomplete退出，任务绝对截止不续期，临近截止预留6秒。
 
-- EffGen 固定 `1.3.0`，用公开 `AgentConfig`/`Agent.run` 和自定义 `BaseModel`；每次尝试新建 Agent，避免框架短期记忆把一个网页步骤带入下一步。
-- 单 Agent、`tools=[]`、`AgentMode.SINGLE`；关闭自动子代理、额外记忆、能力探测、fallback/模型切换和 speculative execution。`max_iterations=1` 只约束框架内部循环，外层没有新增步数上限。
-- 普通有效决策只调用一次模型。无效输出由 `Runtime` 解析并触发一次纠错请求；纠错和框架内部重试都通过同一 `ModelPort` 计入日志。
-- `ModelPort.generate(messages, purpose, deadline)` 只把 `system`/`user`/`assistant` 字符串消息交给 SDK；不传模型名、key、采样参数。平台统一模型，无其他模型或外部 API。
-- 截止时间来自任务 `execution_deadline`，同时用于 `TaskState` 剩余时间和 `ModelPort` 调用前检查；SDK 仍按自己绑定的任务截止执行。
-- 跨观察事实只保存在外层 `TaskState.memory`；`reset` 新建，`close` 清理。注入的同一个 `SdkModelPort`/`Telemetry` 会在每次 `reset` 重新绑定当前任务日志，因此第二轮不会把调用记到上一轮已结束的 telemetry。
-- `agent_logic.decide` 保留原签名，并以传入的 `TaskState` 或可变 dict 作为整个任务的身份与进度来源：同一 state 连续观察共用一个唯一 run_id，step 递增、调用序号累计，普通动作不结束任务；`stop` 或异常只写一次真实 `run_end`。新 state 使用新 run_id 并从调用序号 1 开始。
+低层注入的`decision_port`保留官方原始动作语义，用于协议测试；默认生产`EffGenPolicy`执行上述输入模式。`input_mode`只对type有效。
 
-## M2 核验与恢复
+## 模块
 
-M2 由 Runtime 统一编排，生产 `MyAgent` 与兼容 `agent_logic.decide` 都走同一条路径；普通决策仍只发一次 `decision`，核验另记 `verify`，纠错另记 `correction`。
+| 文件 | 职责 |
+| --- | --- |
+| `my_agent.py`、`agent_logic.py` | 官方生命周期与兼容入口，使用同一Runtime |
+| `web_agent/runtime.py` | 一次决策、至多一次纠错、跨回调输入续执行与预算 |
+| `web_agent/operations.py` | 输入/状态/提交的局部读回、未决写入与重复操作保护 |
+| `web_agent/ax.py` | 当前AX的字段、值、控件状态与对象定位；歧义不猜 |
+| `web_agent/state.py` | 记忆、焦点、未决动作、最新字段草稿、已确认操作与截止 |
+| `web_agent/policy.py`、`model_port.py` | EffGen单Agent调用、SDK统一模型适配，记录实际调用 |
+| `web_agent/page_sources.py` | 按需DOM/HTML参考，不能将DOM编号当动作ID |
+| `web_agent/screenshots.py` | 当前run/step/URL绑定的截图下载与校验 |
+| `sdk/`、`run.py` | 官方原件/指纹、环境检查、冻结快照和运行结果 |
 
-- `verify.extract_goal_checks(task)` 只读原 task：引号内精确值、`change ... to`、`reply ... comment`、`edit ... adding ... body`、upvote/downvote/subscribe/order/cart 等逐项建立 `GoalCheck`；不读 task id、答案或路径。数量、排序、容量/最低价、主题、身份、日期与取消状态、未识别子句都保留为 `semantic`，多对象投票建立 `count_per_object`；空清单不再等于成功。可确定的精确值与追加值用确定性比较，替换只接受完全相等，追加要求原文前缀保留且只多出要求内容。
-- `TaskState` 是唯一事实与进度源：`_task`、`_goal_checks`、`_pending_actions`（每 Tab 至多一个）、`_drafts`、`_identity`、证据和同一绝对 deadline 都在这里。reset 新建，close 清理；身份变化把已核实证据标为 stale，重新观察后再核。`GoalCheck.objects` 保存已确认的多对象前缀。
-- `recover.classify_action` 保守分类：先判提交/删除语义（含 link 名称与 URL），再认可读名称；`view` 不因出现在 `review` 中而变成读取，`Preview & Submit`、`Review order` 仍是写。type/选择/清空记为草稿，不推进业务目标。提交动作登记预期值、来源观察（含 AX 指纹）、目标 ID 与 `object_key`。
-- 下一帧先 `verify.resolve_pending`：业务值完全相等即确认；投票后的 `Retract upvote` 等切换控件确认本次对象已写入；页面与来源观察相同且无回执证据先保持unknown，完成显式只读回查后才确认无效果；页面已变但无法判定则保持 unknown。多对象按对象逐一确认：首个对象确认即清本次 pending，保留 `objects` 进度并允许继续下一个对象；同对象不得重发或撤销。unknown 期间 write guard 拒绝同类提交（包括换 element id），只允许可判定读取、导航、查询、选择和草稿；查询不覆盖原 pending。
-- 确认成功后不重写；确认失败才回退受影响目标，`verified_prefix` 和业务证据保留，剩余要求继续。`stop` 前由 `verify.judge_goals` 重新读取原 task 核对完整覆盖，空 task、空清单、缺目标、pending unknown 或最后写入未确认都拒绝 success stop。模型语义核验必须返回当前 AX 行号、精确引用、原 task 子句和结构化 checks；引用不实、草稿/提示区域或精确值不等一律不确认。部分动作确认不等于整个目标确认。
-- `TaskState.update_deadline` 只保留最早绝对截止，目标抽取、核验、纠错、截图与额外模型调用共用；模型用量未知时日志中的 token/费用保持 null。
+旧`verify.py/recover.py`及仅验证其证明协议的测试已从当前版本移除；历史提交与保存版本保留。操作反例在`tests/test_m2_operations.py`；其余模型接线、截止、状态隔离、SDK与截图测试继续保留。
 
-`telemetry.jsonl` 的 M2 事件为 `goal_plan`、`pending_action`、`verification`（source/status/invalid/checks）、`write_guard`、`recovery`、`goal_progress`；`run_end` 汇总核验、unknown、guard、recovery 与目标进度。
+## 观察和证据边界
 
-公共接口归属：`Runtime.advance(frame, state)` 是唯一调度入口，调用方在构造 Runtime 时注入 policy 或 decision_port、ScreenshotPort 与 Telemetry；`Runtime.request_screenshot(frame, state, reason=...)` 由入口或 Runtime 在 AX 不足/异常/诊断时调用；`MyAgent.reset/step/close/request_screenshot` 由官方 SDK 调用；`verify.py`/`recover.py` 的纯函数供 Runtime 与测试调用，不自行发模型或启动浏览器。
+执行使用当前AX元素ID；DOM/HTML仅是参考，不保证实时表单属性或后端状态。统一模型接收文本，不自动具备截图视觉理解。
 
-## 截图边界
+普通语义要求仍由同一Agent结合原任务判断；本版本不是通用任务完成证明器。当前局部提交读回可能对多段正文、已存在相同值、缺少可读业务结果保持unknown，不能由此宣布任务已完成。
 
-新版SDK的`observation.screenshot`是可空元数据；本项目只在当前帧确有完整元数据时声明`Capabilities.screenshot=True`。旧服务缺字段或字段不完整时按纯文本运行，不报错，也不把上一帧图片当成本帧证据。
-
-```text
-Runtime.advance(frame, state, screenshot_reason="verify")
-  → Runtime.request_screenshot(frame, state, reason)
-  → ScreenshotPort.capture(frame)             # 默认不调用
-  → third_party_agent.browser.save_screenshot(observation, raw/screenshots)
-  → 校验尺寸/字节数/SHA-256/PNG IHDR
-  → TaskState 只保存引用与本地路径
-```
-
-- 默认所有`step`只走AX；需要核验、恢复或诊断时显式调用`Runtime.request_screenshot(...)`，或`MyAgent.request_screenshot(reason=...)`使用最近一帧。`advance(..., screenshot_reason=...)`可在决策前先取图。
-- 端口只在仍有效的SDK任务回调线程内同步调用`browser.save_screenshot`，不另起后台线程或下载；下载与本地处理共用`execution_deadline`，超时抛`TimeoutError`。
-- 引用绑定`run_id`、`tab`、`observation_version`、`url`、`image_id`和截图`step`；截图`step`还必须等于当前`Frame.step`，跨帧错绑直接拒绝。成功抓取和`TaskState`引用都按含`step`的整组绑定缓存/失效：`step`前进后即使`observation_version`不变，也不复用旧引用或旧缓存。同一帧重复请求不再下载；没有本帧截图时返回`no_reference`，不沿用旧路径。
-- 404/409、传输或校验失败返回失败结果并继续AX决策，不把保存提示或图片存在当作目标成功。当前帧`step`或绑定变化时`TaskState`中的旧引用失效。
-- PNG只写入本次运行的`raw/screenshots/`（结果目录受Git忽略）；`Frame`、`Context`、`TaskState`、历史、日志和`ModelPort`都只含元数据/路径，绝不发送PNG、base64或图片消息给模型。
-- `telemetry.jsonl`新增`screenshot`事件，记录`reason`、`result`（saved/cached/http_404/http_409/timeout/invalid/...）、`cache_hit`、`duration_ms`、`byte_size`、`sha256`、`http_status`及run/step/观察版本/URL/image_id关联；`run_end`事件汇总请求、缓存命中、成功、失败与字节数。
-
-## 日志
-
-`run.py` 每次 `test`/`connect` 会创建结果目录，并把结果目录通过 `WEBAGENT_RUN_DIR` 传给 SDK 子进程。日志为结果目录下的 `telemetry.jsonl`，汇总为 `telemetry-summary.json`：
-
-- 每次模型调用先写 `model_call_start`（调用序号、purpose、step、deadline），返回后写 `model_call_end` 或 `model_call_failed`；`request_id` 在结束事件中记录。截止前拒绝的调用写 `model_call_rejected`（`sdk_invoked=false`），不计入模型调用次数。
-- `stop` 是终止动作，记录 `run_end.end_reason=stop`；截止结束为 `deadline`；其他失败保留异常类型。
-- 运行/步骤、UTC 时间、PID、URL、观察版本、可取得的前一动作回执和最终动作。
-- 截图请求另记`screenshot`事件，含观察关联、缓存、耗时、字节数与结果；未请求截图时没有该事件。
-
-## 文件
-
-| 文件 | 作用 |
-|---|---|
-| `my_agent.py` | 官方 reset/step/close；默认构造 M1a Runtime 与遥测 |
-| `agent_logic.py` | 兼容 `decide`/`SYSTEM`/`model`/`validate_action` 入口 |
-| `web_agent/policy.py` | 真实 EffGen 配置、单次 raw 决策与纠错请求 |
-| `web_agent/model_port.py` | 唯一模型边界、消息校验与同步 SDK 调用 |
-| `web_agent/telemetry.py` | JSONL 运行/调用日志与汇总 |
-| `web_agent/environment.py` | Python/EffGen 版本和公开接口检查 |
-| `web_agent/runtime.py` | 唯一调度入口：goal_checks、pending 核验、guard、stop 判定、动作校验、纠错、memory 合并 |
-| `web_agent/state.py` | `TaskState`：任务/目标/pending/draft/证据/身份/绝对截止的唯一来源 |
-| `web_agent/verify.py` | 原 task 目标抽取、AX 精确证据、严格语义核验、pending 确认与 stop 判定 |
-| `web_agent/recover.py` | 动作保守分类、预期效果登记、unknown 只读 guard、局部恢复与前缀保留 |
-| `web_agent/contracts.py` | Frame、Context、Capabilities、GoalCheck、PendingAction、截图引用与截止 |
-| `web_agent/screenshots.py` | 同步截图端口、本帧绑定/缓存、完整性核验与失败回退 |
-| `web_agent/observe.py` | 当前 AX/ID、去重历史、最近动作与恢复提示 |
-| `web_agent/actions.py` | 公共动作规则：完整动作、当前 ID、同源 goto |
-| `web_agent/baseline.py` | M0 baseline 保留，供旧测试和对照；默认不接线 |
-| `web_agent/adapters/official.py` | 官方请求到Frame的映射、可选截图引用及实际能力声明 |
-| `sdk/` | 官方新客户端原件（归档`23c08362`），`SOURCE.json`核验全部文件 |
-| `run.py` | 启动、检查、测试、快照和结果汇总 |
-| `requirements.txt` / `requirements.lock` | 顶层依赖与完整固定环境 |
-| `tests/` | M0回归、M1a验收、新版客户端/截图专项、M2核验与恢复回归 |
-
-## 测试
-
-离线测试使用真实 EffGen 包和假 SDK 响应，不连接平台、不发起真实模型请求。覆盖：
-
-- M0：Frame 映射、Runtime 接线、单次调用、状态隔离、动作校验、纠错、恢复动作、SDK 子进程。
-- M1a：真实 EffGen 版本/公开接口、单 Agent/空工具/关闭特性、普通决策一次调用、连续观察 memory、纠错另计、调用开始/结束日志、截止拒绝、stop 结束原因、step 一致、消息字段约束、遥测与汇总。
-- 日志生命周期：同一注入端口跨 reset 的两任务各归入 current telemetry；兼容入口同 state 的两普通步+stop 保持唯一 run_id、step 0/1/2、call_seq 1/2/3 且只在 stop 写一次累计 run_end；新 state 身份与计数重置；异常结束；EffGen 内部空答重试的每次真实调用都被记录。
-- 截图专项：官方SDK指纹与`browser`接口、入口未被demo覆盖；完整/缺失/畸形元数据；run/tab/观察版本/URL错绑；截图`step`与当前帧不一致时拒绝（同观察版本的新`step`不复用旧引用/缓存）；同帧缓存与重复抓取；校验失败删除且不缓存；无本帧截图不沿用旧图；404/409回AX；请求前与处理中的绝对截止；真实SDK在任务会话内下载；消息不含PNG/base64/路径。
-- M2：原 task 精确替换/回复/追加/点赞/复合要求抽取；替换精确相等而非 contains；追加保留原文且拒绝多余内容；草稿、保存提示、截图存在不证明持久化；动作预期与来源观察登记；每 Tab 单 pending；无效果不推进；最后写入确认后才 stop；unknown 换 element id 仍拒绝写入，只读查询可确认且不覆盖 pending；确认成功不重写；确认失败只恢复受影响目标并保留已核实前缀；缺失目标/伪造 AX 行号/缺 task 引用拒绝；身份变化标 stale；reset/close/同 deadline；按需截图 404 降级；生产 MyAgent 与 legacy decide 实接（decision/verify/correction 分列）。新增套件反例：未知 task 不能空清单 stop；605 主题约束不是精确字段；最低价/容量缺证据不能停；四帖逐一点踩首个确认即清 pending 且同对象不可撤销；购物车中间确认后可继续结账；删除/提交语义 link 与 Preview+Submit 按钮在 unknown 期被拒绝；已确认 Upvote 的 Retract 点击被拒绝。
-- 独立复制：复制本目录后运行 `run.py check`，验证不依赖原目录。
-
-测试结果目录、`test-output.txt`、代码快照和 `telemetry.jsonl` 由 `run.py test` 自动保存；官方成绩不在离线测试中填写。
-
-复制本目录后可独立使用：
-
-```powershell
-python -m pip install -r requirements.lock
-python run.py check
-python run.py test
-```
-
-连接平台仍需根配置中的连接文件：
-
-```powershell
-python run.py connect --connection-file "连接文件路径"
-```
+`run.py test/connect`生成独立代码快照、会话和遥测。官方成绩从平台下载放本次`raw/`，结果写`result.md`，批次编号填`run.json.platform_run_ids`。真实模型、脚本网页、离线协议分别报告。

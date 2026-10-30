@@ -191,7 +191,10 @@ class OfficialProtocolAdapter:
         typed = re.fullmatch(r"type \[(\d+)\] \[(.*)\] \[([01])\]", text, flags=re.S)
         if typed:
             locator = self._locator(typed.group(1))
-            locator.fill(typed.group(2), timeout=5000)
+            # Match the platform's insertion semantics; do not hide stale text
+            # or a missing Ctrl+A with Playwright's implicit clear operation.
+            locator.focus(timeout=5000)
+            self.page.keyboard.insert_text(typed.group(2))
             if typed.group(3) == "1":
                 locator.press("Enter")
                 self._settle()
@@ -210,7 +213,7 @@ class OfficialProtocolAdapter:
             return "executed"
         press = re.fullmatch(r"press \[(.*)\]", text, flags=re.S)
         if press:
-            self.page.keyboard.press(press.group(1))
+            self.page.keyboard.press(press.group(1).replace("Ctrl+", "Control+"))
             return "executed"
         scroll = re.fullmatch(r"scroll \[(up|down)\]", text)
         if scroll:

@@ -1,4 +1,4 @@
-"""Select a complete harness version; implementation lives inside each version."""
+"""Launch the current M2 short-fix harness; saved versions remain selectable."""
 import argparse
 import json
 import os

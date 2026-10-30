@@ -5,12 +5,16 @@ import re
 from typing import Any, Mapping
 
 from .contracts import Context, Frame
-from .recover import feedback, progress
+from . import operations
 from .state import TaskState
 
 
 def _fingerprint(view: Mapping[str, Any]) -> str:
     return re.sub(r"\[\d+\]", "[id]", str(view.get("text", "")))
+
+
+def fingerprint(text: str) -> str:
+    return re.sub(r"\[\d+\]", "[id]", str(text))
 
 
 def build_context(frame: Frame, state: TaskState) -> Context:
@@ -28,17 +32,17 @@ def build_context(frame: Frame, state: TaskState) -> Context:
         len(raw_actions) >= 2 and raw_actions[-1] == raw_actions[-2]
     )
 
-    recovery_feedback = ""
+    feedback = ""
     if repeated_action or unchanged_count >= 2:
-        recovery_feedback = (
+        feedback = (
             "The last action was repeated or the page is unchanged. Check whether it "
             "had any effect. Do not repeat the same ineffective action; look for "
             "validation errors, scroll to missing controls, or use a different "
             "visible navigation route."
         )
-    m2_feedback = feedback(frame, state)
-    if m2_feedback:
-        recovery_feedback = (recovery_feedback + "\n" + m2_feedback).strip()
+    local_feedback = operations.feedback(state)
+    if local_feedback:
+        feedback = (feedback + "\n" + local_feedback).strip()
 
     past_views: list[Mapping[str, Any]] = []
     for item in reversed(history):
@@ -78,7 +82,7 @@ def build_context(frame: Frame, state: TaskState) -> Context:
         past_views=tuple(reversed(past_views)),
         recent_actions=tuple(frame.action_history[-16:]),
         memory=state.memory,
-        recovery_feedback=recovery_feedback,
+        recovery_feedback=feedback,
         remaining_seconds=state.remaining_seconds,
         deadline=effective_deadline,
         capabilities=frame.capabilities,
@@ -87,14 +91,15 @@ def build_context(frame: Frame, state: TaskState) -> Context:
         repeated_action=repeated_action,
         last_action=raw_actions[-1] if raw_actions else None,
         screenshot=frame.screenshot,
-        goal_checks=tuple(goal.as_dict() for goal in state.goal_checks),
-        pending_action=pending.as_dict() if pending is not None else None,
+        pending_action=operations.pending_summary(state),
         write_guard=(
             "read_only_required"
             if pending is not None and pending.status == "unknown"
             else None
         ),
-        verification_feedback=m2_feedback,
-        goal_progress=progress(state),
+        verification_feedback=local_feedback,
         page_details=frame.page_details,
     )
+
+
+__all__ = ["build_context", "fingerprint"]

@@ -1,7 +1,13 @@
-"""M0 data contracts shared by the public adapter, runtime and observers."""
+"""Shared data contracts for the runtime, adapters and policy.
+
+M2 short-fix deliberately keeps these contracts small: a frame, a bounded
+context, a pending operation and verified screenshot metadata.  Task-goal
+extraction, evidence trees and model proof objects are not part of the default
+production path.
+"""
 from __future__ import annotations
 
-from dataclasses import dataclass, field as dataclass_field
+from dataclasses import dataclass
 import re
 from typing import Any, Mapping
 
@@ -24,12 +30,7 @@ class Capabilities:
 
 @dataclass(frozen=True)
 class ScreenshotReference:
-    """Verified-or-requestable viewport PNG metadata for one observation.
-
-    The reference carries only platform metadata and the binding needed to
-    reject stale evidence.  Image bytes never enter a Frame, Context, model
-    message or TaskState.
-    """
+    """Verified-or-requestable viewport PNG metadata for one observation."""
 
     image_id: str
     mime_type: str
@@ -53,12 +54,6 @@ class ScreenshotReference:
         observation_version: int | str,
         url: str,
     ) -> "ScreenshotReference":
-        """Parse one optional observation.screenshot value strictly.
-
-        Callers that must keep old servers running catch the error and treat the
-        frame as text-only.  A screenshot object with missing or malformed
-        fields is not promoted to a usable reference.
-        """
         if not isinstance(metadata, Mapping):
             raise ValueError("screenshot metadata must be an object")
         image_id = metadata.get("image_id")
@@ -120,7 +115,6 @@ class ScreenshotReference:
         }
 
     def sdk_metadata(self) -> dict[str, Any]:
-        """Only the fields ``browser.save_screenshot`` needs."""
         return {
             "image_id": self.image_id,
             "mime_type": self.mime_type,
@@ -142,151 +136,14 @@ class ScreenshotReference:
         )
 
 
-GOAL_STATUSES = frozenset(
-    {"pending", "unknown", "failed", "verified", "stale"}
-)
-
-
-@dataclass
-class GoalEvidence:
-    """One checked AX fact, bound to the observation that showed it.
-
-    The source is deliberately recorded so a later identity or page change can
-    invalidate the claim without deleting the verified prefix.  No image bytes
-    or model prose enters this record.
-    """
-
-    source: str
-    step: int | None
-    url: str
-    observation_version: int | str | None
-    line: int | None = None
-    element_id: str | None = None
-    quote: str = ""
-    actual: Any = None
-    identity: str = ""
-    deterministic: bool = False
-    history_id: str | None = None
-
-    def as_dict(self) -> dict[str, Any]:
-        return {
-            "source": self.source,
-            "step": self.step,
-            "url": self.url,
-            "observation_version": self.observation_version,
-            "line": self.line,
-            "element_id": self.element_id,
-            "quote": self.quote,
-            "actual": self.actual,
-            "identity": self.identity,
-            "deterministic": self.deterministic,
-            "history_id": self.history_id,
-        }
-
-    @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "GoalEvidence":
-        step = data.get("step", 0)
-        return cls(
-            source=str(data.get("source", "")),
-            step=int(step) if type(step) is int else None,
-            url=str(data.get("url", "")),
-            observation_version=data.get("observation_version", 0),
-            line=data.get("line"),
-            element_id=data.get("element_id"),
-            quote=str(data.get("quote", "")),
-            actual=data.get("actual"),
-            identity=str(data.get("identity", "")),
-            deterministic=bool(data.get("deterministic", False)),
-            history_id=(
-                str(data["history_id"])
-                if isinstance(data.get("history_id"), str)
-                else None
-            ),
-        )
-
-
-@dataclass
-class GoalCheck:
-    """One requirement extracted from the original task text.
-
-    ``kind`` selects the deterministic comparison where that is possible:
-    ``exact_equal``, ``exact_append``, ``count_once``, ``count_per_object``,
-    ``state_true``, ``item_exact``, ``order_once`` or ``semantic``.  ``target``
-    is the exact value parsed from the task (never a contains-match), and
-    ``baseline`` preserves the original value for append requirements once it
-    has been observed.  ``objects`` records already confirmed object identities
-    for multi-object requirements (for example four distinct posts), so a
-    partial confirmed effect can clear its pending action without claiming the
-    whole task is complete.
-    """
-
-    goal_id: str
-    description: str
-    kind: str
-    target: Any
-    source_quote: str
-    field: str | None = None
-    baseline: Any = None
-    status: str = "pending"
-    attempts: int = 0
-    actual: Any = None
-    reason: str = ""
-    evidence: list[GoalEvidence] = dataclass_field(default_factory=list)
-    objects: list[str] = dataclass_field(default_factory=list)
-
-    def __post_init__(self) -> None:
-        if self.status not in GOAL_STATUSES:
-            raise ValueError(f"invalid goal status: {self.status}")
-        if not isinstance(self.evidence, list):
-            raise TypeError("goal evidence must be a list")
-
-    def as_dict(self) -> dict[str, Any]:
-        return {
-            "goal_id": self.goal_id,
-            "description": self.description,
-            "kind": self.kind,
-            "target": self.target,
-            "source_quote": self.source_quote,
-            "field": self.field,
-            "baseline": self.baseline,
-            "status": self.status,
-            "attempts": self.attempts,
-            "actual": self.actual,
-            "reason": self.reason,
-            "evidence": [item.as_dict() for item in self.evidence],
-            "objects": list(self.objects),
-        }
-
-    @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "GoalCheck":
-        return cls(
-            goal_id=str(data["goal_id"]),
-            description=str(data.get("description", "")),
-            kind=str(data["kind"]),
-            target=data.get("target"),
-            source_quote=str(data.get("source_quote", "")),
-            field=data.get("field"),
-            baseline=data.get("baseline"),
-            status=str(data.get("status", "pending")),
-            attempts=int(data.get("attempts", 0)),
-            actual=data.get("actual"),
-            reason=str(data.get("reason", "")),
-            evidence=[
-                GoalEvidence.from_dict(item)
-                for item in data.get("evidence", ())
-                if isinstance(item, Mapping)
-            ],
-            objects=[str(item) for item in data.get("objects", ()) if str(item)],
-        )
-
-
 @dataclass
 class PendingAction:
-    """A dispatched action whose business effect is not yet confirmed.
+    """One dispatched operation whose business effect is not yet confirmed.
 
     At most one exists per tab.  ``source`` records the observation that
-    produced the action; a later query can verify the effect but never erases
-    the pending record until it is confirmed or conclusively failed.
+    produced the action; ``expected`` holds the local comparison inputs (the
+    exact input value, target control state, or submitted business values).
+    A later read-only query may resolve it but never erases an unknown result.
     """
 
     pending_id: str
@@ -357,7 +214,6 @@ class Frame:
         return {"type": "accessibility_tree", "url": self.url, "text": self.ax}
 
     def screenshot_observation(self) -> dict[str, Any] | None:
-        """Observation shape accepted by the SDK screenshot helper."""
         if self.screenshot is None:
             return None
         return {
@@ -392,10 +248,16 @@ class Context:
     repeated_action: bool
     last_action: str | None
     screenshot: ScreenshotReference | None = None
-    goal_checks: tuple[Mapping[str, Any], ...] = ()
     pending_action: Mapping[str, Any] | None = None
     write_guard: str | None = None
     verification_feedback: str = ""
-    goal_progress: Mapping[str, int] = dataclass_field(default_factory=dict)
-    history_evidence: tuple[Mapping[str, Any], ...] = ()
     page_details: str = ""
+
+
+__all__ = [
+    "Capabilities",
+    "Context",
+    "Frame",
+    "PendingAction",
+    "ScreenshotReference",
+]
