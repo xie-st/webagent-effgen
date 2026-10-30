@@ -5,6 +5,7 @@ import re
 from typing import Any, Mapping
 
 from .contracts import Context, Frame
+from .recover import feedback, progress
 from .state import TaskState
 
 
@@ -35,6 +36,9 @@ def build_context(frame: Frame, state: TaskState) -> Context:
             "validation errors, scroll to missing controls, or use a different "
             "visible navigation route."
         )
+    m2_feedback = feedback(frame, state)
+    if m2_feedback:
+        recovery_feedback = (recovery_feedback + "\n" + m2_feedback).strip()
 
     past_views: list[Mapping[str, Any]] = []
     for item in reversed(history):
@@ -55,6 +59,13 @@ def build_context(frame: Frame, state: TaskState) -> Context:
         if len(past_views) == 2:
             break
 
+    pending = state.pending_for(frame.tab)
+    effective_deadline = state.deadline
+    if effective_deadline is None or (
+        frame.deadline is not None and frame.deadline < effective_deadline
+    ):
+        effective_deadline = frame.deadline
+
     return Context(
         task=frame.task,
         run_id=frame.run_id,
@@ -69,11 +80,20 @@ def build_context(frame: Frame, state: TaskState) -> Context:
         memory=state.memory,
         recovery_feedback=recovery_feedback,
         remaining_seconds=state.remaining_seconds,
-        deadline=frame.deadline,
+        deadline=effective_deadline,
         capabilities=frame.capabilities,
         previous_receipt=frame.previous_receipt,
         unchanged_count=unchanged_count,
         repeated_action=repeated_action,
         last_action=raw_actions[-1] if raw_actions else None,
         screenshot=frame.screenshot,
+        goal_checks=tuple(goal.as_dict() for goal in state.goal_checks),
+        pending_action=pending.as_dict() if pending is not None else None,
+        write_guard=(
+            "read_only_required"
+            if pending is not None and pending.status == "unknown"
+            else None
+        ),
+        verification_feedback=m2_feedback,
+        goal_progress=progress(state),
     )

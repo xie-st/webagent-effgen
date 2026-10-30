@@ -76,6 +76,16 @@ class Telemetry:
         self._screenshot_saved = 0
         self._screenshot_failed = 0
         self._screenshot_bytes = 0
+        self._goal_checks = 0
+        self._goal_verified = 0
+        self._goal_failed = 0
+        self._verifications = 0
+        self._verification_confirmed = 0
+        self._verification_failed = 0
+        self._verification_unknown = 0
+        self._write_guard_denied = 0
+        self._recoveries = 0
+        self._pending_registered = 0
         self._finished = False
         self.end_reason: str | None = None
 
@@ -394,6 +404,181 @@ class Telemetry:
             },
         )
 
+    def goal_plan(self, *, task: str, source: str, goals: list[Mapping[str, Any]]) -> dict[str, Any]:
+        """Record how the original-task goal checks were established."""
+        with self._lock:
+            self._goal_checks = len(goals)
+        return self._append(
+            "goal_plan",
+            {
+                "task": task,
+                "source": source,
+                "goal_count": len(goals),
+                "goals": [dict(goal) for goal in goals],
+            },
+        )
+
+    def pending(self, *, step: int, url: str, action: str,
+                pending: Mapping[str, Any], expected: Mapping[str, Any]) -> dict[str, Any]:
+        """Record the effect expectation and source observation of an action."""
+        with self._lock:
+            self._pending_registered += 1
+        return self._append(
+            "pending_action",
+            {
+                "step": step,
+                "url": url,
+                "action": action,
+                "pending": dict(pending),
+                "expected": dict(expected),
+            },
+        )
+
+    def verification(
+        self,
+        *,
+        step: int,
+        url: str,
+        observation_version: int | str,
+        mode: str,
+        source: str,
+        status: str,
+        pending_id: str | None = None,
+        goal_ids: list[str] | None = None,
+        checks: list[Mapping[str, Any]] | None = None,
+        invalid: list[str] | None = None,
+        deadline: float | None = None,
+    ) -> dict[str, Any]:
+        """Log one verification with its evidence source and rejection reasons."""
+        with self._lock:
+            self._verifications += 1
+            if status == "confirmed":
+                self._verification_confirmed += 1
+            elif status == "failed":
+                self._verification_failed += 1
+            else:
+                self._verification_unknown += 1
+        clean_checks = []
+        for check in checks or ():
+            clean = dict(check)
+            clean["evidence"] = [
+                item.as_dict() if hasattr(item, "as_dict") else dict(item)
+                for item in check.get("evidence", ())
+                if isinstance(item, Mapping) or hasattr(item, "as_dict")
+            ]
+            clean_checks.append(clean)
+        return self._append(
+            "verification",
+            {
+                "step": step,
+                "url": url,
+                "observation_version": observation_version,
+                "mode": mode,
+                "source": source,
+                "status": status,
+                "pending_id": pending_id,
+                "goal_ids": list(goal_ids or ()),
+                "checks": clean_checks,
+                "invalid": list(invalid or ()),
+                "deadline": deadline,
+                "prompt_tokens": None,
+                "completion_tokens": None,
+                "total_tokens": None,
+                "cost_usd": None,
+            },
+        )
+
+    def write_guard(
+        self,
+        *,
+        step: int,
+        url: str,
+        action: str,
+        pending_id: str | None,
+        allowed: bool,
+        reason: str,
+    ) -> dict[str, Any]:
+        """Log an unknown-write read-only guard decision."""
+        with self._lock:
+            if not allowed:
+                self._write_guard_denied += 1
+        return self._append(
+            "write_guard",
+            {
+                "step": step,
+                "url": url,
+                "action": action,
+                "pending_id": pending_id,
+                "allowed": allowed,
+                "reason": reason,
+            },
+        )
+
+    def recovery(
+        self,
+        *,
+        step: int,
+        pending_id: str,
+        from_status: str,
+        to_status: str,
+        goal_ids: list[str] | None,
+        preserved_prefix: int,
+        detail: str,
+    ) -> dict[str, Any]:
+        """Log local recovery while retaining the verified prefix."""
+        with self._lock:
+            self._recoveries += 1
+        return self._append(
+            "recovery",
+            {
+                "step": step,
+                "pending_id": pending_id,
+                "from_status": from_status,
+                "to_status": to_status,
+                "goal_ids": list(goal_ids or ()),
+                "preserved_prefix": preserved_prefix,
+                "detail": detail,
+            },
+        )
+
+    def progress(
+        self,
+        *,
+        step: int,
+        url: str,
+        goals: list[Mapping[str, Any]],
+        source: str,
+    ) -> dict[str, Any]:
+        """Log verified/failed/unknown progress without erasing earlier facts."""
+        verified = sum(1 for goal in goals if goal.get("status") == "verified")
+        failed = sum(1 for goal in goals if goal.get("status") == "failed")
+        with self._lock:
+            self._goal_verified = verified
+            self._goal_failed = failed
+        return self._append(
+            "goal_progress",
+            {
+                "step": step,
+                "url": url,
+                "source": source,
+                "total": len(goals),
+                "verified": verified,
+                "failed": failed,
+                "unknown": sum(1 for goal in goals if goal.get("status") == "unknown"),
+                "stale": sum(1 for goal in goals if goal.get("status") == "stale"),
+                "pending": sum(1 for goal in goals if goal.get("status") == "pending"),
+                "goals": [
+                    {
+                        "goal_id": goal.get("goal_id"),
+                        "status": goal.get("status"),
+                        "attempts": goal.get("attempts", 0),
+                        "evidence_count": len(goal.get("evidence", ())),
+                    }
+                    for goal in goals
+                ],
+            },
+        )
+
     def finish(self, reason: str) -> dict[str, Any]:
         """Write one summary event and a companion summary file.
 
@@ -424,6 +609,16 @@ class Telemetry:
                 "screenshot_saved": self._screenshot_saved,
                 "screenshot_failed": self._screenshot_failed,
                 "screenshot_bytes": self._screenshot_bytes,
+                "goal_checks": self._goal_checks,
+                "goal_verified": self._goal_verified,
+                "goal_failed": self._goal_failed,
+                "verifications": self._verifications,
+                "verification_confirmed": self._verification_confirmed,
+                "verification_failed": self._verification_failed,
+                "verification_unknown": self._verification_unknown,
+                "write_guard_denials": self._write_guard_denied,
+                "recoveries": self._recoveries,
+                "pending_registered": self._pending_registered,
                 "successful": self._successful,
                 "failed": self._failed,
                 "prompt_tokens": None,
@@ -460,6 +655,16 @@ class Telemetry:
                 "screenshot_saved": self._screenshot_saved,
                 "screenshot_failed": self._screenshot_failed,
                 "screenshot_bytes": self._screenshot_bytes,
+                "goal_checks": self._goal_checks,
+                "goal_verified": self._goal_verified,
+                "goal_failed": self._goal_failed,
+                "verifications": self._verifications,
+                "verification_confirmed": self._verification_confirmed,
+                "verification_failed": self._verification_failed,
+                "verification_unknown": self._verification_unknown,
+                "write_guard_denials": self._write_guard_denied,
+                "recoveries": self._recoveries,
+                "pending_registered": self._pending_registered,
                 "successful": self._successful,
                 "failed": self._failed,
                 "prompt_tokens": None,

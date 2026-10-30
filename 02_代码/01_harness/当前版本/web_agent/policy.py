@@ -22,6 +22,17 @@ from .telemetry import Telemetry
 
 PLATFORM_MODEL = "Qwen3.6-35B-A3B"
 MAX_CORRECTION_OUTPUT = 8000
+MAX_VERIFY_OUTPUT = 12_000
+VERIFY_SYSTEM = '''You are an independent verification judge for one web task.
+Return JSON only: {"checks":[{"goal_id":"existing id","status":"confirmed|failed|unknown",
+"actual":"exact observed value/count/state","source_task_quote":"exact task substring",
+"evidence":[{"line":1,"quote":"exact substring of that AX line"}],"reason":"short"}]}.
+Use only the supplied original-task goals and the current accessibility_tree.
+A draft input, save toast, success message, visual evidence presence or actor claim is not
+persistence. For replacement require exact equality, never substring. For append require
+the preserved original plus exactly the requested addition. If a fact is not directly
+visible, return unknown rather than guessing. Never invent line numbers or quotes and never
+return a webpage action.'''
 
 
 class DeadlineExceeded(TimeoutError):
@@ -185,6 +196,20 @@ class EffGenPolicy:
             "past_views_for_reference_only_ids_are_stale": list(context.past_views),
             "recovery_feedback": context.recovery_feedback,
             "remaining_seconds": context.remaining_seconds,
+            "goal_checks_from_original_task": list(context.goal_checks),
+            "goal_progress": dict(context.goal_progress),
+            "pending_action": context.pending_action,
+            "write_guard": context.write_guard,
+            "verification_feedback": context.verification_feedback,
+            "m2_rules": [
+                "Treat goal_checks as the complete original-task requirement list.",
+                "A pending_action with status unknown forbids any new write, including "
+                "the same purpose with a different element id; use only read-only "
+                "navigation/query or a non-committing draft.",
+                "Input drafts, save messages and visual evidence are not persistence.",
+                "Do not stop until every goal is verified in business state and the "
+                "last write has been confirmed.",
+            ],
         }
 
     def _run(self, payload: dict[str, Any], context: Context, purpose: str) -> str:
@@ -244,10 +269,42 @@ class EffGenPolicy:
             "error": str(error)[:1000],
             "instruction": (
                 "Invalid output: " + str(error)[:1000] + ". Return exactly one "
-                "JSON object with a current-page action and optional compact memory."
+                "JSON object with a current-page action and optional compact memory. "
+                "If the error is an unknown write or an unverified stop, choose a "
+                "read-only query/navigation and never resubmit the write."
             ),
         }
         return self._run(payload, context, "correction")
+
+    def verify(self, context: Context, state: TaskState, payload: dict[str, Any]) -> str:
+        """Run one independent semantic verification on the same ModelPort.
+
+        Verification is a direct string-message SDK call on the current thread,
+        with its own purpose.  It does not enter the EffGen action loop, does
+        not add a model, and contains only task/AX/goal metadata.
+        """
+        del state
+        messages = [
+            {"role": "system", "content": VERIFY_SYSTEM},
+            {
+                "role": "user",
+                "content": json.dumps(
+                    payload, ensure_ascii=False, separators=(",", ":")
+                ),
+            },
+        ]
+        with self.model_port.call_scope(
+            run_id=context.run_id,
+            step=context.step,
+            deadline=context.deadline,
+            purpose="verify",
+        ):
+            reply = self.model_port.generate(
+                messages,
+                purpose="verify",
+                deadline=context.deadline,
+            )
+        return reply.text[:MAX_VERIFY_OUTPUT]
 
     def close(self) -> None:
         self.model.unload()
@@ -259,5 +316,6 @@ __all__ = [
     "PLATFORM_MODEL",
     "PlatformModel",
     "SYSTEM",
+    "VERIFY_SYSTEM",
     "build_agent_config",
 ]

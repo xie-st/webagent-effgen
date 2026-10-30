@@ -1,10 +1,16 @@
-"""The single mutable task state shared across M0 runtime calls."""
+"""The single mutable task state shared by the runtime and all M2 checks.
+
+The state owns the task text, extracted goal checks, one pending action per tab,
+drafts, verified evidence, page identity and the absolute deadline.  Verification
+and recovery only propose changes; ``Runtime`` applies them here.
+"""
 from __future__ import annotations
 
 import time
 from typing import Any, Mapping, MutableMapping
+from urllib.parse import urlsplit
 
-from .contracts import Frame, ScreenshotReference
+from .contracts import Frame, GoalCheck, PendingAction, ScreenshotReference
 
 MAX_MEMORY = 10_000
 _SCREENSHOT_BINDING = (
@@ -22,8 +28,27 @@ _SCREENSHOT_BINDING = (
 )
 
 
+def identity_key(url: str) -> str:
+    """Return the account/page identity that owns verified evidence.
+
+    A normal route change inside one site does not invalidate every confirmed
+    value.  A different origin or account (for example ``/user/alice`` versus
+    ``/user/bob``) does.
+    """
+    parts = urlsplit(str(url))
+    base = f"{parts.scheme}://{parts.netloc}"
+    segments = [part for part in parts.path.split("/") if part]
+    lowered = [part.lower() for part in segments]
+    for marker in ("user", "users", "u", "profile"):
+        if marker in lowered:
+            index = lowered.index(marker)
+            if index + 1 < len(segments):
+                return base + "/" + marker + "/" + segments[index + 1]
+    return base
+
+
 class TaskState:
-    """Thin owner for memory and recovery data stored in the legacy state dict."""
+    """Thin owner for memory, goals, pending effects and recovery data."""
 
     def __init__(self, data: MutableMapping[str, Any] | None = None):
         if data is None:
@@ -64,9 +89,128 @@ class TaskState:
         value = self.data.get("_remaining_seconds")
         return value if isinstance(value, (int, float)) else None
 
-    def update_deadline(self, deadline: float | None) -> None:
+    @property
+    def deadline(self) -> float | None:
+        value = self.data.get("_execution_deadline")
+        return float(value) if isinstance(value, (int, float)) else None
+
+    def update_deadline(self, deadline: float | None) -> float | None:
+        """Keep one absolute task deadline; a later frame never renews it."""
         if deadline is not None:
-            self.data["_remaining_seconds"] = max(0.0, float(deadline) - time.time())
+            value = float(deadline)
+            stored = self.deadline
+            if stored is None or value < stored:
+                self.data["_execution_deadline"] = value
+                stored = value
+            self.data["_remaining_seconds"] = max(0.0, stored - time.time())
+            return stored
+        return self.deadline
+
+    @property
+    def task(self) -> str:
+        value = self.data.get("_task", "")
+        return value if isinstance(value, str) else ""
+
+    def set_task(self, task: str) -> None:
+        if not isinstance(task, str):
+            raise TypeError("task must be a string")
+        self.data["_task"] = task
+
+    @property
+    def run_id(self) -> str | None:
+        value = self.data.get("_run_id")
+        return value if isinstance(value, str) else None
+
+    @property
+    def goals_initialized(self) -> bool:
+        return bool(self.data.get("_goals_initialized"))
+
+    @property
+    def goal_checks(self) -> list[GoalCheck]:
+        value = self.data.get("_goal_checks")
+        return value if isinstance(value, list) else []
+
+    def set_goal_checks(self, goals: list[GoalCheck], *, mark_initialized: bool = True) -> None:
+        if not isinstance(goals, list) or not all(isinstance(item, GoalCheck) for item in goals):
+            raise TypeError("goal checks must be a list of GoalCheck")
+        self.data["_goal_checks"] = goals
+        if mark_initialized:
+            self.data["_goals_initialized"] = True
+
+    def goal(self, goal_id: str) -> GoalCheck | None:
+        for item in self.goal_checks:
+            if item.goal_id == goal_id:
+                return item
+        return None
+
+    def pending_for(self, tab: int | str) -> PendingAction | None:
+        value = self.data.get("_pending_actions")
+        if not isinstance(value, dict):
+            return None
+        item = value.get(str(tab))
+        return item if isinstance(item, PendingAction) else None
+
+    def pending_actions(self) -> list[PendingAction]:
+        value = self.data.get("_pending_actions")
+        if not isinstance(value, dict):
+            return []
+        return [item for item in value.values() if isinstance(item, PendingAction)]
+
+    def set_pending(self, pending: PendingAction) -> None:
+        if not isinstance(pending, PendingAction):
+            raise TypeError("pending must be a PendingAction")
+        value = self.data.get("_pending_actions")
+        if not isinstance(value, dict):
+            value = {}
+            self.data["_pending_actions"] = value
+        if str(pending.tab) in value:
+            raise ValueError("one pending action per tab is already registered")
+        value[str(pending.tab)] = pending
+
+    def replace_pending(self, pending: PendingAction | None, *, tab: int | str) -> None:
+        value = self.data.get("_pending_actions")
+        if not isinstance(value, dict):
+            value = {}
+            self.data["_pending_actions"] = value
+        if pending is None:
+            value.pop(str(tab), None)
+        else:
+            value[str(tab)] = pending
+
+    def clear_pending(self, tab: int | str) -> None:
+        self.replace_pending(None, tab=tab)
+
+    @property
+    def drafts(self) -> dict[str, Any]:
+        value = self.data.get("_drafts")
+        return value if isinstance(value, dict) else {}
+
+    def set_draft(self, element_id: str, value: Mapping[str, Any]) -> None:
+        drafts = self.drafts
+        drafts[str(element_id)] = dict(value)
+        self.data["_drafts"] = drafts
+
+    @property
+    def identity(self) -> str:
+        value = self.data.get("_identity")
+        return value if isinstance(value, str) else ""
+
+    def observe_identity(self, frame: Frame) -> bool:
+        """Update page identity and mark old evidence stale when it changes."""
+        new_identity = identity_key(frame.url)
+        old_identity = self.identity
+        self.data["_identity"] = new_identity
+        if not old_identity or old_identity == new_identity:
+            return False
+        changes = self.data.get("_identity_changes")
+        if not isinstance(changes, list):
+            changes = []
+            self.data["_identity_changes"] = changes
+        changes.append({"from": old_identity, "to": new_identity, "step": frame.step})
+        for goal in self.goal_checks:
+            if goal.status == "verified":
+                goal.status = "stale"
+        return True
 
     @property
     def screenshot_reference(self) -> Mapping[str, Any] | None:
@@ -98,5 +242,20 @@ class TaskState:
         if any(stored.get(key) != value for key, value in bound.items()):
             self.data.pop("_screenshot_reference", None)
 
+    def screenshot_requested(self, step: int) -> bool:
+        value = self.data.get("_screenshot_attempts")
+        return isinstance(value, list) and step in value
+
+    def mark_screenshot_attempt(self, step: int) -> None:
+        value = self.data.get("_screenshot_attempts")
+        if not isinstance(value, list):
+            value = []
+            self.data["_screenshot_attempts"] = value
+        if step not in value:
+            value.append(step)
+
     def as_dict(self) -> MutableMapping[str, Any]:
         return self.data
+
+
+__all__ = ["MAX_MEMORY", "TaskState", "identity_key"]

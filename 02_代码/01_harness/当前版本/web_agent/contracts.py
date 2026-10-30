@@ -1,7 +1,7 @@
 """M0 data contracts shared by the public adapter, runtime and observers."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field as dataclass_field
 import re
 from typing import Any, Mapping
 
@@ -142,6 +142,182 @@ class ScreenshotReference:
         )
 
 
+GOAL_STATUSES = frozenset(
+    {"pending", "unknown", "failed", "verified", "stale"}
+)
+
+
+@dataclass
+class GoalEvidence:
+    """One checked AX fact, bound to the observation that showed it.
+
+    The source is deliberately recorded so a later identity or page change can
+    invalidate the claim without deleting the verified prefix.  No image bytes
+    or model prose enters this record.
+    """
+
+    source: str
+    step: int
+    url: str
+    observation_version: int | str
+    line: int | None = None
+    element_id: str | None = None
+    quote: str = ""
+    actual: Any = None
+    identity: str = ""
+    deterministic: bool = False
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "source": self.source,
+            "step": self.step,
+            "url": self.url,
+            "observation_version": self.observation_version,
+            "line": self.line,
+            "element_id": self.element_id,
+            "quote": self.quote,
+            "actual": self.actual,
+            "identity": self.identity,
+            "deterministic": self.deterministic,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> "GoalEvidence":
+        return cls(
+            source=str(data.get("source", "")),
+            step=int(data.get("step", 0)),
+            url=str(data.get("url", "")),
+            observation_version=data.get("observation_version", 0),
+            line=data.get("line"),
+            element_id=data.get("element_id"),
+            quote=str(data.get("quote", "")),
+            actual=data.get("actual"),
+            identity=str(data.get("identity", "")),
+            deterministic=bool(data.get("deterministic", False)),
+        )
+
+
+@dataclass
+class GoalCheck:
+    """One requirement extracted from the original task text.
+
+    ``kind`` selects the deterministic comparison where that is possible:
+    ``exact_equal``, ``exact_append``, ``count_once``, ``state_true``,
+    ``item_exact`` or ``order_once``.  ``target`` is the exact value parsed
+    from the task (never a contains-match), and ``baseline`` preserves the
+    original value for append requirements once it has been observed.
+    """
+
+    goal_id: str
+    description: str
+    kind: str
+    target: Any
+    source_quote: str
+    field: str | None = None
+    baseline: Any = None
+    status: str = "pending"
+    attempts: int = 0
+    actual: Any = None
+    reason: str = ""
+    evidence: list[GoalEvidence] = dataclass_field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if self.status not in GOAL_STATUSES:
+            raise ValueError(f"invalid goal status: {self.status}")
+        if not isinstance(self.evidence, list):
+            raise TypeError("goal evidence must be a list")
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "goal_id": self.goal_id,
+            "description": self.description,
+            "kind": self.kind,
+            "target": self.target,
+            "source_quote": self.source_quote,
+            "field": self.field,
+            "baseline": self.baseline,
+            "status": self.status,
+            "attempts": self.attempts,
+            "actual": self.actual,
+            "reason": self.reason,
+            "evidence": [item.as_dict() for item in self.evidence],
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> "GoalCheck":
+        return cls(
+            goal_id=str(data["goal_id"]),
+            description=str(data.get("description", "")),
+            kind=str(data["kind"]),
+            target=data.get("target"),
+            source_quote=str(data.get("source_quote", "")),
+            field=data.get("field"),
+            baseline=data.get("baseline"),
+            status=str(data.get("status", "pending")),
+            attempts=int(data.get("attempts", 0)),
+            actual=data.get("actual"),
+            reason=str(data.get("reason", "")),
+            evidence=[
+                GoalEvidence.from_dict(item)
+                for item in data.get("evidence", ())
+                if isinstance(item, Mapping)
+            ],
+        )
+
+
+@dataclass
+class PendingAction:
+    """A dispatched action whose business effect is not yet confirmed.
+
+    At most one exists per tab.  ``source`` records the observation that
+    produced the action; a later query can verify the effect but never erases
+    the pending record until it is confirmed or conclusively failed.
+    """
+
+    pending_id: str
+    tab: int | str
+    step: int
+    action: str
+    operation: str
+    goal_ids: tuple[str, ...]
+    source: Mapping[str, Any]
+    expected: Mapping[str, Any]
+    status: str = "unknown"
+    attempts: int = 1
+    verification_source: str | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "pending_id": self.pending_id,
+            "tab": self.tab,
+            "step": self.step,
+            "action": self.action,
+            "operation": self.operation,
+            "goal_ids": list(self.goal_ids),
+            "source": dict(self.source),
+            "expected": dict(self.expected),
+            "status": self.status,
+            "attempts": self.attempts,
+            "verification_source": self.verification_source,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> "PendingAction":
+        return cls(
+            pending_id=str(data["pending_id"]),
+            tab=data.get("tab", 0),
+            step=int(data.get("step", 0)),
+            action=str(data.get("action", "")),
+            operation=str(data.get("operation", "unknown")),
+            goal_ids=tuple(str(item) for item in data.get("goal_ids", ())),
+            source=dict(data.get("source", {})),
+            expected=dict(data.get("expected", {})),
+            status=str(data.get("status", "unknown")),
+            attempts=int(data.get("attempts", 1)),
+            verification_source=data.get("verification_source"),
+        )
+
+
 @dataclass(frozen=True)
 class Frame:
     """One official observation translated into the runtime's input shape."""
@@ -199,3 +375,8 @@ class Context:
     repeated_action: bool
     last_action: str | None
     screenshot: ScreenshotReference | None = None
+    goal_checks: tuple[Mapping[str, Any], ...] = ()
+    pending_action: Mapping[str, Any] | None = None
+    write_guard: str | None = None
+    verification_feedback: str = ""
+    goal_progress: Mapping[str, int] = dataclass_field(default_factory=dict)

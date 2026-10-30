@@ -75,7 +75,11 @@ class MyAgent:
             screenshot_port = self._screenshot_port or ScreenshotPort.from_env(
                 telemetry=self._telemetry
             )
-            self.runtime = Runtime(policy=policy, screenshot_port=screenshot_port)
+            self.runtime = Runtime(
+                policy=policy,
+                screenshot_port=screenshot_port,
+                telemetry=self._telemetry,
+            )
             self._owned_runtime = True
 
     def step(self, request):

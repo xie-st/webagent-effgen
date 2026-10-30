@@ -1,16 +1,19 @@
-"""One-decision runtime: context assembly, policy parsing, validation and merge.
+"""One-decision runtime with M2 effect registration, verification and recovery.
 
-EffGen only produces raw model text.  This module owns JSON extraction, action
-validation, correction requests and the repeated-invalid fallback, so no
-framework-side parser can turn a malformed answer into a webpage action.
+The runtime owns ordering: extract goals from the original task, resolve any
+previous per-tab pending write against the new observation, assemble context,
+obtain exactly one decision, validate it, apply the read-only write guard,
+verify a success stop, register the new pending effect, then merge memory.
+All model traffic still goes through the injected policy/ModelPort.
 """
 from __future__ import annotations
 
 import json
 from collections.abc import Callable, Mapping
+from dataclasses import replace
 from typing import Any
 
-from . import observe
+from . import observe, recover, verify
 from .actions import validate_action
 from .contracts import Context, Frame
 from .screenshots import ScreenshotCapture, ScreenshotPort
@@ -28,6 +31,7 @@ class Runtime:
         *,
         policy=None,
         screenshot_port: ScreenshotPort | None = None,
+        telemetry=None,
     ):
         if (decision_port is None) == (policy is None):
             raise ValueError("Provide exactly one of decision_port or policy")
@@ -36,6 +40,11 @@ class Runtime:
         self.decision_port = decision_port
         self.policy = policy
         self.screenshot_port = screenshot_port
+        self._telemetry = telemetry or getattr(policy, "telemetry", None)
+
+        self._active_frame: Frame | None = None
+        self._active_state: TaskState | None = None
+        self._verification_screenshot_done = False
 
     def advance(
         self,
@@ -47,43 +56,87 @@ class Runtime:
         task_state = state if isinstance(state, TaskState) else TaskState(state)
         task_state.update_deadline(frame.deadline)
         task_state.invalidate_screenshot(frame)
+        task_state.observe_identity(frame)
+        verify.ensure_goals(frame, task_state, telemetry=self._telemetry)
+        self._active_frame = frame
+        self._active_state = task_state
+        self._verification_screenshot_done = False
         if screenshot_reason is not None:
             # Explicit demand only: ordinary decisions keep the text-only path
             # and never download a PNG.
-            self.request_screenshot(
-                frame,
-                task_state,
-                reason=screenshot_reason,
-            )
-        context = observe.build_context(frame, task_state)
-        if self.policy is None:
-            proposal = self.decision_port(context, task_state)
-        else:
-            proposal = self._policy_proposal(context, task_state, frame.as_observation())
-        action, memory = _unpack(proposal)
-        action = validate_action(action, frame.as_observation())
-        if memory is not None:
-            task_state.memory = memory
-        return {"action": action}
+            self.request_screenshot(frame, task_state, reason=screenshot_reason)
+        try:
+            pending = task_state.pending_for(frame.tab)
+            if pending is not None and pending.step < frame.step:
+                verify.resolve_pending(
+                    frame,
+                    task_state,
+                    semantic_verify=self._semantic_verify,
+                    telemetry=self._telemetry,
+                    screenshot_request=lambda: self._request_verification_screenshot(
+                        frame, task_state
+                    ),
+                )
+            context = observe.build_context(frame, task_state)
+            if self.policy is None:
+                proposal = self.decision_port(context, task_state)
+                action, memory = _unpack(proposal)
+                action = validate_action(action, frame.as_observation())
+                if memory is not None and len(memory) > MAX_MEMORY:
+                    raise ValueError("Memory must be a string of at most 10000 characters")
+                self._accept_action(frame, task_state, action)
+                decision = {"action": action}
+                if memory is not None:
+                    decision["memory"] = memory
+            else:
+                decision = self._policy_decision(context, task_state, frame)
+            memory = decision.get("memory")
+            if memory is not None:
+                task_state.memory = memory
+            return {"action": decision["action"]}
+        except Exception:
+            # AX failure/diagnostic only; this never turns an image into success
+            # and never delays the final response with a background download.
+            try:
+                self._request_verification_screenshot(frame, task_state, reason="diagnostic")
+            except Exception:
+                pass
+            raise
+        finally:
+            self._active_frame = None
+            self._active_state = None
 
-    def _policy_proposal(
+    def _accept_action(self, frame: Frame, state: TaskState, action: str) -> None:
+        recover.guard_action(frame, state, action, telemetry=self._telemetry)
+        if action.startswith("stop ["):
+            verify.assert_stop(
+                frame,
+                state,
+                semantic_verify=self._semantic_verify,
+                telemetry=self._telemetry,
+                screenshot_request=lambda: self._request_verification_screenshot(
+                    frame, state, reason="verify"
+                ),
+            )
+        recover.register_action(frame, state, action, telemetry=self._telemetry)
+
+    def _policy_decision(
         self,
         context: Context,
         state: TaskState,
-        observation: Mapping[str, Any],
+        frame: Frame,
     ) -> dict[str, str]:
         invalid_outputs: set[str] = set()
         raw = self.policy.generate(context, state)
         while True:
             try:
-                return _parse_decision(raw, observation, context, state)
+                decision = _parse_decision(raw, frame.as_observation(), context, state)
+                self._accept_action(frame, state, decision["action"])
+                return decision
             except (ValueError, TypeError) as exc:
                 if not isinstance(raw, str):
                     raise ValueError("Policy must return a string decision") from exc
                 if raw in invalid_outputs:
-                    # A deterministic model can repeat the same stale ID forever.
-                    # Return a fresh observation instead of spending the entire
-                    # lease correcting an unchanged answer.
                     recovery_actions = (
                         "scroll [down]",
                         "scroll [up]",
@@ -94,6 +147,35 @@ class Runtime:
                     return {"action": recovery_actions[index % len(recovery_actions)]}
                 invalid_outputs.add(raw)
                 raw = self.policy.correct(context, state, raw, exc)
+
+    def _semantic_verify(
+        self,
+        frame: Frame,
+        state: TaskState,
+        mode: str,
+    ) -> dict[str, Any] | None:
+        if self.policy is None or not hasattr(self.policy, "verify"):
+            return None
+        context = observe.build_context(frame, state)
+        payload = verify.build_verify_payload(frame, state, mode=mode)
+        raw = self.policy.verify(context, state, payload)
+        return verify.parse_verification(raw, frame, state, mode=mode)
+
+    def _request_verification_screenshot(
+        self,
+        frame: Frame,
+        state: TaskState,
+        *,
+        reason: str = "verify",
+    ) -> ScreenshotCapture | None:
+        """Fetch one current-frame PNG only when AX verification is inconclusive."""
+        if not frame.capabilities.screenshot:
+            return None
+        if self._verification_screenshot_done or state.screenshot_requested(frame.step):
+            return None
+        self._verification_screenshot_done = True
+        state.mark_screenshot_attempt(frame.step)
+        return self.request_screenshot(frame, state, reason=reason)
 
     def request_screenshot(
         self,
@@ -113,6 +195,9 @@ class Runtime:
             state if isinstance(state, TaskState)
             else TaskState({} if state is None else state)
         )
+        effective_deadline = task_state.update_deadline(frame.deadline)
+        if effective_deadline is not None and frame.deadline != effective_deadline:
+            frame = replace(frame, deadline=effective_deadline)
         task_state.invalidate_screenshot(frame)
         if self.screenshot_port is None:
             task_state.set_screenshot_reference(None)

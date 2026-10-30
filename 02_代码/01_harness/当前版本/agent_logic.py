@@ -32,6 +32,7 @@ def _default_runtime(*, telemetry: Telemetry) -> Runtime:
     return Runtime(
         policy=policy.EffGenPolicy(model_port=port, telemetry=telemetry),
         screenshot_port=ScreenshotPort.from_env(telemetry=telemetry),
+        telemetry=telemetry,
     )
 
 
