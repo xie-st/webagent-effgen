@@ -61,6 +61,7 @@ _COMMIT_WORDS = (
     "upvote",
     "vote",
     "下单",
+    "取消订单",
     "保存",
     "发布",
     "回复",
@@ -74,6 +75,51 @@ _COMMIT_WORDS = (
 )
 _VALUE_KINDS = frozenset({"exact_equal", "exact_append"})
 _EXACT_KINDS = frozenset({"exact_equal", "exact_append", "item_exact"})
+# Semantic and per-object checks must also cite business (not draft/status) AX
+# lines; the evidence shape is stricter than a bare model claim.
+_EVIDENCE_KINDS = frozenset(_EXACT_KINDS | {"semantic", "count_per_object"})
+_KNOWN_KINDS = frozenset(
+    _EVIDENCE_KINDS | {"count_once", "state_true", "order_once"}
+)
+_VOTE_WORDS = (
+    "upvote",
+    "downvote",
+    "vote",
+    "thumbs up",
+    "thumbs down",
+    "点赞",
+    "踩",
+    "投票",
+)
+_VOTE_TOGGLED_WORDS = (
+    "retract",
+    "undo",
+    "unvote",
+    "remove vote",
+    "remove upvote",
+    "remove downvote",
+    "take back",
+    "已踩",
+    "已赞",
+)
+# Quantity, ordering, identity, date/cancellation and multi-object language is a
+# real requirement even when no exact field value can be parsed.  It is kept as
+# a semantic goal rather than silently dropped.
+_SCOPE_MARKERS = re.compile(
+    r"\b(?:top|first|last|newest|oldest|latest|least|most|cheapest|"
+    r"lowest|highest|minimum|maximum|at\s+least|at\s+most|capacity|price|"
+    r"ever|all\s+time|sorted|cancelled|canceled|cancellation|"
+    r"subreddit|focused\s+on|related\s+to|topic|"
+    r"my\s+(?:post|order|comment|review|thread)\s+(?:on|about))\b|"
+    r"最(?:新|旧|低|高|便宜|贵|近)|前\s*\d|至少|至多|容量|价格|"
+    r"取消|板块|主题|相关",
+    re.I,
+)
+_MULTI_OBJECT = re.compile(
+    r"\b(?:top|first|last)\s+(\d+)\b|\b(\d+)\s+(?:posts?|items?|products?|"
+    r"comments?|articles?)\b",
+    re.I,
+)
 
 
 class GoalIncompleteError(ValueError):
@@ -328,7 +374,8 @@ def _clean_value(value: str) -> str:
 def _cart_item(clause: str) -> str | None:
     patterns = (
         r"(?:把|将)\s*(.+?)\s*(?:加入|加到|放入|放进|添加到)\s*(?:我的)?购物车",
-        r"add\s+(.+?)\s+to\s+(?:my\s+)?(?:cart|basket)",
+        r"add\s+(.+?)\s+to\s+(?:my\s+|the\s+|your\s+|a\s+)?"
+        r"(?:shopping\s+)?(?:cart|basket)",
         r"(?:购买|买)\s*(.+)$",
     )
     for pattern in patterns:
@@ -338,6 +385,19 @@ def _cart_item(clause: str) -> str | None:
             if value:
                 return value
     return None
+
+
+def _vote_requirement(clause: str) -> tuple[str, int, str] | None:
+    if not re.search(
+        r"\b(?:thumbs?\s+(?:up|down)|upvote|downvote|vote)\b|点赞|踩|投票",
+        clause,
+        flags=re.I,
+    ):
+        return None
+    numbers = _MULTI_OBJECT.findall(clause)
+    count = max((int(up or down) for up, down in numbers), default=1)
+    kind = "count_per_object" if count > 1 else "count_once"
+    return kind, count, "vote"
 
 
 def _parse_clause(clause: str) -> tuple[str, Any, str | None] | None:
@@ -354,7 +414,7 @@ def _parse_clause(clause: str) -> tuple[str, Any, str | None] | None:
             return "exact_equal", quote, field or "reply"
         if re.search(r"\b(change|update|edit|set|replace|rename)\b|改为|修改|更改为|设置为", lowered):
             return "exact_equal", quote, field
-        if re.search(r"\b(post|title|thread)\b|标题|帖子", lowered):
+        if re.search(r"\b(post|title|thread|question)\b|标题|帖子", lowered):
             return "exact_equal", quote, field or "title"
         return "exact_equal", quote, field
     append_text = re.search(
@@ -367,9 +427,13 @@ def _parse_clause(clause: str) -> tuple[str, Any, str | None] | None:
         value = _clean_value(append_text.group(1))
         if value:
             return "exact_append", value, _field(clause) or "body"
+    # Only explicit assignment language may yield an exact value.  A loose
+    # ``... to ...`` match turned topic constraints such as "subreddit focused
+    # on topics related to gaming consoles" into a fake exact field value.
     unquoted = re.search(
         r"(?:改为|改成|设置为|更新为|更改为|标题为|内容为|回复内容为|简介为|"
-        r"\bto\s+|\btitled\s+|\bcomment\s+)([^，,;；]+)$",
+        r"\b(?:rename|set|change|update|edit|title)\b[^，,;；]{0,60}?\bto\s+)"
+        r"([^，,;；]+)$",
         clause,
         flags=re.I,
     )
@@ -382,11 +446,16 @@ def _parse_clause(clause: str) -> tuple[str, Any, str | None] | None:
             elif re.search(r"回复|reply|comment", lowered):
                 field = field or "reply"
             return "exact_equal", value, field
-    if re.search(r"\b(upvote|downvote|vote|like)\b|点赞|投票|赞", lowered):
-        return "count_once", 1, "vote"
+    vote = _vote_requirement(clause)
+    if vote is not None:
+        return vote
     if re.search(r"\b(subscribe|follow)\b|订阅|关注", lowered):
         return "state_true", True, "subscription"
-    if re.search(r"\b(checkout|place\s+(?:an\s+)?order)\b|提交订单|下单|结账", lowered):
+    if re.search(
+        r"\b(checkout|place\s+(?:an\s+)?order|reorder|buy\s+again)\b|"
+        r"提交订单|下单|结账|重新购买|重购",
+        lowered,
+    ):
         return "order_once", 1, "order"
     item = _cart_item(clause)
     if item is not None:
@@ -394,12 +463,20 @@ def _parse_clause(clause: str) -> tuple[str, Any, str | None] | None:
     return None
 
 
+def _is_scope_clause(clause: str) -> bool:
+    return bool(_SCOPE_MARKERS.search(clause))
+
+
 def extract_goal_checks(task: str) -> list[GoalCheck]:
     """Extract every recognizable requirement from the original task text.
 
     No task id, answer or URL is consulted.  Quotes are exact values; verbs
-    distinguish replacement, append, reply/count/state/item/order.  Unmatched
-    prose is left unclaimed rather than turned into a fake check.
+    distinguish replacement, append, reply/count/state/item/order.  Quantity,
+    ranking, identity, date/status and topic constraints are retained as
+    semantic goals; an unrecognized clause becomes one too, so a non-empty task
+    can never produce an empty checklist that stops successfully.  Exact
+    checks stay first within a clause so deterministic comparison keeps
+    precedence.
     """
     if not isinstance(task, str) or not task.strip():
         return []
@@ -407,9 +484,27 @@ def extract_goal_checks(task: str) -> list[GoalCheck]:
     for clause in _protected_split(task):
         parsed = _parse_clause(clause)
         if parsed is None:
+            _add_goal(goals, clause=clause, kind="semantic", target=clause.strip(),
+                      field=None)
             continue
         kind, target, field = parsed
         _add_goal(goals, clause=clause, kind=kind, target=target, field=field)
+        if _is_scope_clause(clause):
+            # The action alone ("downvote") is not the whole requirement; the
+            # object set ("top 4 post ever in movies") is checked semantically
+            # against the original task at stop time.
+            _add_goal(goals, clause=clause, kind="semantic", target=clause.strip(),
+                      field=None)
+    if not goals:
+        goals.append(
+            GoalCheck(
+                goal_id=_goal_id(1),
+                description=task.strip(),
+                kind="semantic",
+                target=task.strip(),
+                source_quote=task.strip(),
+            )
+        )
     return goals
 
 
@@ -590,6 +685,20 @@ def evaluate_goal(goal: GoalCheck, view: AXView, state: TaskState) -> dict[str, 
                     "reason": "value appears only in a save/status message",
                 }
         return {"status": "unknown", "reason": "no exact business value visible"}
+    if goal.kind == "count_per_object":
+        if goal.status == "verified" and len(goal.objects) >= int(goal.target):
+            return {
+                "status": "verified",
+                "actual": len(goal.objects),
+                "reason": "each required object has a confirmed vote effect",
+            }
+        return {
+            "status": "unknown",
+            "reason": (
+                f"{len(goal.objects)}/{goal.target} objects confirmed; "
+                "per-object effects settle one action at a time"
+            ),
+        }
     if goal.kind == "item_exact":
         target = _normalize_text(goal.target)
         for atom in view.business_texts():
@@ -808,7 +917,10 @@ def parse_verification(
             invalid.append(f"goal {goal_id} cites a non-current AX quote")
             status = "unknown"
         if status == "confirmed":
-            if not evidence:
+            if goal.kind not in _KNOWN_KINDS:
+                invalid.append(f"goal {goal_id} has an unsupported check kind")
+                status = "unknown"
+            elif not evidence:
                 invalid.append(f"goal {goal_id} confirmed without AX evidence")
                 status = "unknown"
             else:
@@ -818,7 +930,7 @@ def parse_verification(
                         status = "unknown"
                         invalid.append(f"goal {goal_id} evidence line is missing")
                         break
-                    if goal.kind in _EXACT_KINDS and (atom.inside_alert or atom.inside_form):
+                    if goal.kind in _EVIDENCE_KINDS and (atom.inside_alert or atom.inside_form):
                         status = "unknown"
                         invalid.append(
                             f"goal {goal_id} relies on a draft/status area, not business state"
@@ -856,6 +968,29 @@ def parse_verification(
                         if type(actual) is not int or actual != goal.target:
                             status = "unknown"
                             invalid.append(f"goal {goal_id} count does not match")
+                    elif goal.kind == "count_per_object":
+                        current = len(goal.objects)
+                        if (
+                            type(actual) is not int
+                            or actual < current + 1
+                            or actual > int(goal.target)
+                        ):
+                            status = "unknown"
+                            invalid.append(f"goal {goal_id} object count does not match")
+                        elif mode == "stop" and not (
+                            current >= int(goal.target)
+                            and actual == int(goal.target)
+                        ):
+                            status = "unknown"
+                            invalid.append(
+                                f"goal {goal_id} aggregate objects are not complete"
+                            )
+                    elif goal.kind == "semantic":
+                        if not isinstance(actual, str) or not actual.strip():
+                            status = "unknown"
+                            invalid.append(
+                                f"goal {goal_id} semantic check lacks an observed value"
+                            )
                     elif goal.kind == "state_true":
                         if type(actual) is not bool or actual is not goal.target:
                             status = "unknown"
@@ -949,6 +1084,115 @@ def _fail_goal(goal: GoalCheck, result: Mapping[str, Any]) -> None:
     goal.reason = str(result.get("reason", ""))
 
 
+def object_key(view: AXView, atom: AXAtom | None, fallback_url: str = "") -> str:
+    """Stable identity for the object a write applies to.
+
+    A post/product page URL, an enclosing link URL or an item heading is real
+    identity.  Otherwise the current page plus the acted control id keeps
+    distinct list items apart within one observation.
+    """
+    if atom is None:
+        return fallback_url
+    preceding = [item for item in view.atoms if item.line_no < atom.line_no]
+    for candidate in reversed(preceding):
+        if candidate.role in {"link", "heading"} and candidate.url:
+            return "url:" + candidate.url
+        if candidate.role == "heading" and candidate.name:
+            return "heading:" + candidate.name
+        if candidate.role in {"link", "heading"} and candidate.name:
+            return "title:" + candidate.name
+    return f"{fallback_url}#{atom.element_id}"
+
+
+def _vote_effect(
+    pending: PendingAction,
+    view: AXView,
+) -> tuple[bool, AXAtom | None, str]:
+    """Read the toggled vote control that proves the dispatched vote landed.
+
+    The candidate must belong to the same acted object (same control id or same
+    enclosing title/URL), so one post's "Retract upvote" cannot confirm a vote
+    on a different post in a listing.
+    """
+    source = pending.source
+    before = str(source.get("element_name", "")).casefold()
+    if not any(word in before for word in _VOTE_WORDS):
+        return False, None, ""
+    direction = ""
+    if "down" in before or "踩" in before:
+        direction = "down"
+    elif "up" in before or "赞" in before:
+        direction = "up"
+    source_key = str(source.get("object_key") or "")
+    source_id = source.get("element_id")
+    source_url = str(source.get("url", ""))
+
+    def same_object(atom: AXAtom) -> bool:
+        if source_id is not None and atom.element_id == str(source_id):
+            return True
+        if source_key and object_key(view, atom, source_url) == source_key:
+            return True
+        return False
+
+    for atom in view.atoms:
+        name = atom.name.casefold()
+        if not any(word in name for word in ("upvote", "downvote", "vote", "thumb")):
+            continue
+        if not any(word in name for word in _VOTE_TOGGLED_WORDS):
+            continue
+        if direction == "down" and "down" not in name and "踩" not in name:
+            continue
+        if direction == "up" and "up" not in name and "赞" not in name:
+            continue
+        if same_object(atom):
+            return True, atom, atom.name
+    element_id = source.get("element_id")
+    atom = view.by_id.get(str(element_id)) if element_id is not None else None
+    if atom is not None:
+        name = atom.name.casefold()
+        if atom.checked or atom.selected:
+            return True, atom, atom.name
+    return False, None, ""
+
+
+def _record_object(
+    goal: GoalCheck,
+    pending: PendingAction,
+    *,
+    state: TaskState,
+    frame: Frame,
+    atom: AXAtom | None,
+    quote: str,
+    source: str,
+) -> bool:
+    """Record one confirmed object without claiming the aggregate goal."""
+    key = str(pending.source.get("object_key") or "")
+    if not key:
+        key = f"{pending.source.get('url', frame.url)}#{pending.source.get('element_id', '')}"
+    if not key or key in goal.objects:
+        return False
+    goal.objects.append(key)
+    goal.actual = len(goal.objects)
+    goal.evidence.append(
+        _evidence(
+            state=state,
+            frame=frame,
+            atom=atom,
+            quote=quote or key,
+            actual=key,
+            source=source,
+            deterministic=source != "model",
+        )
+    )
+    if len(goal.objects) >= int(goal.target):
+        goal.status = "verified"
+        goal.reason = "all required objects have confirmed effects"
+    else:
+        goal.status = "unknown"
+        goal.reason = f"{len(goal.objects)}/{goal.target} objects confirmed"
+    return True
+
+
 def resolve_pending(
     frame: Frame,
     state: TaskState,
@@ -961,7 +1205,9 @@ def resolve_pending(
 
     A query/navigation frame may confirm or contradict the pending effect, but
     it never replaces or clears an unresolved record.  A changed page with no
-    decidable value stays unknown and keeps the write guard active.
+    decidable value stays unknown and keeps the write guard active.  Multi-
+    object effects are settled per object: confirming one vote clears this
+    pending action while the aggregate goal keeps the remaining objects.
     """
     pending = state.pending_for(frame.tab)
     if pending is None or pending.step >= frame.step:
@@ -969,45 +1215,129 @@ def resolve_pending(
     view = parse_ax(frame)
     goals = [state.goal(item) for item in pending.goal_ids]
     goals = [goal for goal in goals if goal is not None]
-    results: list[dict[str, Any]] = []
-    for goal in goals:
-        result = evaluate_goal(goal, view, state)
-        results.append(result)
+    aggregate = [goal for goal in goals if goal.kind != "count_per_object"]
+    per_object = [goal for goal in goals if goal.kind == "count_per_object"]
+    results = {goal.goal_id: evaluate_goal(goal, view, state) for goal in aggregate}
+    effect = False
+    effect_atom: AXAtom | None = None
+    effect_quote = ""
+    if per_object or any(goal.kind == "count_once" for goal in aggregate):
+        effect, effect_atom, effect_quote = _vote_effect(pending, view)
+    confirmed_ids: set[str] = set()
+    failed_ids: set[str] = set()
+    for goal in aggregate:
+        result = results[goal.goal_id]
+        if result["status"] == "verified":
+            _confirm_goal(goal, result)
+            confirmed_ids.add(goal.goal_id)
+        elif goal.kind == "count_once" and effect:
+            _confirm_goal(
+                goal,
+                {
+                    "evidence": [
+                        _evidence(
+                            state=state,
+                            frame=frame,
+                            atom=effect_atom,
+                            quote=effect_quote,
+                            actual=effect_quote,
+                            source="ax_vote_state",
+                            deterministic=True,
+                        )
+                    ]
+                },
+            )
+            confirmed_ids.add(goal.goal_id)
+    for goal in per_object:
+        if effect and _record_object(
+            goal,
+            pending,
+            state=state,
+            frame=frame,
+            atom=effect_atom,
+            quote=effect_quote,
+            source="ax_vote_state",
+        ):
+            confirmed_ids.add(goal.goal_id)
     source = "deterministic"
     semantic_result: Mapping[str, Any] | None = None
-
-    if goals and all(result["status"] == "verified" for result in results):
-        for goal, result in zip(goals, results):
-            _confirm_goal(goal, result)
-        outcome = "confirmed"
-    else:
-        unchanged = pending.source.get("ax_fingerprint") == view.fingerprint
-        if unchanged:
-            # The action demonstrably did not change the observation.  This is
-            # a confirmed local failure, not a lost receipt.
-            for goal in goals:
-                _fail_goal(goal, {"reason": "no observation effect after action"})
-            outcome = "failed"
-            source = "ax_no_effect"
-        else:
-            if semantic_verify is not None:
-                semantic_result = semantic_verify(frame, state, "pending")
-                source = "model"
-                if semantic_result is not None:
-                    for goal, check in _checks_for_goals(
-                        semantic_result, [item.goal_id for item in goals]
-                    ).items():
-                        if check["status"] == "confirmed":
-                            _confirm_goal(goal, check)
-                        elif check["status"] == "failed":
-                            _fail_goal(goal, check)
-            if goals and all(goal.status == "verified" for goal in goals):
-                outcome = "confirmed"
-            elif goals and all(goal.status == "failed" for goal in goals):
-                outcome = "failed"
+    unresolved = [
+        goal for goal in goals
+        if goal.goal_id not in confirmed_ids and goal.status != "verified"
+    ]
+    unchanged = pending.source.get("ax_fingerprint") == view.fingerprint
+    if unresolved and unchanged and not confirmed_ids:
+        for goal in unresolved:
+            if goal.kind == "count_per_object":
+                # A vote that changed nothing is a local miss, not a reason to
+                # fail the whole aggregate; the pending action is released so
+                # the same object may be retried.
+                goal.status = "unknown"
+                goal.attempts += 1
+                goal.reason = "no observation effect after action"
+                failed_ids.add(goal.goal_id)
             else:
-                outcome = "unknown"
-
+                _fail_goal(goal, {"reason": "no observation effect after action"})
+                failed_ids.add(goal.goal_id)
+        source = "ax_no_effect"
+    elif unresolved and semantic_verify is not None:
+        semantic_result = semantic_verify(frame, state, "pending")
+        source = "model"
+        if semantic_result is not None:
+            checks = _checks_for_goals(
+                semantic_result, [goal.goal_id for goal in unresolved]
+            )
+            for goal in unresolved:
+                check = checks.get(goal.goal_id)
+                if not check:
+                    continue
+                if goal.kind == "count_per_object":
+                    if check["status"] == "confirmed":
+                        evidence = [
+                            item for item in check.get("evidence", ())
+                            if isinstance(item, GoalEvidence)
+                        ]
+                        atom = (
+                            view.by_line.get(evidence[0].line)
+                            if evidence and evidence[0].line is not None
+                            else None
+                        )
+                        quote = evidence[0].quote if evidence else ""
+                        if _record_object(
+                            goal,
+                            pending,
+                            state=state,
+                            frame=frame,
+                            atom=atom,
+                            quote=quote,
+                            source="model",
+                        ):
+                            confirmed_ids.add(goal.goal_id)
+                    elif check["status"] == "failed":
+                        goal.status = "unknown"
+                        goal.reason = str(check.get("reason", ""))
+                elif check["status"] == "confirmed":
+                    _confirm_goal(goal, check)
+                    confirmed_ids.add(goal.goal_id)
+                elif check["status"] == "failed":
+                    _fail_goal(goal, check)
+                    failed_ids.add(goal.goal_id)
+            unresolved = [
+                goal for goal in goals
+                if goal.goal_id not in confirmed_ids and goal.status != "verified"
+            ]
+    if goals and all(
+        goal.goal_id in confirmed_ids or goal.status == "verified" for goal in goals
+    ):
+        outcome = "confirmed"
+    elif goals and all(
+        goal.goal_id in failed_ids or goal.status == "failed" for goal in goals
+    ):
+        outcome = "failed"
+    elif unresolved and all(goal.goal_id in failed_ids for goal in unresolved):
+        outcome = "failed"
+    else:
+        outcome = "unknown"
     result_status = (
         "confirmed" if outcome == "confirmed"
         else "failed" if outcome == "failed"
@@ -1041,12 +1371,11 @@ def resolve_pending(
                 to_status="confirmed",
                 goal_ids=list(pending.goal_ids),
                 preserved_prefix=sum(1 for g in state.goal_checks if g.status == "verified"),
-                detail="business effect confirmed; do not rewrite",
+                detail="this action's business effect confirmed; do not rewrite it",
             )
     elif outcome == "failed":
         pending.status = "failed"
         pending.verification_source = source
-        state.replace_pending(pending, tab=frame.tab)
         state.clear_pending(frame.tab)
         if telemetry is not None:
             telemetry.recovery(
@@ -1056,7 +1385,7 @@ def resolve_pending(
                 to_status="failed",
                 goal_ids=list(pending.goal_ids),
                 preserved_prefix=sum(1 for g in state.goal_checks if g.status == "verified"),
-                detail="confirmed failure; recover only the affected goal",
+                detail="confirmed local failure; recover only the affected goal",
             )
     else:
         pending.status = "unknown"
@@ -1093,21 +1422,39 @@ def _checks_for_goals(
 
 
 def judge_goals(task: str, state: TaskState) -> tuple[bool, list[GoalCheck]]:
-    """Re-read the current task and judge complete coverage from state facts."""
+    """Re-read the current task and judge complete coverage from state facts.
+
+    Fails closed: an empty task, an unextractable task or a state checklist
+    without matching verified evidence can never produce a success stop, and
+    the comparison is against the original task rather than the actor's list.
+    """
+    if not isinstance(task, str) or not task.strip():
+        return False, []
     required = extract_goal_checks(task)
     if not required:
-        return True, []
-    available = {goal_signature(goal): goal for goal in state.goal_checks}
+        return False, []
+    available = list(state.goal_checks)
+    used: set[int] = set()
     missing: list[GoalCheck] = []
     for requirement in required:
-        actual = available.get(goal_signature(requirement))
+        matched: tuple[int, GoalCheck] | None = None
+        for index, actual in enumerate(available):
+            if index in used:
+                continue
+            if goal_signature(actual) == goal_signature(requirement):
+                matched = (index, actual)
+                break
+        if matched is None:
+            missing.append(requirement)
+            continue
+        index, actual = matched
+        used.add(index)
         if (
-            actual is None
-            or actual.status != "verified"
+            actual.status != "verified"
             or not actual.evidence
             or actual.source_quote not in task
         ):
-            missing.append(actual or requirement)
+            missing.append(actual)
     return not missing, missing
 
 
@@ -1122,6 +1469,8 @@ def build_verify_payload(
         "mode": "independent_m2_verification",
         "check_kind": mode,
         "task": state.task or frame.task,
+        "original_task": state.task or frame.task,
+        "requirements_source": "original_task_text",
         "url": frame.url,
         "step": frame.step,
         "deadline": frame.deadline,
@@ -1151,12 +1500,14 @@ def build_verify_payload(
             ]
         },
         "rules": [
+            "Re-read the supplied original_task; do not rely only on the goal list.",
             "Do not return an action. Verify only the supplied original-task goals.",
             "Input drafts, save toasts, success messages and visual evidence are not persistence.",
             "For exact replacement report actual and require equality, never substring.",
             "For append require the preserved original plus exactly the requested addition.",
             "Never invent goals, line numbers or quotes; missing evidence must be unknown.",
             "Counts/states must be observed in the current AX, not inferred from the click.",
+            "For multi-object requirements confirm one object per action with evidence.",
         ],
     }
 
@@ -1171,14 +1522,22 @@ def assert_stop(
 ) -> None:
     """Refuse a success stop until all original-task goals are verified."""
     ensure_goals(frame, state, telemetry=telemetry)
+    if not state.task.strip():
+        raise GoalIncompleteError(
+            "Cannot stop: the original task text is empty, so no requirement "
+            "can be verified."
+        )
+    if not state.goal_checks:
+        raise GoalIncompleteError(
+            "Cannot stop: no original-task requirement could be extracted; an "
+            "empty checklist is not success."
+        )
     pending = state.pending_for(frame.tab)
     if pending is not None and pending.status == "unknown":
         raise GoalIncompleteError(
             "Cannot stop: the last write result is unknown. Use a read-only query "
             "or navigation to confirm or disprove it before stopping."
         )
-    if not state.goal_checks:
-        return
     ok, missing = judge_goals(state.task, state)
     if not ok:
         view = parse_ax(frame)
@@ -1231,6 +1590,7 @@ __all__ = [
     "extract_goal_checks",
     "goal_signature",
     "judge_goals",
+    "object_key",
     "parse_ax",
     "parse_verification",
     "resolve_pending",

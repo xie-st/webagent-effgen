@@ -54,7 +54,9 @@ class Runtime:
         screenshot_reason: str | None = None,
     ) -> dict[str, str]:
         task_state = state if isinstance(state, TaskState) else TaskState(state)
-        task_state.update_deadline(frame.deadline)
+        effective_deadline = task_state.update_deadline(frame.deadline)
+        if effective_deadline is not None and frame.deadline != effective_deadline:
+            frame = replace(frame, deadline=effective_deadline)
         task_state.invalidate_screenshot(frame)
         task_state.observe_identity(frame)
         verify.ensure_goals(frame, task_state, telemetry=self._telemetry)

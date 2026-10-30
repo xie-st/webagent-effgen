@@ -193,7 +193,14 @@ class ExtractionTests(unittest.TestCase):
 
     def test_upvote_and_composite_requirements_are_separate(self):
         vote = verify.extract_goal_checks("Upvote the newest post in books subreddit")
-        self.assertEqual([(goal.kind, goal.target) for goal in vote], [("count_once", 1)])
+        self.assertEqual((vote[0].kind, vote[0].target), ("count_once", 1))
+        self.assertTrue(
+            any(
+                goal.kind == "semantic"
+                and "newest post in books subreddit" in str(goal.target)
+                for goal in vote
+            )
+        )
 
         composite = verify.extract_goal_checks(
             "把个人简介改为 开发者-t，并发表标题为 并行调度-t 的帖子"
@@ -619,6 +626,258 @@ class ProductionWiringTests(unittest.TestCase):
             self.assertEqual(state["_goal_checks"][0].status, "verified")
             self.assertTrue(state["_run_ended"])
 
+
+class ExpandedSuiteCoverageTests(unittest.TestCase):
+    """New-suite requirements: fail closed, semantic scope, per-object effects."""
+
+    def test_non_empty_task_can_never_stop_with_an_empty_checklist(self):
+        task = "Make the dashboard nicer somehow."
+        goals = verify.extract_goal_checks(task)
+        self.assertEqual([goal.kind for goal in goals], ["semantic"])
+        state = TaskState()
+        state.set_task(task)
+        self.assertFalse(verify.judge_goals(task, state)[0])
+        with self.assertRaises(verify.GoalIncompleteError):
+            verify.assert_stop(frame(task=task, text="[1] StaticText 'Done'\n"), state)
+        self.assertTrue(state.goal_checks)
+
+    def test_subreddit_topic_is_a_constraint_not_an_exact_field_value(self):
+        task = (
+            "Find a subreddit focused on topics related to gaming consoles, and "
+            'post my question, "what is the recommended console to buy these days" '
+            "there"
+        )
+        goals = verify.extract_goal_checks(task)
+        exact = [goal for goal in goals if goal.kind == "exact_equal"]
+        self.assertEqual(len(exact), 1)
+        self.assertEqual(
+            exact[0].target, "what is the recommended console to buy these days"
+        )
+        self.assertFalse(any(goal.target == "gaming consoles" for goal in goals))
+        self.assertTrue(
+            any(
+                goal.kind == "semantic" and "gaming consoles" in str(goal.target)
+                for goal in goals
+            )
+        )
+
+    def test_quantity_and_capacity_requirement_blocks_stop_without_evidence(self):
+        task = (
+            "Show the least expensive shoe storage with a minimum storage "
+            "capacity of 12 pairs."
+        )
+        goals = verify.extract_goal_checks(task)
+        self.assertTrue(goals)
+        self.assertTrue(
+            any(
+                goal.kind == "semantic" and "12 pairs" in str(goal.target)
+                for goal in goals
+            )
+        )
+        state = TaskState()
+        state.set_task(task)
+        verify.ensure_goals(frame(task=task, text="[1] StaticText 'Shoe rack'\n"), state)
+        self.assertFalse(verify.judge_goals(task, state)[0])
+        with self.assertRaises(verify.GoalIncompleteError):
+            verify.assert_stop(
+                frame(task=task, text="[1] StaticText 'Shoe rack'\n"), state
+            )
+
+    def test_cancelled_order_reorder_keeps_history_date_and_status(self):
+        task = (
+            "I previously ordered some a mattress foundation around Feb or March "
+            "2023 and later cancelled. Can you reorder it for me?"
+        )
+        goals = verify.extract_goal_checks(task)
+        kinds = [goal.kind for goal in goals]
+        self.assertIn("order_once", kinds)
+        semantic = " ".join(
+            str(goal.target) for goal in goals if goal.kind == "semantic"
+        ).casefold()
+        self.assertIn("mattress foundation", semantic)
+        self.assertIn("2023", semantic)
+        self.assertIn("cancel", semantic)
+
+    def _vote_page(self, title, *, voted):
+        button = "Retract downvote" if voted else "Downvote"
+        return (
+            f"Tab 0 (current): post\n[1] heading '{title}'\n"
+            f"[2] button '{button}'\n[3] StaticText '0 points'\n"
+        )
+
+    def test_four_distinct_downvotes_confirm_one_by_one_and_guard_retract(self):
+        task = "Thumbs down the top 4 post ever in movies."
+        goals = verify.extract_goal_checks(task)
+        self.assertEqual((goals[0].kind, goals[0].target), ("count_per_object", 4))
+        runtime = Runtime(lambda context, state: {"action": state.data.pop("_next")})
+        state = {}
+        for index in range(4):
+            url = f"http://127.0.0.1:9876/f/movies/comments/{index}"
+            title = f"Top movie post {index}"
+            state["_next"] = "click [2]"
+            result = runtime.advance(
+                frame(task=task, url=url, text=self._vote_page(title, voted=False),
+                      step=index * 2),
+                state,
+            )
+            self.assertEqual(result["action"], "click [2]")
+            self.assertIn("_pending_actions", state)
+            state["_next"] = "scroll [down]"
+            runtime.advance(
+                frame(task=task, url=url, text=self._vote_page(title, voted=True),
+                      step=index * 2 + 1),
+                state,
+            )
+            count_goal = state["_goal_checks"][0]
+            self.assertEqual(state.get("_pending_actions", {}), {})
+            self.assertEqual(len(count_goal.objects), index + 1)
+            self.assertEqual(count_goal.actual, index + 1)
+            if index < 3:
+                self.assertNotEqual(count_goal.status, "verified")
+        self.assertEqual(state["_goal_checks"][0].status, "verified")
+        self.assertEqual(state["_goal_checks"][1].status, "pending")
+        with self.assertRaises(recover.DuplicateWriteError):
+            recover.guard_action(
+                frame(task=task, url="http://127.0.0.1:9876/f/movies/comments/0",
+                      text=self._vote_page("Top movie post 0", voted=True)),
+                TaskState(state),
+                "click [2]",
+            )
+        # The aggregate is verified but the ranking/topic requirement is not.
+        with self.assertRaises(verify.GoalIncompleteError):
+            verify.assert_stop(
+                frame(task=task, url="http://127.0.0.1:9876/f/movies",
+                      text="[1] heading 'movies'\n", step=9),
+                TaskState(state),
+            )
+
+    def test_partial_cart_write_clears_pending_and_allows_checkout(self):
+        task = "Add the mattress foundation to the cart and checkout"
+        goals = verify.extract_goal_checks(task)
+        self.assertEqual([goal.kind for goal in goals], ["item_exact", "order_once"])
+        runtime = Runtime(lambda context, state: {"action": state.data.pop("_next")})
+        state = {}
+        state["_next"] = "click [1]"
+        runtime.advance(
+            frame(task=task, url="http://127.0.0.1:9876/shop/product/7",
+                  text="[1] button 'Add to cart'\n[2] StaticText 'mattress foundation'\n",
+                  step=0),
+            state,
+        )
+        self.assertIn("_pending_actions", state)
+        state["_next"] = "scroll [down]"
+        runtime.advance(
+            frame(task=task, url="http://127.0.0.1:9876/shop/cart",
+                  text="[5] StaticText 'the mattress foundation'\n[9] button 'Checkout'\n",
+                  step=1),
+            state,
+        )
+        self.assertEqual(state.get("_pending_actions", {}), {})
+        self.assertEqual(state["_goal_checks"][0].status, "verified")
+        self.assertEqual(state["_goal_checks"][1].status, "pending")
+        with self.assertRaises(verify.GoalIncompleteError):
+            verify.assert_stop(
+                frame(task=task, url="http://127.0.0.1:9876/shop/cart",
+                      text="[5] StaticText 'the mattress foundation'\n"),
+                TaskState(state),
+            )
+        state["_next"] = "click [9]"
+        result = runtime.advance(
+            frame(task=task, url="http://127.0.0.1:9876/shop/cart",
+                  text="[5] StaticText 'the mattress foundation'\n[9] button 'Checkout'\n",
+                  step=2),
+            state,
+        )
+        self.assertEqual(result["action"], "click [9]")
+        self.assertEqual(state["_pending_actions"]["0"].goal_ids, ("goal-2",))
+
+    def test_unknown_semantics_on_dangerous_link_or_button_is_blocked(self):
+        text = (
+            "[1] link 'Continue' url: http://127.0.0.1:9876/delete/post/1\n"
+            "[2] button 'Preview and submit'\n"
+            "[3] link 'Preview' url: http://127.0.0.1:9876/f/books\n"
+            "[4] button 'Review order'\n"
+            "[5] button 'Cancel'\n"
+        )
+        current = frame(text=text)
+        self.assertTrue(recover.classify_action("click [1]", current).is_write)
+        self.assertTrue(recover.classify_action("click [2]", current).is_write)
+        self.assertFalse(recover.classify_action("click [3]", current).is_write)
+        self.assertTrue(recover.classify_action("click [4]", current).is_write)
+        self.assertFalse(recover.classify_action("click [5]", current).is_write)
+        state = TaskState()
+        state.set_task("Upvote the newest post in books subreddit")
+        state.set_pending(
+            PendingAction(
+                pending_id="pending", tab=0, step=0, action="click [9]",
+                operation="commit", goal_ids=(), source={}, expected={},
+                status="unknown",
+            )
+        )
+        with self.assertRaises(recover.WriteGuardError):
+            recover.guard_action(current, state, "click [1]")
+        with self.assertRaises(recover.WriteGuardError):
+            recover.guard_action(current, state, "click [2]")
+
+    def test_verified_upvote_is_not_retracted_by_a_second_click(self):
+        task = "Upvote the newest post in books subreddit"
+        state = TaskState()
+        state.set_task(task)
+        state.set_goal_checks(verify.extract_goal_checks(task))
+        goal = state.goal_checks[0]
+        goal.status = "verified"
+        goal.evidence.append(
+            verify.GoalEvidence(
+                "ax_vote_state", 0, URL, 0, line=2, quote="Retract upvote",
+                actual="Retract upvote", deterministic=True,
+            )
+        )
+        after = frame(
+            task=task,
+            text="[1] heading 'Post'\n[2] button 'Retract upvote'\n",
+        )
+        with self.assertRaises(recover.DuplicateWriteError):
+            recover.guard_action(after, state, "click [2]")
+
+
+    def test_another_posts_retract_state_cannot_confirm_a_new_vote(self):
+        task = "Thumbs down the top 4 post ever in movies."
+        runtime = Runtime(lambda context, state: {"action": state.data.pop("_next")})
+        state = {}
+        listing_before = (
+            "[1] heading 'Post A'\n[2] button 'Downvote'\n"
+            "[3] heading 'Post B'\n[4] button 'Downvote'\n"
+        )
+        listing_after = (
+            "[1] heading 'Post A'\n[2] button 'Retract downvote'\n"
+            "[3] heading 'Post B'\n[4] button 'Downvote'\n"
+        )
+        state["_next"] = "click [2]"
+        runtime.advance(
+            frame(task=task, url="http://127.0.0.1:9876/f/movies",
+                  text=listing_before, step=0),
+            state,
+        )
+        state["_next"] = "scroll [down]"
+        runtime.advance(
+            frame(task=task, url="http://127.0.0.1:9876/f/movies",
+                  text=listing_after, step=1),
+            state,
+        )
+        self.assertEqual(len(state["_goal_checks"][0].objects), 1)
+        state["_next"] = "click [4]"
+        runtime.advance(
+            frame(task=task, url="http://127.0.0.1:9876/f/movies",
+                  text=listing_after, step=2),
+            state,
+        )
+        state["_next"] = "scroll [down]"
+        runtime.advance(
+            frame(task=task, url="http://127.0.0.1:9876/f/movies",
+                  text=listing_after, step=3),
+            state,
+        )
+        self.assertEqual(len(state["_goal_checks"][0].objects), 1)
 
 if __name__ == "__main__":
     unittest.main()

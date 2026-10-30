@@ -185,8 +185,11 @@ class DecisionTests(unittest.TestCase):
             sdk = FakeSdk([reply("stop [done]")])
             agent = MyAgent(model_port=SdkModelPort(sdk=sdk, telemetry=telemetry),
                             telemetry=telemetry)
-            agent.reset({"run_id": "stop", "task": "Finish"})
-            self.assertEqual(agent.step(request("stop")), {"action": "stop [done]"})
+            completed = request("stop", task='Change my bio to "Already saved"')
+            completed["observation"] = {**OBS, "text": OBS["text"] +
+                "\n[19] heading 'My biography'\n[20] StaticText 'Already saved'"}
+            agent.reset(completed)
+            self.assertEqual(agent.step(completed), {"action": "stop [done]"})
             with self.assertRaisesRegex(ValueError, "stop"):
                 agent.step(request("stop"))
             agent.close()
@@ -342,6 +345,8 @@ class LifecycleTests(unittest.TestCase):
             self.assertEqual(telemetry.summary()["run_id"], "first")
 
     def test_legacy_state_keeps_one_run_until_stop(self):
+        completed_observation = {**OBS, "text": OBS["text"] +
+            "\n[19] heading 'My biography'\n[20] StaticText 'Already saved'"}
         for state in ({}, TaskState()):
             with self.subTest(state=type(state).__name__), \
                     tempfile.TemporaryDirectory() as temporary:
@@ -366,8 +371,8 @@ class LifecycleTests(unittest.TestCase):
                     for action in expected:
                         self.assertEqual(
                             agent_logic.decide(
-                                task="Read page",
-                                observation=OBS,
+                                task='Change my bio to "Already saved"',
+                                observation=completed_observation,
                                 history=[],
                                 action_history=[],
                                 state=state,

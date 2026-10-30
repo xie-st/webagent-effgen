@@ -202,10 +202,14 @@ class GoalCheck:
     """One requirement extracted from the original task text.
 
     ``kind`` selects the deterministic comparison where that is possible:
-    ``exact_equal``, ``exact_append``, ``count_once``, ``state_true``,
-    ``item_exact`` or ``order_once``.  ``target`` is the exact value parsed
-    from the task (never a contains-match), and ``baseline`` preserves the
-    original value for append requirements once it has been observed.
+    ``exact_equal``, ``exact_append``, ``count_once``, ``count_per_object``,
+    ``state_true``, ``item_exact``, ``order_once`` or ``semantic``.  ``target``
+    is the exact value parsed from the task (never a contains-match), and
+    ``baseline`` preserves the original value for append requirements once it
+    has been observed.  ``objects`` records already confirmed object identities
+    for multi-object requirements (for example four distinct posts), so a
+    partial confirmed effect can clear its pending action without claiming the
+    whole task is complete.
     """
 
     goal_id: str
@@ -220,6 +224,7 @@ class GoalCheck:
     actual: Any = None
     reason: str = ""
     evidence: list[GoalEvidence] = dataclass_field(default_factory=list)
+    objects: list[str] = dataclass_field(default_factory=list)
 
     def __post_init__(self) -> None:
         if self.status not in GOAL_STATUSES:
@@ -241,6 +246,7 @@ class GoalCheck:
             "actual": self.actual,
             "reason": self.reason,
             "evidence": [item.as_dict() for item in self.evidence],
+            "objects": list(self.objects),
         }
 
     @classmethod
@@ -262,6 +268,7 @@ class GoalCheck:
                 for item in data.get("evidence", ())
                 if isinstance(item, Mapping)
             ],
+            objects=[str(item) for item in data.get("objects", ()) if str(item)],
         )
 
 

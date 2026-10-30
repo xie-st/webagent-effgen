@@ -51,11 +51,11 @@ MyAgent.step
 
 M2 由 Runtime 统一编排，生产 `MyAgent` 与兼容 `agent_logic.decide` 都走同一条路径；普通决策仍只发一次 `decision`，核验另记 `verify`，纠错另记 `correction`。
 
-- `verify.extract_goal_checks(task)` 只读原 task：引号内精确值、`change ... to`、`reply ... comment`、`edit ... adding ... body`、upvote/subscribe/order/cart 等逐项建立 `GoalCheck`；不读 task id、答案或路径。可确定的精确值与追加值用确定性比较，替换只接受完全相等，追加要求原文前缀保留且只多出要求内容。
-- `TaskState` 是唯一事实与进度源：`_task`、`_goal_checks`、`_pending_actions`（每 Tab 至多一个）、`_drafts`、`_identity`、证据和同一绝对 deadline 都在这里。reset 新建，close 清理；身份变化把已核实证据标为 stale，重新观察后再核。
-- `recover.classify_action` 保守分类：click/Enter 在未确定时按潜在提交处理，不把提交伪装成 link 读取；type/选择/清空记为草稿，不推进业务目标。提交动作登记预期值、来源观察（含 AX 指纹）与目标 ID。
-- 下一帧先 `verify.resolve_pending`：业务值完全相等即确认；页面与来源观察相同且无回执证据即确认无效果；页面已变但无法判定则保持 unknown。unknown 期间 write guard 拒绝同类提交（包括换 element id），只允许可判定读取、导航、查询、选择和草稿；查询不覆盖原 pending。
-- 确认成功后不重写；确认失败才回退受影响目标，`verified_prefix` 和业务证据保留，剩余要求继续。`stop` 前由 `verify.judge_goals` 重新读取原 task 核对完整覆盖，缺目标、pending unknown 或最后写入未确认都拒绝 success stop。模型语义核验必须返回当前 AX 行号、精确引用、原 task 子句和结构化 checks；引用不实、草稿/提示区域或精确值不等一律不确认。
+- `verify.extract_goal_checks(task)` 只读原 task：引号内精确值、`change ... to`、`reply ... comment`、`edit ... adding ... body`、upvote/downvote/subscribe/order/cart 等逐项建立 `GoalCheck`；不读 task id、答案或路径。数量、排序、容量/最低价、主题、身份、日期与取消状态、未识别子句都保留为 `semantic`，多对象投票建立 `count_per_object`；空清单不再等于成功。可确定的精确值与追加值用确定性比较，替换只接受完全相等，追加要求原文前缀保留且只多出要求内容。
+- `TaskState` 是唯一事实与进度源：`_task`、`_goal_checks`、`_pending_actions`（每 Tab 至多一个）、`_drafts`、`_identity`、证据和同一绝对 deadline 都在这里。reset 新建，close 清理；身份变化把已核实证据标为 stale，重新观察后再核。`GoalCheck.objects` 保存已确认的多对象前缀。
+- `recover.classify_action` 保守分类：先判提交/删除语义（含 link 名称与 URL），再认可读名称；`view` 不因出现在 `review` 中而变成读取，`Preview & Submit`、`Review order` 仍是写。type/选择/清空记为草稿，不推进业务目标。提交动作登记预期值、来源观察（含 AX 指纹）、目标 ID 与 `object_key`。
+- 下一帧先 `verify.resolve_pending`：业务值完全相等即确认；投票后的 `Retract upvote` 等切换控件确认本次对象已写入；页面与来源观察相同且无回执证据即确认无效果；页面已变但无法判定则保持 unknown。多对象按对象逐一确认：首个对象确认即清本次 pending，保留 `objects` 进度并允许继续下一个对象；同对象不得重发或撤销。unknown 期间 write guard 拒绝同类提交（包括换 element id），只允许可判定读取、导航、查询、选择和草稿；查询不覆盖原 pending。
+- 确认成功后不重写；确认失败才回退受影响目标，`verified_prefix` 和业务证据保留，剩余要求继续。`stop` 前由 `verify.judge_goals` 重新读取原 task 核对完整覆盖，空 task、空清单、缺目标、pending unknown 或最后写入未确认都拒绝 success stop。模型语义核验必须返回当前 AX 行号、精确引用、原 task 子句和结构化 checks；引用不实、草稿/提示区域或精确值不等一律不确认。部分动作确认不等于整个目标确认。
 - `TaskState.update_deadline` 只保留最早绝对截止，目标抽取、核验、纠错、截图与额外模型调用共用；模型用量未知时日志中的 token/费用保持 null。
 
 `telemetry.jsonl` 的 M2 事件为 `goal_plan`、`pending_action`、`verification`（source/status/invalid/checks）、`write_guard`、`recovery`、`goal_progress`；`run_end` 汇总核验、unknown、guard、recovery 与目标进度。
@@ -124,7 +124,7 @@ Runtime.advance(frame, state, screenshot_reason="verify")
 - M1a：真实 EffGen 版本/公开接口、单 Agent/空工具/关闭特性、普通决策一次调用、连续观察 memory、纠错另计、调用开始/结束日志、截止拒绝、stop 结束原因、step 一致、消息字段约束、遥测与汇总。
 - 日志生命周期：同一注入端口跨 reset 的两任务各归入 current telemetry；兼容入口同 state 的两普通步+stop 保持唯一 run_id、step 0/1/2、call_seq 1/2/3 且只在 stop 写一次累计 run_end；新 state 身份与计数重置；异常结束；EffGen 内部空答重试的每次真实调用都被记录。
 - 截图专项：官方SDK指纹与`browser`接口、入口未被demo覆盖；完整/缺失/畸形元数据；run/tab/观察版本/URL错绑；截图`step`与当前帧不一致时拒绝（同观察版本的新`step`不复用旧引用/缓存）；同帧缓存与重复抓取；校验失败删除且不缓存；无本帧截图不沿用旧图；404/409回AX；请求前与处理中的绝对截止；真实SDK在任务会话内下载；消息不含PNG/base64/路径。
-- M2：原 task 精确替换/回复/追加/点赞/复合要求抽取；替换精确相等而非 contains；追加保留原文且拒绝多余内容；草稿、保存提示、截图存在不证明持久化；动作预期与来源观察登记；每 Tab 单 pending；无效果不推进；最后写入确认后才 stop；unknown 换 element id 仍拒绝写入，只读查询可确认且不覆盖 pending；确认成功不重写；确认失败只恢复受影响目标并保留已核实前缀；缺失目标/伪造 AX 行号/缺 task 引用拒绝；身份变化标 stale；reset/close/同 deadline；按需截图 404 降级；生产 MyAgent 与 legacy decide 实接（decision/verify/correction 分列）。
+- M2：原 task 精确替换/回复/追加/点赞/复合要求抽取；替换精确相等而非 contains；追加保留原文且拒绝多余内容；草稿、保存提示、截图存在不证明持久化；动作预期与来源观察登记；每 Tab 单 pending；无效果不推进；最后写入确认后才 stop；unknown 换 element id 仍拒绝写入，只读查询可确认且不覆盖 pending；确认成功不重写；确认失败只恢复受影响目标并保留已核实前缀；缺失目标/伪造 AX 行号/缺 task 引用拒绝；身份变化标 stale；reset/close/同 deadline；按需截图 404 降级；生产 MyAgent 与 legacy decide 实接（decision/verify/correction 分列）。新增套件反例：未知 task 不能空清单 stop；605 主题约束不是精确字段；最低价/容量缺证据不能停；四帖逐一点踩首个确认即清 pending 且同对象不可撤销；购物车中间确认后可继续结账；删除/提交语义 link 与 Preview+Submit 按钮在 unknown 期被拒绝；已确认 Upvote 的 Retract 点击被拒绝。
 - 独立复制：复制本目录后运行 `run.py check`，验证不依赖原目录。
 
 测试结果目录、`test-output.txt`、代码快照和 `telemetry.jsonl` 由 `run.py test` 自动保存；官方成绩不在离线测试中填写。

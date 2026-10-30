@@ -212,7 +212,7 @@ class FrameMetadataTests(unittest.TestCase):
 
         def capture(context, state):
             captured.append(context)
-            return {"action": "stop [text only]"}
+            return {"action": "scroll [down]"}
 
         Runtime(capture).advance(frame, {})
         self.assertIs(captured[0].screenshot, reference)
@@ -226,9 +226,9 @@ class FrameMetadataTests(unittest.TestCase):
 
         def capture(context, state):
             captured.append(context)
-            return {"action": "stop [text only]"}
+            return {"action": "scroll [down]"}
 
-        self.assertEqual(Runtime(capture).advance(frame, {}), {"action": "stop [text only]"})
+        self.assertEqual(Runtime(capture).advance(frame, {}), {"action": "scroll [down]"})
         self.assertIsNone(captured[0].screenshot)
 
     def test_missing_or_malformed_metadata_is_ignored_not_fatal(self):
@@ -402,7 +402,7 @@ class ScreenshotPortTests(unittest.TestCase):
 
             state = {}
             runtime = Runtime(
-                lambda context, task_state: {"action": "stop [ax]"},
+                lambda context, task_state: {"action": "scroll [down]"},
                 screenshot_port=port,
             )
             self.assertTrue(runtime.request_screenshot(old, state).ok)
@@ -453,7 +453,7 @@ class ScreenshotPortTests(unittest.TestCase):
             with_screenshot = make_frame(screenshot=metadata(step=0), step=0)
             without = make_frame(screenshot=None, step=1)
             state = {}
-            runtime = Runtime(lambda context, task_state: {"action": "stop [ax]"}, screenshot_port=port)
+            runtime = Runtime(lambda context, task_state: {"action": "scroll [down]"}, screenshot_port=port)
 
             first = runtime.request_screenshot(
                 with_screenshot, state, reason="verify"
@@ -476,7 +476,7 @@ class ScreenshotPortTests(unittest.TestCase):
                 directory=Path(temporary) / "raw/screenshots",
             )
             state = {}
-            Runtime(lambda context, task_state: {"action": "stop [ax]"}, screenshot_port=port).advance(
+            Runtime(lambda context, task_state: {"action": "scroll [down]"}, screenshot_port=port).advance(
                 make_frame(screenshot=metadata()), state
             )
             self.assertEqual(len(fake.calls), 0)
@@ -497,7 +497,7 @@ class ScreenshotPortTests(unittest.TestCase):
 
             def decide(context, task_state):
                 captured.append(context)
-                return {"action": "stop [ax]"}
+                return {"action": "scroll [down]"}
 
             Runtime(decide, screenshot_port=port).advance(
                 frame, state, screenshot_reason="verify"
@@ -566,11 +566,11 @@ class FailureAndDeadlineTests(unittest.TestCase):
                 frame = make_frame(screenshot=metadata())
                 state = {}
                 runtime = Runtime(
-                    lambda context, task_state: {"action": "stop [ax fallback]"},
+                    lambda context, task_state: {"action": "scroll [down]"},
                     screenshot_port=port,
                 )
                 result = runtime.advance(frame, state, screenshot_reason="verify")
-                self.assertEqual(result, {"action": "stop [ax fallback]"})
+                self.assertEqual(result, {"action": "scroll [down]"})
                 self.assertNotIn("_screenshot_reference", state)
                 event = [e for e in read_events(telemetry.path) if e["event"] == "screenshot"][0]
                 self.assertEqual(event["result"], f"http_{status}")
@@ -760,7 +760,7 @@ class ModelBoundaryTests(unittest.TestCase):
     def test_runtime_request_returns_disabled_without_port(self):
         frame = make_frame(screenshot=metadata())
         state = TaskState()
-        capture = Runtime(lambda context, task_state: {"action": "stop [ax]"}).request_screenshot(
+        capture = Runtime(lambda context, task_state: {"action": "scroll [down]"}).request_screenshot(
             frame, state, reason="verify"
         )
         self.assertEqual(capture.result, "disabled")

@@ -88,8 +88,46 @@ class ActionInfo:
 
 
 def _read_name(value: str) -> bool:
+    """Positive read evidence only: whole words, never a substring.
+
+    ``view`` inside ``review`` or ``cancel`` inside ``cancel order`` must not
+    turn a submit/delete control into a read.  Callers check commit semantics
+    first, so this is only reached when no submit wording is present.
+    """
     lowered = value.casefold()
-    return any(word in lowered for word in _READ_ONLY_NAMES)
+    for word in _READ_ONLY_NAMES:
+        if word.isascii():
+            if re.search(rf"(?<![a-z0-9]){re.escape(word)}(?![a-z0-9])", lowered):
+                return True
+        elif word in lowered:
+            return True
+    return False
+
+
+_COMMIT_VOTE_WORDS = (
+    "upvote",
+    "downvote",
+    "vote",
+    "thumbs up",
+    "thumbs down",
+    "retract",
+    "undo",
+    "unvote",
+    "点赞",
+    "踩",
+    "投票",
+)
+_ORDER_WORDS = (
+    "checkout",
+    "order",
+    "reorder",
+    "buy again",
+    "结账",
+    "订单",
+    "下单",
+    "重购",
+)
+_CART_WORDS = ("cart", "basket", "购物车", "加入购物车")
 
 
 def _commit_control(atom) -> bool:
@@ -124,15 +162,26 @@ def classify_action(action: str, frame: Frame) -> ActionInfo:
             if _commit_control(atom):
                 return ActionInfo(action, "click", element_id, role, name, url,
                                   is_write=True, is_read=False, operation="commit")
+            if _read_name(name):
+                return ActionInfo(action, "click", element_id, role, name, url,
+                                  is_read=True, operation="read")
             if url and url != frame.url:
+                # URL-change alone is not read evidence; this branch is only
+                # reached after the control name and URL were cleared for
+                # submit/delete wording above.
                 return ActionInfo(action, "click", element_id, role, name, url,
                                   is_read=True, operation="read")
             return ActionInfo(action, "click", element_id, role, name, url,
-                              is_read=True, operation="read")
-        if _read_name(f"{name} {action}"):
+                              is_write=True, is_read=False, operation="commit")
+        if _commit_control(atom):
+            # Commit semantics win before any read word, so "Preview & Submit"
+            # and "Review order" are writes, never reads.
+            return ActionInfo(action, "click", element_id, role, name, url,
+                              is_write=True, is_read=False, operation="commit")
+        if _read_name(name):
             return ActionInfo(action, "click", element_id, role, name, url,
                               is_read=True, operation="read")
-        if _commit_control(atom) or role in {"button", "menuitem", "tab"}:
+        if role in {"button", "menuitem", "tab"}:
             return ActionInfo(action, "click", element_id, role, name, url,
                               is_write=True, is_read=False, operation="commit")
         return ActionInfo(action, "click", element_id, role, name, url,
@@ -214,10 +263,10 @@ def _select_goals(
                 selected.append(goal)
             elif len(unverified) == 1 and info.is_write:
                 selected.append(goal)
-        elif goal.kind == "count_once" and (
+        elif goal.kind in {"count_once", "count_per_object"} and (
             info.operation == "submit"
-            or any(word in action_text for word in ("vote", "like", "点赞", "投票"))
-            or len(unverified) == 1
+            or any(word in action_text for word in _COMMIT_VOTE_WORDS)
+            or (len(unverified) == 1 and info.is_write)
         ):
             selected.append(goal)
         elif goal.kind == "state_true" and (
@@ -225,9 +274,14 @@ def _select_goals(
             or len(unverified) == 1
         ):
             selected.append(goal)
-        elif goal.kind in {"item_exact", "order_once"} and (
-            any(word in action_text for word in ("cart", "order", "checkout", "购买", "订单"))
-            or len(unverified) == 1
+        elif goal.kind == "item_exact" and (
+            any(word in action_text for word in _CART_WORDS)
+            or (len(unverified) == 1 and info.is_write)
+        ):
+            selected.append(goal)
+        elif goal.kind == "order_once" and (
+            any(word in action_text for word in _ORDER_WORDS)
+            or (len(unverified) == 1 and info.is_write)
         ):
             selected.append(goal)
     # Keep original task order and remove duplicates.
@@ -293,8 +347,17 @@ def register_action(
         )
     selected = _select_goals(frame, state, info)
     view = verify.parse_ax(frame)
+    atom = view.by_id.get(info.element_id) if info.element_id is not None else None
+    object_id = verify.object_key(view, atom, frame.url)
+    duplicate_object = _recorded_object(state, object_id)
+    if duplicate_object is not None:
+        raise DuplicateWriteError(
+            "This object already has a confirmed write; do not write it again "
+            "or undo it."
+        )
     expected: dict[str, Any] = {
         "operation": info.operation,
+        "object_key": object_id,
         "targets": [
             {
                 "goal_id": goal.goal_id,
@@ -328,6 +391,7 @@ def register_action(
             "element_role": info.role,
             "element_name": info.name,
             "element_url": info.url,
+            "object_key": object_id,
         },
         expected=expected,
         status="unknown",
@@ -371,26 +435,43 @@ def _guard_telemetry(
     )
 
 
+def _recorded_object(state: TaskState, key: str) -> GoalCheck | None:
+    if not key:
+        return None
+    for goal in state.goal_checks:
+        if goal.kind in {"count_per_object", "count_once"} and key in goal.objects:
+            return goal
+    return None
+
+
 def _verified_write(state: TaskState, info: ActionInfo) -> GoalCheck | None:
     """Return a verified goal this action would rewrite, if any."""
     if not info.is_write:
         return None
     text = f"{info.action} {info.name}".casefold()
+    retracts = any(
+        word in text for word in ("retract", "undo", "unvote", "remove vote", "take back")
+    )
     for goal in state.goal_checks:
         if goal.status != "verified":
             continue
-        if goal.kind == "count_once" and any(
-            word in text for word in ("vote", "like", "点赞", "投票")
+        if goal.kind in {"count_once", "count_per_object"} and (
+            retracts or any(word in text for word in _COMMIT_VOTE_WORDS)
         ):
             return goal
         if goal.kind == "state_true" and any(
             word in text for word in ("subscribe", "follow", "订阅", "关注")
         ):
             return goal
-        if goal.kind in {"order_once", "item_exact"} and any(
-            word in text for word in ("order", "checkout", "cart", "订单", "结账", "购物车")
-        ):
+        if goal.kind == "item_exact" and any(word in text for word in _CART_WORDS):
             return goal
+        if goal.kind == "order_once" and any(word in text for word in _ORDER_WORDS):
+            return goal
+    if retracts and state.goal_checks:
+        # A retract/undo control always targets a state that a previous write
+        # may have produced; never allow it while any goal tracks objects.
+        if any(goal.objects for goal in state.goal_checks):
+            return state.goal_checks[0]
     if state.goal_checks and all(goal.status == "verified" for goal in state.goal_checks):
         return state.goal_checks[0]
     return None
@@ -426,6 +507,13 @@ def guard_action(
         raise DuplicateWriteError(
             "The target requirement is already verified in business state; "
             "do not rewrite it."
+        )
+    view = verify.parse_ax(frame)
+    atom = view.by_id.get(info.element_id) if info.element_id is not None else None
+    if _recorded_object(state, verify.object_key(view, atom, frame.url)) is not None:
+        raise DuplicateWriteError(
+            "This object already has a confirmed write; do not write it again "
+            "or undo it."
         )
     return info
 
