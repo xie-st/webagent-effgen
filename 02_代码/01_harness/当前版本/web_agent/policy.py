@@ -33,11 +33,21 @@ presence or actor claim is not persistence. Exact field/cart values need current
 evidence inside that field/object region, not the same text in an unrelated post,
 product listing or empty region. For replacement require exact equality, never
 substring. For append require the preserved original plus exactly the requested addition.
-Historical comparison or prior-order facts may use {"history_id":"hN","quote":"exact
-substring of that history_evidence text"}; current AX evidence is still required and
-history IDs are evidence labels, never actions. Never invent lines, history IDs, step,
-version or quotes. If a fact is not directly visible, return unknown rather than
-guessing. Never return a webpage action.'''
+A persistent post-action vote toggle ("Retract upvote", "Undo vote", an explicitly
+checked vote control) is current business evidence that this vote landed even when the
+site nests the button in an HTML form. An untouched "Upvote" button, a draft textbox or
+a success alert is not evidence. A vote toggle proves only vote state. For newest,
+latest, ranking, "top N", subreddit or other object/topic scope, cite the concrete
+business heading/link/title and, for ordering/top-N, the bounded history_evidence that
+shows the object's position; a vote control alone never proves newest or top N. Count,
+state and exact-field checks must use current AX only; do not attach history to them.
+Identify objects by URL/title/heading. A new element id is not a new object, and a
+reused id after a repaint is not proof of the same object; if identity is not stable,
+return unknown. Historical comparison or prior-order facts may use
+{"history_id":"hN","quote":"exact substring of that history_evidence text"}; current AX
+evidence is still required and history IDs are evidence labels, never actions. Never
+invent lines, history IDs, step, version or quotes. If a fact is not directly visible,
+return unknown rather than guessing. Never return a webpage action.'''
 
 
 class DeadlineExceeded(TimeoutError):

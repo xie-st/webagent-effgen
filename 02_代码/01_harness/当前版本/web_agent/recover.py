@@ -11,7 +11,7 @@ import re
 from dataclasses import dataclass
 from typing import Any
 from uuid import uuid4
-from urllib.parse import unquote
+from urllib.parse import unquote, urlsplit, parse_qs
 
 from .contracts import Frame, GoalCheck, PendingAction
 from .state import TaskState
@@ -130,16 +130,71 @@ _ORDER_WORDS = (
 )
 _CART_WORDS = ("cart", "basket", "购物车", "加入购物车")
 
+# Explicit UI state, not business commit: a popup menu, a tab, or a disclosed
+# section opens content; the write happens later through a real form control.
+_POPUP_MENU = re.compile(r"\bhasPopup:\s*menu\b", re.I)
+_EXPANDED_CONTROL = re.compile(r"\bexpanded:\s*(?:true|false)\b", re.I)
+
+# Links to a create/reply/edit form are navigation.  Their labels often match
+# commit words ("Submit", "Reply", "Create post"), but clicking only opens the
+# editor; submitting that editor is a separate control.
+_COMPOSE_URL = re.compile(
+    r"(?:^|/)(?:submit|new|create|reply|compose|edit)(?:[/_\-]|$)"
+    r"|[?&](?:reply|quote|compose|edit|new)(?:=|&|$)",
+    re.I,
+)
+
+# These links perform a state change through their href itself: votes, cart
+# changes, removal/reordering, cancellation, checkout and similar actions.
+_DANGEROUS_URL = re.compile(
+    r"(?:^|[/_\-])(?:delete|remove|re-?order|buy[-_ ]?again|checkout|"
+    r"cancel(?:lation)?|upvote|downvote|vote|like|subscribe|unsubscribe|"
+    r"follow|unfollow|save|purchase|add(?:[-_/]?(?:to[-_/]?)?cart)?)"
+    r"(?=[/_\-?&=.]|$)|cart[-_/]add",
+    re.I,
+)
+_DANGEROUS_NAME = re.compile(
+    r"\b(?:delete|remove|re-?order|buy\s+again|checkout|place\s+order|"
+    r"cancel\s+(?:order|subscription|booking)|upvote|downvote|vote|"
+    r"subscribe|unsubscribe|follow|unfollow)\b|"
+    r"删除|取消订单|重购|退订|下单|投票|点赞|踩",
+    re.I,
+)
+
 
 def _commit_control(atom) -> bool:
     return any(word in f"{atom.name} {atom.raw}".casefold() for word in verify._COMMIT_WORDS)
 
 
-def _mutating_url(url: str | None) -> bool:
-    return bool(re.search(
-        r"delete|remove|submit|save|reorder|upvote|downvote|add[_/-]",
-        unquote(url or ""), re.I,
-    ))
+def _ui_navigation(atom) -> bool:
+    return atom.role == "tab" or bool(_POPUP_MENU.search(atom.raw))
+
+
+def _expanded_control(atom) -> bool:
+    return bool(_EXPANDED_CONTROL.search(atom.raw))
+
+
+def _dangerous_url(url: str | None) -> bool:
+    parsed = urlsplit(unquote(url or ""))
+    if _DANGEROUS_URL.search(parsed.path):
+        return True
+    for key, values in parse_qs(parsed.query).items():
+        if key.casefold() in {"action", "do", "op", "operation", "cmd"}:
+            if any(re.match(
+                r"^(?:delete|remove|save|submit|reorder|upvote|downvote|"
+                r"subscribe|unsubscribe|follow|unfollow|add_to_cart)(?:$|[_/-])",
+                value, re.I,
+            ) for value in values):
+                return True
+    return False
+
+
+def _dangerous_link(atom) -> bool:
+    return bool(_DANGEROUS_NAME.search(atom.name)) or _dangerous_url(atom.url)
+
+
+def _compose_target(url: str | None) -> bool:
+    return bool(_COMPOSE_URL.search(unquote(url or "")))
 
 
 def classify_action(action: str, frame: Frame) -> ActionInfo:
@@ -151,10 +206,10 @@ def classify_action(action: str, frame: Frame) -> ActionInfo:
         return ActionInfo(action, "navigate", is_read=True, operation="read")
     if action.startswith("goto ["):
         target = action[len("goto ["):-1]
-        if _mutating_url(target):
+        if _dangerous_url(target):
             return ActionInfo(action, "navigate", url=target,
                               is_write=True, is_read=False, operation="commit")
-        return ActionInfo(action, "navigate", is_read=True, operation="read")
+        return ActionInfo(action, "navigate", url=target, is_read=True, operation="read")
     if action.startswith("hover ["):
         return ActionInfo(action, "hover", is_read=True, operation="read")
     click = re.fullmatch(r"click \[(\d+)\]", action)
@@ -170,15 +225,32 @@ def classify_action(action: str, frame: Frame) -> ActionInfo:
         if role in {"option", "checkbox", "radio"}:
             return ActionInfo(action, "click", element_id, role, name, url,
                               is_read=False, is_draft=True, operation="draft")
+        if _ui_navigation(atom):
+            # A popup-menu opener or tab only opens UI state.  Committing is a
+            # later form control, so this must not create a phantom pending.
+            return ActionInfo(action, "click", element_id, role, name, url,
+                              is_read=True, operation="read")
         if role == "link":
+            # Dangerous links perform the action in the href itself and always
+            # win, even when their label also contains read wording.
+            if _dangerous_link(atom):
+                return ActionInfo(action, "click", element_id, role, name, url,
+                                  is_write=True, is_read=False, operation="commit")
+            if _expanded_control(atom):
+                return ActionInfo(action, "click", element_id, role, name, url,
+                                  is_read=True, operation="read")
+            if url and url != frame.url and _compose_target(url):
+                # "Submit"/"Reply"/"Edit" links that open a create or edit form
+                # are navigation; the editor's own button is the real write.
+                return ActionInfo(action, "click", element_id, role, name, url,
+                                  is_read=True, operation="read")
             # Resource navigation is not a submission merely because an order
-            # or post noun occurs in its label/URL. Mutating URLs still win.
+            # or post noun occurs in its label/URL.
             read_resource = re.fullmatch(
                 r"(?:my\s+)?(?:orders?|order history|cart|shopping cart|posts?|comments?)"
                 r"|edit\s+(?:post|profile|bio|biography|comment)", name.strip(), re.I,
             )
-            mutating_url = _mutating_url(url)
-            if read_resource and url and not mutating_url:
+            if read_resource and url:
                 return ActionInfo(action, "click", element_id, role, name, url,
                                   is_read=True, operation="read")
             if _commit_control(atom):
@@ -200,6 +272,9 @@ def classify_action(action: str, frame: Frame) -> ActionInfo:
             # and "Review order" are writes, never reads.
             return ActionInfo(action, "click", element_id, role, name, url,
                               is_write=True, is_read=False, operation="commit")
+        if _expanded_control(atom) and role in {"button", "menuitem"}:
+            return ActionInfo(action, "click", element_id, role, name, url,
+                              is_read=True, operation="read")
         if _read_name(name):
             return ActionInfo(action, "click", element_id, role, name, url,
                               is_read=True, operation="read")
@@ -534,13 +609,14 @@ def guard_action(
             "The target requirement is already verified in business state; "
             "do not rewrite it."
         )
-    view = verify.parse_ax(frame)
-    atom = view.by_id.get(info.element_id) if info.element_id is not None else None
-    if _recorded_object(state, verify.object_key(view, atom, frame.url)) is not None:
-        raise DuplicateWriteError(
-            "This object already has a confirmed write; do not write it again "
-            "or undo it."
-        )
+    if info.is_write:
+        view = verify.parse_ax(frame)
+        atom = view.by_id.get(info.element_id) if info.element_id is not None else None
+        if _recorded_object(state, verify.object_key(view, atom, frame.url)) is not None:
+            raise DuplicateWriteError(
+                "This object already has a confirmed write; do not write it again "
+                "or undo it."
+            )
     return info
 
 

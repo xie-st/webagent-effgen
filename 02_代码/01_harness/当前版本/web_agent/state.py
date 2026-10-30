@@ -28,13 +28,8 @@ _SCREENSHOT_BINDING = (
 )
 
 
-def identity_key(url: str) -> str:
-    """Return the account/page identity that owns verified evidence.
-
-    A normal route change inside one site does not invalidate every confirmed
-    value.  A different origin or account (for example ``/user/alice`` versus
-    ``/user/bob``) does.
-    """
+def _identity_parts(url: str) -> tuple[str, str | None]:
+    """Return the site origin and an explicit account key when the URL has one."""
     parts = urlsplit(str(url))
     base = f"{parts.scheme}://{parts.netloc}"
     segments = [part for part in parts.path.split("/") if part]
@@ -43,8 +38,24 @@ def identity_key(url: str) -> str:
         if marker in lowered:
             index = lowered.index(marker)
             if index + 1 < len(segments):
-                return base + "/" + marker + "/" + segments[index + 1]
-    return base
+                return base, base + "/" + marker + "/" + segments[index + 1]
+    return base, None
+
+
+def identity_key(url: str) -> str:
+    """Return the account/page identity that owns verified evidence.
+
+    A normal route change inside one site does not invalidate every confirmed
+    value.  A different origin or account (for example ``/user/alice`` versus
+    ``/user/bob``) does.
+    """
+    origin, account = _identity_parts(url)
+    return account or origin
+
+
+def _identity_origin(identity: str) -> str:
+    parts = urlsplit(identity)
+    return f"{parts.scheme}://{parts.netloc}"
 
 
 class TaskState:
@@ -196,12 +207,33 @@ class TaskState:
         return value if isinstance(value, str) else ""
 
     def observe_identity(self, frame: Frame) -> bool:
-        """Update page identity and mark old evidence stale when it changes."""
-        new_identity = identity_key(frame.url)
+        """Update page identity and stale old evidence only on a real switch.
+
+        Generic same-origin pages (forums, listings, product pages) keep the
+        established account identity and its verified evidence.  A different
+        origin or an explicit different account still invalidates it.
+        """
+        origin, account = _identity_parts(frame.url)
+        new_identity = account or origin
         old_identity = self.identity
-        self.data["_identity"] = new_identity
-        if not old_identity or old_identity == new_identity:
+        if not old_identity:
+            self.data["_identity"] = new_identity
             return False
+        old_origin = _identity_origin(old_identity)
+        old_is_account = old_identity != old_origin
+        if old_origin == origin:
+            if account is None:
+                # A generic page is not an identity change; keep the account
+                # established for this task and the evidence bound to it.
+                return False
+            if old_identity == account:
+                return False
+            if not old_is_account:
+                # Only the origin was known; adopt this account without
+                # discarding progress verified elsewhere on the same site.
+                self.data["_identity"] = account
+                return False
+        self.data["_identity"] = new_identity
         changes = self.data.get("_identity_changes")
         if not isinstance(changes, list):
             changes = []

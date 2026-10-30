@@ -661,6 +661,148 @@ class ExpandedSuiteCoverageTests(unittest.TestCase):
         self.assertTrue(recover.classify_action(
             "goto [http://127.0.0.1:9876/account/%64elete]", view).is_write)
 
+    def test_popup_menu_tabs_and_disclosures_are_ui_navigation(self):
+        current = frame(
+            url="http://127.0.0.1:9876/",
+            text=(
+                "[1] button 'Account' hasPopup: menu expanded: False\n"
+                "[2] button 'Filter on: Featured' hasPopup: menu expanded: False\n"
+                "[3] tab 'Comments' selected: True\n"
+                "[4] button 'Advanced' expanded: False\n"
+                "[5] link 'Submit' url: http://127.0.0.1:9876/submit\n"
+            ),
+        )
+        for element_id in ("1", "2", "3", "4", "5"):
+            info = recover.classify_action(f"click [{element_id}]", current)
+            self.assertTrue(info.is_read, element_id)
+            self.assertFalse(info.is_write, element_id)
+            self.assertEqual(info.operation, "read", element_id)
+
+    def test_compose_links_are_navigation_and_dangerous_links_commit(self):
+        text = (
+            "[1] link 'Submit' url: http://127.0.0.1:9876/submit\n"
+            "[2] link 'Reply' url: http://127.0.0.1:9876/f/books/1/reply\n"
+            "[3] link 'New post' url: http://127.0.0.1:9876/f/books/new\n"
+            "[4] link 'Edit biography' url: http://127.0.0.1:9876/user/me/edit_biography\n"
+            "[5] link 'Delete post' url: http://127.0.0.1:9876/post/1\n"
+            "[6] link 'My orders' url: http://127.0.0.1:9876/order/delete\n"
+            "[7] link 'Reorder' url: http://127.0.0.1:9876/orders/7/reorder\n"
+            "[8] link 'Cancel order' url: http://127.0.0.1:9876/orders/7/cancel\n"
+            "[9] link 'Upvote' url: http://127.0.0.1:9876/post/1/upvote\n"
+            "[10] button 'Save'\n"
+            "[11] button 'Submit'\n"
+            "[12] button 'Continue'\n"
+        )
+        current = frame(text=text)
+        for element_id in ("1", "2", "3", "4"):
+            self.assertFalse(
+                recover.classify_action(f"click [{element_id}]", current).is_write,
+                element_id,
+            )
+        for element_id in ("5", "6", "7", "8", "9", "10", "11", "12"):
+            self.assertTrue(
+                recover.classify_action(f"click [{element_id}]", current).is_write,
+                element_id,
+            )
+
+    def test_menu_edit_save_is_not_blocked_by_a_phantom_pending(self):
+        task = 'Change my bio to "I am a robot"'
+        state = TaskState()
+        state.set_task(task)
+        verify.ensure_goals(frame(task=task), state)
+        menu = frame(
+            task=task,
+            url="http://127.0.0.1:9876/",
+            text=(
+                "[1] button 'Account' hasPopup: menu expanded: False\n"
+                "[2] link 'Submit' url: http://127.0.0.1:9876/submit\n"
+            ),
+        )
+        self.assertIsNone(recover.register_action(menu, state, "click [1]"))
+        self.assertIsNone(recover.register_action(menu, state, "click [2]"))
+        self.assertNotIn("_pending_actions", state.data)
+
+        profile = frame(
+            task=task,
+            url="http://127.0.0.1:9876/user/me",
+            text=(
+                "[1] StaticText 'I am a robot'\n"
+                "[2] link 'Edit biography' url: "
+                "http://127.0.0.1:9876/user/me/edit_biography\n"
+            ),
+        )
+        self.assertIsNone(recover.register_action(profile, state, "click [2]"))
+        self.assertNotIn("_pending_actions", state.data)
+
+        editor = frame(task=task, text=EDIT_TEXT)
+        self.assertIsNone(
+            recover.register_action(editor, state, "type [1] [I am a robot] [0]")
+        )
+        self.assertNotIn("_pending_actions", state.data)
+
+        typed = frame(task=task, text=TYPED_TEXT)
+        recover.guard_action(typed, state, "click [3]")
+        pending = recover.register_action(typed, state, "click [3]")
+        self.assertIsNotNone(pending)
+        self.assertEqual(pending.status, "unknown")
+        self.assertEqual(pending.action, "click [3]")
+        self.assertTrue(pending.goal_ids)
+
+    def test_same_origin_generic_navigation_keeps_verified_progress(self):
+        state = TaskState()
+        state.set_task(TASK)
+        verify.ensure_goals(frame(), state)
+        state.observe_identity(frame())
+        goal = state.goal_checks[0]
+        goal.status = "verified"
+        account = state.identity
+        self.assertEqual(account, "http://127.0.0.1:9876/user/me")
+
+        generic = frame(
+            url="http://127.0.0.1:9876/forums",
+            text="[1] StaticText 'Forums'\n",
+        )
+        self.assertFalse(state.observe_identity(generic))
+        self.assertEqual(goal.status, "verified")
+        self.assertEqual(state.identity, account)
+
+        self.assertFalse(state.observe_identity(frame(url=PROFILE)))
+        self.assertEqual(goal.status, "verified")
+        self.assertFalse(state.observe_identity(frame()))
+        self.assertEqual(goal.status, "verified")
+        self.assertEqual(state.data.get("_identity_changes", []), [])
+
+    def test_different_account_or_origin_still_stales_verified_evidence(self):
+        for changed_url in (
+            "http://127.0.0.1:9876/user/other",
+            "http://127.0.0.1:9999/user/me",
+        ):
+            state = TaskState()
+            state.set_task(TASK)
+            verify.ensure_goals(frame(), state)
+            state.observe_identity(frame())
+            state.goal_checks[0].status = "verified"
+            self.assertTrue(state.observe_identity(frame(url=changed_url)))
+            self.assertEqual(state.goal_checks[0].status, "stale")
+            self.assertEqual(state.data["_identity_changes"][-1]["step"], 0)
+
+    def test_generic_start_adopts_an_account_without_staling_progress(self):
+        state = TaskState()
+        state.set_task(TASK)
+        verify.ensure_goals(frame(), state)
+        state.observe_identity(
+            frame(url="http://127.0.0.1:9876/forums",
+                  text="[1] StaticText 'Forums'\n")
+        )
+        state.goal_checks[0].status = "verified"
+        self.assertFalse(state.observe_identity(frame(url=PROFILE)))
+        self.assertEqual(state.goal_checks[0].status, "verified")
+        self.assertEqual(state.identity, "http://127.0.0.1:9876/user/me")
+        self.assertTrue(
+            state.observe_identity(frame(url="http://127.0.0.1:9876/user/other"))
+        )
+        self.assertEqual(state.goal_checks[0].status, "stale")
+
     """New-suite requirements: fail closed, semantic scope, per-object effects."""
 
     def test_non_empty_task_can_never_stop_with_an_empty_checklist(self):
@@ -872,6 +1014,47 @@ class ExpandedSuiteCoverageTests(unittest.TestCase):
         with self.assertRaises(recover.DuplicateWriteError):
             recover.guard_action(after, state, "click [2]")
 
+    def test_read_only_navigation_to_recorded_object_is_allowed(self):
+        task = "Thumbs down the top 4 post ever in movies."
+        state = TaskState()
+        state.set_task(task)
+        state.set_goal_checks(verify.extract_goal_checks(task))
+        page = frame(
+            task=task,
+            url="http://127.0.0.1:9876/f/movies",
+            text=(
+                "[1] link 'View details' url: "
+                "http://127.0.0.1:9876/f/movies/thread/0\n"
+                "[2] link 'Downvote' url: "
+                "http://127.0.0.1:9876/f/movies/thread/0\n"
+            ),
+        )
+        view = verify.parse_ax(page)
+        key = verify.object_key(view, view.by_id["1"], page.url)
+        self.assertTrue(key)
+        self.assertEqual(
+            verify.object_key(view, view.by_id["2"], page.url), key
+        )
+        goal = state.goal_checks[0]
+        goal.objects.append(key)
+        goal.actual = 1
+        goal.status = "unknown"
+        info = recover.guard_action(page, state, "click [1]")
+        self.assertTrue(info.is_read)
+        self.assertFalse(info.is_write)
+        with self.assertRaises(recover.DuplicateWriteError):
+            recover.guard_action(page, state, "click [2]")
+        anonymous = frame(
+            task=task,
+            url="http://127.0.0.1:9876/f/movies",
+            text="[1] button 'Downvote'\n",
+        )
+        anonymous_view = verify.parse_ax(anonymous)
+        self.assertEqual(
+            verify.object_key(anonymous_view, anonymous_view.by_id["1"], anonymous.url),
+            "",
+        )
+        self.assertTrue(recover.guard_action(anonymous, state, "click [1]").is_write)
 
     def test_another_posts_retract_state_cannot_confirm_a_new_vote(self):
         task = "Thumbs down the top 4 post ever in movies."

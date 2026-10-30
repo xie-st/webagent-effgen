@@ -24,6 +24,7 @@ _LINE = re.compile(r"^(\s*)\[(\d+)\]\s+([^\s]+)\s*(.*)$")
 _ATTR_NAME = re.compile(r"'((?:[^'\\]|\\.)*)'")
 _FORM_ROLES = frozenset(
     {
+        "form",
         "textbox",
         "searchbox",
         "combobox",
@@ -77,7 +78,9 @@ _VALUE_KINDS = frozenset({"exact_equal", "exact_append"})
 _EXACT_KINDS = frozenset({"exact_equal", "exact_append", "item_exact"})
 # Semantic and per-object checks must also cite business (not draft/status) AX
 # lines; the evidence shape is stricter than a bare model claim.
-_EVIDENCE_KINDS = frozenset(_EXACT_KINDS | {"semantic", "count_per_object"})
+_EVIDENCE_KINDS = frozenset(
+    _EXACT_KINDS | {"semantic", "count_once", "count_per_object"}
+)
 _KNOWN_KINDS = frozenset(
     _EVIDENCE_KINDS | {"count_once", "state_true", "order_once"}
 )
@@ -102,6 +105,15 @@ _VOTE_TOGGLED_WORDS = (
     "已踩",
     "已赞",
 )
+# Ranking/position words need their own business evidence; a vote toggle says
+# only that one object was voted, never that it is newest or in the top N.
+_RANKING_SCOPE = re.compile(
+    r"\b(?:newest|oldest|latest|earliest|top|first|last|highest|lowest|"
+    r"most|least|cheapest|most\s+expensive)\b|"
+    r"最新|最旧|最早|最晚|前\s*\d|排名|第\s*\d",
+    re.I,
+)
+_VOTE_STATE_ROLES = frozenset({"button", "link", "checkbox", "radio"})
 # Quantity, ordering, identity, date/cancellation and multi-object language is a
 # real requirement even when no exact field value can be parsed.  It is kept as
 # a semantic goal rather than silently dropped.
@@ -117,7 +129,7 @@ _SCOPE_MARKERS = re.compile(
 )
 _MULTI_OBJECT = re.compile(
     r"\b(?:top|first|last)\s+(\d+)\b|\b(\d+)\s+(?:posts?|items?|products?|"
-    r"comments?|articles?)\b",
+    r"comments?|articles?|users?|accounts?|forums?|communities)\b",
     re.I,
 )
 # A field value is only evidence when it sits in that field's business region.
@@ -257,9 +269,11 @@ class AXView:
         # Ancestor state and descendant text slices.
         for position, item in enumerate(parsed):
             ancestors: list[dict[str, Any]] = []
+            ancestor_indent = item["indent"]
             for previous in reversed(parsed[:position]):
-                if previous["indent"] < item["indent"]:
+                if previous["indent"] < ancestor_indent:
                     ancestors.append(previous)
+                    ancestor_indent = previous["indent"]
                     if previous["indent"] == 0:
                         break
             descendants: list[dict[str, Any]] = []
@@ -427,6 +441,104 @@ def _scope_blocked(view: AXView, atom: AXAtom | None, field: str | None) -> bool
         and not _marker_in(section.name, _FIELD_MARKERS[field])
         and _marker_in(section.name, _UNRELATED_SECTIONS[field])
     )
+
+
+def _goal_mentions_vote(goal: GoalCheck) -> bool:
+    text = f"{goal.target} {goal.description}".casefold()
+    return any(word in text for word in _VOTE_WORDS)
+
+
+def _vote_control_atom(atom: AXAtom | None) -> bool:
+    return bool(
+        atom is not None
+        and atom.role in _VOTE_STATE_ROLES
+        and any(word in atom.name.casefold() for word in _VOTE_WORDS)
+    )
+
+
+def _persistent_vote_control(atom: AXAtom | None) -> bool:
+    """A post-action toggle control (``Retract upvote``) carries vote state.
+
+    An untouched ``Upvote`` button, a checklist item or a draft textbox does
+    not.  The check is deliberately narrow: persistent vote wording, or an
+    explicit checked/selected vote control.
+    """
+    if not _vote_control_atom(atom):
+        return False
+    text = atom.name.casefold()
+    return any(word in text for word in _VOTE_TOGGLED_WORDS) or bool(
+        atom.checked is True or atom.selected is True
+    )
+
+
+def _business_evidence_atom(goal: GoalCheck, atom: AXAtom | None) -> bool:
+    """Reject draft/status evidence while accepting a persistent vote toggle.
+
+    Most controls inside a form are drafts (unsubmitted text), and alert text is
+    a success/status message.  The one exception is a vote goal citing its own
+    post-action toggle: that control is the business vote state itself even when
+    the site wraps its vote button in an HTML form.  This is not a general
+    relaxation of form evidence.
+    """
+    if atom is None or atom.inside_alert or atom.role in {"alert", "status"}:
+        return False
+    if atom.inside_form:
+        return _goal_mentions_vote(goal) and _persistent_vote_control(atom)
+    return True
+
+
+def _scope_semantic_goal(goal: GoalCheck) -> bool:
+    return goal.kind == "semantic" and bool(
+        _SCOPE_MARKERS.search(f"{goal.target} {goal.description}")
+    )
+
+
+def _ranking_semantic_goal(goal: GoalCheck) -> bool:
+    return goal.kind == "semantic" and bool(
+        _RANKING_SCOPE.search(f"{goal.target} {goal.description}")
+    )
+
+
+def _acted_object_keys(state: TaskState) -> set[str]:
+    """Stable identities already confirmed by vote actions on this task."""
+    keys: set[str] = set()
+    for goal in state.goal_checks:
+        if goal.kind in {"count_once", "count_per_object"}:
+            keys.update(key for key in goal.objects if key)
+    return keys
+
+
+def _same_stable_identity(view: AXView, source_key: str, atom: AXAtom) -> bool:
+    """Match the acted business object, rather than any object on its page."""
+    candidate = object_key(view, atom, view.frame.url)
+    return bool(candidate and candidate == source_key)
+
+
+def _identities_overlap(view: AXView, identities: set[str], acted: set[str]) -> bool:
+    return bool(identities & acted)
+
+
+def _business_identity_keys(
+    view: AXView, evidence: Iterable[GoalEvidence], goal: GoalCheck
+) -> set[str]:
+    """Stable URL/title identities among current business evidence.
+
+    Vote toggles, alert text and unsubmitted form drafts are not business
+    identity evidence, so they cannot prove a newest/top-N/object scope.
+    """
+    keys: set[str] = set()
+    for record in evidence:
+        if record.history_id is not None or record.line is None:
+            continue
+        atom = view.by_line.get(record.line)
+        if atom is None or not _business_evidence_atom(goal, atom):
+            continue
+        if _vote_control_atom(atom):
+            continue
+        key = object_key(view, atom, view.frame.url)
+        if key:
+            keys.add(key)
+    return keys
 
 
 def _history_terms(goals: Iterable[GoalCheck]) -> tuple[str, ...]:
@@ -745,7 +857,16 @@ def _parse_clause(clause: str) -> tuple[str, Any, str | None] | None:
 
 
 def _is_scope_clause(clause: str) -> bool:
-    return bool(_SCOPE_MARKERS.search(clause))
+    return bool(_SCOPE_MARKERS.search(clause) or _MULTI_OBJECT.search(clause))
+
+
+def _semantic_object_count(goal: GoalCheck) -> int:
+    # Vote counts already have a deterministic per-object progress ledger.
+    # Other numbered object sets must retain and substantiate their quantity.
+    if goal.kind != "semantic" or _goal_mentions_vote(goal):
+        return 1
+    match = _MULTI_OBJECT.search(str(goal.target))
+    return max(1, int(match.group(1) or match.group(2))) if match else 1
 
 
 def extract_goal_checks(task: str) -> list[GoalCheck]:
@@ -1308,7 +1429,9 @@ def parse_verification(
                         status = "unknown"
                         invalid.append(f"goal {goal_id} evidence line is missing")
                         break
-                    if goal.kind in _EVIDENCE_KINDS and (atom.inside_alert or atom.inside_form):
+                    if goal.kind in _EVIDENCE_KINDS and not _business_evidence_atom(
+                        goal, atom
+                    ):
                         status = "unknown"
                         invalid.append(
                             f"goal {goal_id} relies on a draft/status area, not business state"
@@ -1335,6 +1458,27 @@ def parse_verification(
                     invalid.append(
                         f"goal {goal_id} needs historical comparison evidence"
                     )
+                if status == "confirmed" and _scope_semantic_goal(goal):
+                    identities = _business_identity_keys(view, current_evidence, goal)
+                    acted = _acted_object_keys(state)
+                    if not identities:
+                        status = "unknown"
+                        invalid.append(
+                            f"goal {goal_id} semantic scope lacks concrete business "
+                            "evidence beyond vote/status controls"
+                        )
+                    elif acted and not _identities_overlap(view, identities, acted):
+                        status = "unknown"
+                        invalid.append(
+                            f"goal {goal_id} semantic scope does not identify the "
+                            "acted object by URL/title"
+                        )
+                    elif _ranking_semantic_goal(goal) and not history_evidence:
+                        status = "unknown"
+                        invalid.append(
+                            f"goal {goal_id} newest/ranking claim lacks historical "
+                            "ordering evidence"
+                        )
                 if status == "confirmed":
                     actual = entry.get("actual")
                     if goal.kind in _VALUE_KINDS and not _exact_actual_ok(goal, actual):
@@ -1389,6 +1533,16 @@ def parse_verification(
                             status = "unknown"
                             invalid.append(
                                 f"goal {goal_id} semantic check lacks an observed value"
+                            )
+                        elif (
+                            _semantic_object_count(goal) > 1
+                            and len(_business_identity_keys(view, current_evidence, goal))
+                            < _semantic_object_count(goal)
+                        ):
+                            status = "unknown"
+                            invalid.append(
+                                f"goal {goal_id} lacks distinct business evidence for "
+                                "all requested objects"
                             )
                     elif goal.kind == "state_true":
                         if type(actual) is not bool or actual is not goal.target:
@@ -1486,21 +1640,31 @@ def _fail_goal(goal: GoalCheck, result: Mapping[str, Any]) -> None:
 def object_key(view: AXView, atom: AXAtom | None, fallback_url: str = "") -> str:
     """Stable identity for the object a write applies to.
 
-    A post/product page URL, an enclosing link URL or an item heading is real
-    identity.  Otherwise the current page plus the acted control id keeps
-    distinct list items apart within one observation.
+    A link's URL and a post/product heading are real identity; a named link
+    without a URL still has its title.  A changing DOM element id is never
+    identity, so browser repaint or a reused id cannot confirm a different
+    object or turn one object into several.  When there is no stable identity
+    this returns an empty string and callers keep the effect unknown rather
+    than inventing a key.
     """
+    del fallback_url  # Kept for call compatibility; a page URL alone is not per-object.
     if atom is None:
-        return fallback_url
+        return ""
+    if atom.url:
+        return "url:" + atom.url
+    if atom.role == "heading" and atom.name.strip():
+        return "name:" + atom.name.strip()
+    if atom.role == "link" and atom.name.strip():
+        return "name:" + atom.name.strip()
     preceding = [item for item in view.atoms if item.line_no < atom.line_no]
     for candidate in reversed(preceding):
         if candidate.role in {"link", "heading"} and candidate.url:
             return "url:" + candidate.url
-        if candidate.role == "heading" and candidate.name:
-            return "heading:" + candidate.name
-        if candidate.role in {"link", "heading"} and candidate.name:
-            return "title:" + candidate.name
-    return f"{fallback_url}#{atom.element_id}"
+        if candidate.role == "heading" and candidate.name.strip():
+            return "name:" + candidate.name.strip()
+        if candidate.role == "link" and candidate.name.strip():
+            return "name:" + candidate.name.strip()
+    return ""
 
 
 def _vote_effect(
@@ -1509,9 +1673,10 @@ def _vote_effect(
 ) -> tuple[bool, AXAtom | None, str]:
     """Read the toggled vote control that proves the dispatched vote landed.
 
-    The candidate must belong to the same acted object (same control id or same
-    enclosing title/URL), so one post's "Retract upvote" cannot confirm a vote
-    on a different post in a listing.
+    The candidate must belong to the same acted object by stable URL/title
+    identity.  A DOM element id is not identity: a repaint or a reused id that
+    now points at another post must stay unknown, and no stable identity means
+    no confirmation rather than an invented one.
     """
     source = pending.source
     before = str(source.get("element_name", "")).casefold()
@@ -1523,15 +1688,11 @@ def _vote_effect(
     elif "up" in before or "赞" in before:
         direction = "up"
     source_key = str(source.get("object_key") or "")
-    source_id = source.get("element_id")
-    source_url = str(source.get("url", ""))
+    if not source_key:
+        return False, None, ""
 
     def same_object(atom: AXAtom) -> bool:
-        if source_id is not None and atom.element_id == str(source_id):
-            return True
-        if source_key and object_key(view, atom, source_url) == source_key:
-            return True
-        return False
+        return bool(source_key and _same_stable_identity(view, source_key, atom))
 
     for atom in view.atoms:
         name = atom.name.casefold()
@@ -1547,10 +1708,8 @@ def _vote_effect(
             return True, atom, atom.name
     element_id = source.get("element_id")
     atom = view.by_id.get(str(element_id)) if element_id is not None else None
-    if atom is not None:
-        name = atom.name.casefold()
-        if atom.checked or atom.selected:
-            return True, atom, atom.name
+    if atom is not None and _persistent_vote_control(atom) and same_object(atom):
+        return True, atom, atom.name
     return False, None, ""
 
 
@@ -1567,7 +1726,7 @@ def _record_object(
     """Record one confirmed object without claiming the aggregate goal."""
     key = str(pending.source.get("object_key") or "")
     if not key:
-        key = f"{pending.source.get('url', frame.url)}#{pending.source.get('element_id', '')}"
+        key = object_key(view, atom, frame.url)
     if not key or key in goal.objects:
         return False
     goal.objects.append(key)
@@ -1630,23 +1789,16 @@ def resolve_pending(
             _confirm_goal(goal, result)
             confirmed_ids.add(goal.goal_id)
         elif goal.kind == "count_once" and effect:
-            _confirm_goal(
+            if _record_object(
                 goal,
-                {
-                    "evidence": [
-                        _evidence(
-                            state=state,
-                            frame=frame,
-                            atom=effect_atom,
-                            quote=effect_quote,
-                            actual=effect_quote,
-                            source="ax_vote_state",
-                            deterministic=True,
-                        )
-                    ]
-                },
-            )
-            confirmed_ids.add(goal.goal_id)
+                pending,
+                state=state,
+                frame=frame,
+                atom=effect_atom,
+                quote=effect_quote,
+                source="ax_vote_state",
+            ):
+                confirmed_ids.add(goal.goal_id)
     for goal in per_object:
         if effect and _record_object(
             goal,
@@ -1734,7 +1886,17 @@ def resolve_pending(
                 goal for goal in goals
                 if goal.goal_id not in confirmed_ids and goal.status != "verified"
             ]
-    if goals and all(
+    effect_goals = [goal for goal in goals if goal.kind != "semantic"]
+    action_confirmed = bool(effect_goals) and all(
+        goal.goal_id in confirmed_ids or goal.status == "verified"
+        for goal in effect_goals
+    )
+    if action_confirmed:
+        # The dispatched action's own effect is settled.  Semantic scope checks
+        # (newest/top-N/topic) belong to the task, not to this action's write, so
+        # they neither keep the write guard active nor let a later stop pass.
+        outcome = "confirmed"
+    elif goals and all(
         goal.goal_id in confirmed_ids or goal.status == "verified" for goal in goals
     ):
         outcome = "confirmed"
@@ -1930,6 +2092,15 @@ def build_verify_payload(
             "Current AX evidence is still required; history can only add prior comparison/order "
             "facts to a semantic check. Step/version null means unknown, not invented.",
             "Counts/states must be observed in the current AX, not inferred from the click.",
+            "A persistent post-action vote toggle is current business evidence that this vote "
+            "landed, even inside an HTML form; an untouched vote button, draft textbox or "
+            "success alert is not evidence.",
+            "A vote toggle proves only vote state. Newest/latest/ranking/top-N/subreddit/"
+            "object scope needs the concrete business heading/link/title and, for ordering, "
+            "the supplied history showing the object's position.",
+            "Identify objects by URL/title/heading, never by DOM element id. A new id is not "
+            "a new object and a reused id after a repaint is not proof; unstable identity "
+            "must stay unknown.",
             "For multi-object requirements confirm one object per action with evidence.",
         ],
     }
