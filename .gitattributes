@@ -6,5 +6,6 @@
 *.cmd text eol=crlf
 
 # Official packages and source documents keep exact download bytes
+02_代码/01_harness/当前版本/sdk/** -text
 02_代码/03_官方客户端/sdk-*/** -text
 01_文本/01_比赛要求/原始资料/** -text
