@@ -225,10 +225,12 @@ class AXTree:
             return None
         if node.value is not None:
             return node.value
-        values = [
-            child.name for child in node.descendants
-            if child.role in {"StaticText", "text"} and child.name
-        ]
+        text_nodes = [child for child in node.descendants
+                      if child.role in {"StaticText", "text", "LineBreak"}]
+        if any(child.role == 'LineBreak' for child in text_nodes):
+            return ''.join('\n' if child.role == 'LineBreak' else child.name
+                           for child in text_nodes)
+        values = [child.name for child in text_nodes]
         if values:
             return "\n".join(values)
         # Some AX writers expose the editable value as a child text node with

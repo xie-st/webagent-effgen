@@ -135,8 +135,17 @@ class Runtime:
         node = AXTree(frame).find_field(sequence["field_key"])
         if frame.url != sequence["url"] or node is None:
             state.data.pop("_input_sequence", None)
+            state.clear_replace()
+            state.clear_focus()
             state.mark_unresolved("replacement interrupted; locate the original field again")
-            return "stop [Incomplete: input target changed during replacement]"
+            from urllib.parse import urlsplit
+            before, current = urlsplit(sequence['url']), urlsplit(frame.url)
+            if (before.scheme, before.netloc) != (current.scheme, current.netloc):
+                return "stop [Incomplete: input origin changed during replacement]"
+            state.set_last_result('blocked', 'Input sequence cancelled after page/field change. '
+                                  'Use the current observation to locate the intended field again; '
+                                  'no stale select, clear or type action was executed.', step=frame.step)
+            return None
         focused = AXTree(frame).focused_field()
         if focused is not None and focused.field_key != node.field_key:
             state.data.pop("_input_sequence", None)
@@ -164,6 +173,13 @@ class Runtime:
         if blocked is not None:
             return blocked.action, False
         state.data.pop('_guard_block_streak', None)
+        if plan.kind == 'commit' and state.last_result and state.last_result.get('status') == 'changed':
+            # Editing can insert a preview and move the submit button. Refresh
+            # layout before creating an unknown business write; decide again on
+            # the next frame instead of dispatching this potentially stale click.
+            refresh = 'scroll [down]'
+            operations.register(operations.plan(refresh, frame, state), frame, state)
+            return refresh, False
         typed = re.fullmatch(r"type \[(\d+)\] \[(.*)\] \[([01])\]", action, re.S)
         if typed and input_mode in {"append", "replace"}:
             # One primitive now; subsequent callbacks supply fresh IDs/observations.

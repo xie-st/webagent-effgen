@@ -18,6 +18,53 @@ def frame(text, step=0, url='https://example.test/post/1'):
 
 
 class OperationsTests(unittest.TestCase):
+    def test_commit_after_input_refreshes_layout_before_registering_unknown_write(self):
+        state=TaskState()
+        before=frame("[1] textbox 'Bio' value: 'OLD'\n[2] button 'Save'")
+        state.arm_replace(AXTree(before).by_id['1'].field_key)
+        operations.register(operations.plan('type [1] [NEW] [0]',before,state),before,state)
+        runtime=Runtime(decision_port=lambda *_:'click [2]')
+        after=frame("[1] textbox 'Bio' value: 'NEW'\n[2] button 'Save'",1)
+        self.assertEqual(runtime.advance(after,state)['action'],'scroll [down]')
+        self.assertIsNone(state.pending_for(0))
+        self.assertEqual(runtime.advance(frame(after.ax,2),state)['action'],'click [2]')
+        self.assertEqual(state.pending_for(0).operation,'commit')
+
+    def test_multiline_control_preserves_blank_text_and_linebreak_nodes(self):
+        for children in ["  [2] StaticText 'first'\n  [3] StaticText ''\n  [4] StaticText 'second'",
+                         "  [2] StaticText 'first'\n  [3] LineBreak ''\n  [4] LineBreak ''\n  [5] StaticText 'second'"]:
+            view=AXTree(frame("[1] textbox 'Body'\n"+children))
+            self.assertEqual(view.control_value(view.by_id['1']),'first\n\nsecond')
+            state=TaskState()
+            before=frame("[1] textbox 'Body' value: 'old'")
+            state.arm_replace(AXTree(before).by_id['1'].field_key)
+            operations.register(operations.plan('type [1] [first\n\nsecond] [0]',before,state),before,state)
+            operations.resolve(frame("[1] textbox 'Body'\n"+children,1),state)
+            self.assertEqual(state.last_result['status'],'changed')
+
+    def test_same_origin_navigation_cancels_stale_input_and_replans(self):
+        calls=[]
+        def generate(ctx,state):
+            calls.append(ctx)
+            return json.dumps({'action':'type [1] [NEW] [0]' if len(calls)==1 else 'scroll [up]'})
+        runtime=Runtime(policy=SimpleNamespace(generate=generate));state=TaskState()
+        self.assertEqual(runtime.advance(frame("[1] textbox 'Search' value: 'OLD'"),state)['action'],'click [1]')
+        result=runtime.advance(frame("[9] textbox 'Search' value: 'OLD'",1,url='https://example.test/sorted'),state)
+        self.assertEqual(result['action'],'scroll [up]')
+        self.assertEqual(len(calls),2)
+        self.assertNotIn('_input_sequence',state.data)
+        self.assertFalse(state.replace_armed({'role':'textbox','name':'Search','section':''}))
+
+    def test_cross_origin_input_interruption_stops_without_more_model_calls(self):
+        calls=[]
+        def generate(*_):
+            calls.append(1);return json.dumps({'action':'type [1] [NEW] [0]'})
+        runtime=Runtime(policy=SimpleNamespace(generate=generate));state=TaskState()
+        runtime.advance(frame("[1] textbox 'Bio' value: 'OLD'"),state)
+        result=runtime.advance(frame("[1] textbox 'Bio' value: 'OLD'",1,url='https://other.test/'),state)
+        self.assertIn('Incomplete: input origin changed',result['action'])
+        self.assertEqual(len(calls),1)
+
     def test_repeated_unknown_commit_stop_does_not_tab_forever(self):
         state = self.submit()
         runtime = Runtime(decision_port=lambda c,s:'stop [done]')
