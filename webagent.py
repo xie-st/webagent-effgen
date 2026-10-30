@@ -1,4 +1,4 @@
-"""Launch the current M2 short-fix harness; saved versions remain selectable."""
+"""Select a complete harness version; implementation lives inside each version."""
 import argparse
 import json
 import os
@@ -34,6 +34,18 @@ def main():
     copy = commands.add_parser("new-version")
     copy.add_argument("name")
     copy.add_argument("--from-version")
+    m3 = commands.add_parser("m3", help="Run a browser task DAG")
+    m3.add_argument("--version")
+    m3.add_argument("--plan", type=Path, required=True)
+    m3.add_argument("--runtime-factory", default="web_agent.http_model:make_runtime")
+    m3.add_argument("--model-env", type=Path)
+    m3.add_argument("--out", type=Path, required=True)
+    m3.add_argument("--workers", type=int, default=3)
+    m3.add_argument("--timeout", type=float, default=300)
+    m3.add_argument("--channel", default="msedge")
+    m3.add_argument("--headed", action="store_true")
+    m3.add_argument("--storage-state", type=Path)
+    m3.add_argument("--control-file", type=Path)
     args = parser.parse_args()
     config = json.loads((ROOT / "webagent.json").read_text(encoding="utf-8"))
     if args.command == "new-version":
@@ -58,8 +70,18 @@ def main():
     folder = resolve_version(config, args.version)
     env = os.environ.copy()
     env["WEBAGENT_PROJECT_ROOT"] = str(ROOT)
-    env["WEBAGENT_RESULTS_ROOT"] = str((args.results_dir or ROOT / config["results_root"]).resolve())
-    env["WEBAGENT_CONNECTION_FILE"] = str((args.connection_file or ROOT / config["connection_file"]).resolve())
+    env["WEBAGENT_RESULTS_ROOT"] = str((getattr(args, "results_dir", None) or ROOT / config["results_root"]).resolve())
+    env["WEBAGENT_CONNECTION_FILE"] = str((getattr(args, "connection_file", None) or ROOT / config["connection_file"]).resolve())
+    if args.command == "m3":
+        env["PYTHONPATH"] = os.pathsep.join((str(folder), str(folder / "sdk"), str(ROOT), env.get("PYTHONPATH", "")))
+        command = [sys.executable, str(folder / "m3.py")]
+        for key in ("plan", "runtime_factory", "model_env", "out", "workers", "timeout", "channel", "storage_state", "control_file"):
+            value = getattr(args, key)
+            if value is not None:
+                command.extend(["--" + key.replace("_", "-"), str(value)])
+        if args.headed:
+            command.append("--headed")
+        return subprocess.call(command, env=env)
     command = [sys.executable, str(folder / "run.py"), args.command]
     if args.command == "new-run":
         command.extend(["--kind", args.kind])

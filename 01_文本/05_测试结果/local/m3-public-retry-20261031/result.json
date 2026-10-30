@@ -1,0 +1,35 @@
+{
+  "status": {
+    "github": "verified"
+  },
+  "results": {
+    "github": {
+      "run_id": "b9704f02f0d74bf983baad5cc1082808",
+      "steps": 1,
+      "url": "https://github.com/xie-st/webagent-effgen/tree/codex/m2-short-fix",
+      "last_action": "stop [webagent.py]",
+      "memory": "",
+      "completed_operations": [],
+      "last_readback": {
+        "status": "stop",
+        "detail": "local effect checks passed",
+        "step": 0,
+        "expected": null,
+        "actual": null
+      },
+      "deadline": 1793381480.3728626,
+      "pending": []
+    }
+  },
+  "events": [
+    {
+      "node": "github",
+      "status": "verified",
+      "error": null
+    }
+  ],
+  "seconds": 17.07301870000083,
+  "model_entry": "web_agent.http_model:make_runtime",
+  "official_score": false,
+  "plan": ".local\\public-retry-plan.json"
+}

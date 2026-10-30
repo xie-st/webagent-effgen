@@ -1,0 +1,38 @@
+[
+  {
+    "name": "closed-loop",
+    "workers": 3,
+    "exit_code": 0,
+    "wall_seconds": 41.678,
+    "scheduler_seconds": 39.69733850000193,
+    "status": {
+      "read_a": "verified",
+      "read_b": "verified",
+      "replace": "verified",
+      "draft": "verified",
+      "dependent": "verified"
+    },
+    "answers": {
+      "read_a": "stop [cobalt]",
+      "read_b": "stop [amber]",
+      "replace": "stop [\"New bio\"]",
+      "draft": "stop [Draft content '感谢分享与支持 😊' is ready in the editor.]",
+      "dependent": "stop [cobalt]"
+    },
+    "model_calls": 8,
+    "business": {
+      "bio": "New bio",
+      "saves": 1,
+      "published": 0
+    },
+    "checks": {
+      "read_a": true,
+      "read_b": true,
+      "dependency": true,
+      "saved_exactly_once": true,
+      "never_published": true,
+      "draft_screenshot": true,
+      "all_nodes_complete": true
+    }
+  }
+]

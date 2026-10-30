@@ -1,0 +1,133 @@
+[
+  {
+    "name": "closed-loop",
+    "workers": 3,
+    "exit_code": 0,
+    "wall_seconds": 51.812,
+    "scheduler_seconds": 50.13047820000793,
+    "status": {
+      "read_a": "verified",
+      "read_b": "verified",
+      "replace": "verified",
+      "draft": "verified",
+      "dependent": "verified"
+    },
+    "answers": {
+      "read_a": "stop [The identifier is cobalt.]",
+      "read_b": "stop [amber]",
+      "replace": "stop [The biography has been successfully updated and saved as 'New bio'.]",
+      "draft": "stop [\"Draft '感谢分享与支持 😊' is ready.\"]",
+      "dependent": "stop [The identifier is cobalt.]"
+    },
+    "model_calls": 8,
+    "business": {
+      "bio": "New bio",
+      "saves": 1,
+      "published": 0
+    },
+    "checks": {
+      "read_a": true,
+      "read_b": true,
+      "dependency": true,
+      "saved_exactly_once": true,
+      "never_published": true,
+      "draft_screenshot": true,
+      "all_nodes_complete": true
+    }
+  },
+  {
+    "name": "serial-first",
+    "workers": 1,
+    "exit_code": 0,
+    "wall_seconds": 17.906,
+    "scheduler_seconds": 16.31833189999452,
+    "status": {
+      "read_a": "verified",
+      "read_b": "verified"
+    },
+    "answers": {
+      "read_a": "stop [cobalt]",
+      "read_b": "stop [amber]"
+    },
+    "model_calls": 2,
+    "checks": {
+      "correct_answers": true
+    }
+  },
+  {
+    "name": "parallel-second",
+    "workers": 2,
+    "exit_code": 0,
+    "wall_seconds": 15.291,
+    "scheduler_seconds": 13.8732271999761,
+    "status": {
+      "read_a": "verified",
+      "read_b": "verified"
+    },
+    "answers": {
+      "read_a": "stop [The identifier is cobalt.]",
+      "read_b": "stop [amber]"
+    },
+    "model_calls": 2,
+    "checks": {
+      "correct_answers": true
+    }
+  },
+  {
+    "name": "parallel-first",
+    "workers": 2,
+    "exit_code": 0,
+    "wall_seconds": 13.03,
+    "scheduler_seconds": 11.63134930000524,
+    "status": {
+      "read_a": "verified",
+      "read_b": "verified"
+    },
+    "answers": {
+      "read_a": "stop [cobalt]",
+      "read_b": "stop [amber]"
+    },
+    "model_calls": 2,
+    "checks": {
+      "correct_answers": true
+    }
+  },
+  {
+    "name": "serial-second",
+    "workers": 1,
+    "exit_code": 0,
+    "wall_seconds": 18.772,
+    "scheduler_seconds": 17.290263400005642,
+    "status": {
+      "read_a": "verified",
+      "read_b": "verified"
+    },
+    "answers": {
+      "read_a": "stop [cobalt]",
+      "read_b": "stop [amber]"
+    },
+    "model_calls": 2,
+    "checks": {
+      "correct_answers": true
+    }
+  },
+  {
+    "name": "public-websites",
+    "workers": 2,
+    "exit_code": 1,
+    "wall_seconds": 16.871,
+    "scheduler_seconds": 15.231176000001142,
+    "status": {
+      "example": "verified",
+      "github": "failed"
+    },
+    "answers": {
+      "example": "stop [Heading: Example Domain\nCurrent URL: https://example.com/]"
+    },
+    "model_calls": 1,
+    "checks": {
+      "example_heading": true,
+      "repository_entry": false
+    }
+  }
+]

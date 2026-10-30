@@ -44,6 +44,7 @@ class Runtime:
         policy=None,
         screenshot_port: ScreenshotPort | None = None,
         telemetry=None,
+        completion_check=None,
     ):
         if (decision_port is None) == (policy is None):
             raise ValueError("Provide exactly one of decision_port or policy")
@@ -53,6 +54,7 @@ class Runtime:
         self.policy = policy
         self.screenshot_port = screenshot_port
         self._telemetry = telemetry or getattr(policy, "telemetry", None)
+        self.completion_check = completion_check
 
         self._active_frame: Frame | None = None
         self._active_state: TaskState | None = None
@@ -144,9 +146,14 @@ class Runtime:
             return "stop [Incomplete: focus changed before replacement]"
         if sequence["phase"] in {"select", "end"}:
             action = "press [Ctrl+A]" if sequence["phase"] == "select" else "press [Ctrl+End]"
+            sequence["phase"] = "clear" if sequence["phase"] == "select" else "type"
+        elif sequence["phase"] == "clear":
             sequence["phase"] = "type"
+            action = "press [Backspace]"
         else:
             state.data.pop("_input_sequence", None)
+            if sequence.get('mode') == 'replace':
+                state.arm_replace(node.field_key)
             action = f'type [{node.element_id}] [{sequence["text"]}] [{sequence["enter"]}]'
         selected, _ = self._finalize(frame, state, action)
         return selected
@@ -155,16 +162,23 @@ class Runtime:
                   input_mode: str | None = None) -> tuple[str, bool]:
         action = action.strip()
         plan = operations.plan(action, frame, state)
+        if plan.kind == "stop" and self.completion_check is not None:
+            if not self.completion_check(frame, state):
+                state.set_last_result("blocked", "browser completion condition is not satisfied", step=frame.step)
+                return "press [Tab]", False
+            # A guarded browser draft may complete without persistence. This
+            # callback must never release an unresolved business submission.
+            if not state.pending_actions():
+                state.mark_resolved()
         blocked = operations.guard(plan, frame, state, telemetry=self._telemetry)
         if blocked is not None:
             return blocked.action, False
         typed = re.fullmatch(r"type \[(\d+)\] \[(.*)\] \[([01])\]", action, re.S)
-        if typed and (input_mode == "append" or
-                      input_mode == "replace" and not state.replace_armed(plan.field_key)):
+        if typed and input_mode in {"append", "replace"}:
             # One primitive now; subsequent callbacks supply fresh IDs/observations.
             state.data["_input_sequence"] = {
                 "field_key": plan.field_key, "url": frame.url,
-                "text": typed.group(2), "enter": typed.group(3),
+                "text": typed.group(2), "enter": typed.group(3), "mode":input_mode,
                 "phase": "end" if input_mode == "append" else "select",
             }
             if input_mode == "append":

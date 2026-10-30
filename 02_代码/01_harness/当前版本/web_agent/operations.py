@@ -243,7 +243,7 @@ def plan(action: str, frame: Frame, state: TaskState) -> Plan:
             expected = baseline + value
         else:
             expected = None
-        if node.role == "searchbox" or "search" in node.name.casefold():
+        if node.role == "searchbox" or "search" in node.name.casefold() or "搜索" in node.name:
             return Plan(text, "search", node=node, field_key=key, value=value)
         if enter:
             return Plan(
@@ -277,7 +277,7 @@ def plan(action: str, frame: Frame, state: TaskState) -> Plan:
             focus = tree.focused_field()
             role = focus.role if focus is not None else None
             if role == "searchbox" or (
-                focus is not None and "search" in focus.name.casefold()
+                focus is not None and ("search" in focus.name.casefold() or "搜索" in focus.name)
             ):
                 return Plan(text, "search", node=focus, field_key=focus.field_key,
                             value=tree.control_value(focus) or "", reason="search submit")
