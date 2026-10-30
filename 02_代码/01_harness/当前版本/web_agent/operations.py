@@ -482,6 +482,13 @@ def guard(plan: Plan, frame: Frame, state: TaskState, *, telemetry=None) -> Bloc
 
 def _block(frame: Frame, action: str, state: TaskState, reason: str, *, telemetry=None) -> Block:
     state.set_last_result("blocked", reason, step=frame.step)
+    # A rejected proposal is not progress. Stop repeated guard fallbacks instead
+    # of moving focus with Tab until the global step ceiling is exhausted.
+    pending = state.pending_for(frame.tab)
+    key = f'{pending.pending_id if pending is not None else "none"}:{reason}'
+    previous = state.data.get('_guard_block_streak', {})
+    count = previous.get('count', 0) + 1 if previous.get('key') == key else 1
+    state.data['_guard_block_streak'] = {'key': key, 'count': count}
     if telemetry is not None:
         telemetry.write_guard(
             step=frame.step,
@@ -492,7 +499,9 @@ def _block(frame: Frame, action: str, state: TaskState, reason: str, *, telemetr
             allowed=False,
             reason=reason,
         )
-    return Block(_SAFE_READ, reason, reason)
+    fallback = ('stop [Incomplete: repeated local guard rejection; effect remains unconfirmed]'
+                if count >= 3 else _SAFE_READ)
+    return Block(fallback, reason, reason)
 
 
 def resolve(frame: Frame, state: TaskState, *, telemetry=None) -> dict[str, Any] | None:

@@ -18,6 +18,19 @@ def frame(text, step=0, url='https://example.test/post/1'):
 
 
 class OperationsTests(unittest.TestCase):
+    def test_repeated_unknown_commit_stop_does_not_tab_forever(self):
+        state = self.submit()
+        runtime = Runtime(decision_port=lambda c,s:'stop [done]')
+        outputs=[]
+        for i in range(1,4):
+            if '_guard_block_streak' in state.data:
+                state.data['_guard_block_streak']=json.loads(json.dumps(state.data['_guard_block_streak']))
+            outputs.append(runtime.advance(frame("[2] StaticText 'Unrelated result'",i),state)['action'])
+        self.assertEqual(outputs[:2],['press [Tab]','press [Tab]'])
+        self.assertTrue(outputs[2].startswith('stop [Incomplete: repeated local guard'))
+        self.assertIsNotNone(state.pending_for(0))
+        self.assertFalse(operations.stop_allowed(state))
+
     def submit(self, text='NEW'):
         state = TaskState()
         before = frame("[1] button 'Save'")
