@@ -157,9 +157,10 @@ class OperationsTests(unittest.TestCase):
         state = TaskState()
         self.assertEqual(runtime.advance(frame("[1] textbox 'Bio' value: 'OLD'"),state)['action'], 'click [1]')
         self.assertEqual(runtime.advance(frame("[4] textbox 'Bio' value: 'OLD'",1),state)['action'], 'press [Ctrl+A]')
-        self.assertEqual(runtime.advance(frame("[9] textbox 'Bio' value: 'OLD'",2),state)['action'], 'type [9] [NEW] [0]')
+        self.assertEqual(runtime.advance(frame("[9] textbox 'Bio' value: 'OLD'",2),state)['action'], 'press [Backspace]')
+        self.assertEqual(runtime.advance(frame("[11] textbox 'Bio' value: ''",3),state)['action'], 'type [11] [NEW] [0]')
         self.assertEqual(len(calls),1)
-        operations.resolve(frame("[11] textbox 'Bio' value: 'NEW'",3),state)
+        operations.resolve(frame("[13] textbox 'Bio' value: 'NEW'",4),state)
         self.assertEqual(state.last_result['status'],'changed')
         self.assertFalse(operations.stop_allowed(state))
 

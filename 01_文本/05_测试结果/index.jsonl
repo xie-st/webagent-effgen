@@ -47,3 +47,5 @@
 {"run_id": "20261030T162359_192238Z_当前版本_e25ca621", "harness": "当前版本", "kind": "infrastructure", "path": "runs/20261030T162359_192238Z_当前版本_e25ca621"}
 {"run_id": "20261030T162848_535235Z_当前版本_78eb391c", "harness": "当前版本", "kind": "infrastructure", "path": "runs/20261030T162848_535235Z_当前版本_78eb391c"}
 {"run_id": "20261030T163127_952243Z_当前版本_15c86c14", "harness": "当前版本", "kind": "infrastructure", "path": "runs/20261030T163127_952243Z_当前版本_15c86c14"}
+{"run_id": "20261030T174550_607260Z_当前版本_56cad900", "harness": "当前版本", "kind": "official", "path": "runs/20261030T174550_607260Z_当前版本_56cad900"}
+{"run_id": "20261030T175341_998275Z_当前版本_67f9c8b0", "harness": "当前版本", "kind": "infrastructure", "path": "runs/20261030T175341_998275Z_当前版本_67f9c8b0"}
