@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "run_id": "one",
+  "started_at": "2026-10-30T01:24:29.462+00:00",
+  "ended_at": "2026-10-30T01:24:29.463+00:00",
+  "end_reason": "reset",
+  "model_calls": 1,
+  "by_purpose": {
+    "decision": 1
+  },
+  "successful": 1,
+  "failed": 0,
+  "prompt_tokens": null,
+  "completion_tokens": null,
+  "total_tokens": null,
+  "cost_usd": null
+}

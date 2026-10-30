@@ -69,6 +69,7 @@ def build_context(frame: Frame, state: TaskState) -> Context:
         memory=state.memory,
         recovery_feedback=recovery_feedback,
         remaining_seconds=state.remaining_seconds,
+        deadline=frame.deadline,
         capabilities=frame.capabilities,
         previous_receipt=frame.previous_receipt,
         unchanged_count=unchanged_count,

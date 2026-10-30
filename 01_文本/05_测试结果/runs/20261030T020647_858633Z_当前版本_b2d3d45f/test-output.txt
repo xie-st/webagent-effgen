@@ -1,0 +1,37 @@
+test_invalid_current_id_is_corrected (test_m0.BehaviorTests.test_invalid_current_id_is_corrected) ... ok
+test_legacy_decide_signature_still_uses_runtime_state (test_m0.BehaviorTests.test_legacy_decide_signature_still_uses_runtime_state) ... ok
+test_memory_over_limit_is_rejected_then_corrected (test_m0.BehaviorTests.test_memory_over_limit_is_rejected_then_corrected) ... ok
+test_repeated_bad_reply_rotates_baseline_recovery_actions (test_m0.BehaviorTests.test_repeated_bad_reply_rotates_baseline_recovery_actions) ... ok
+test_same_origin_goto_and_empty_stop_are_legal (test_m0.BehaviorTests.test_same_origin_goto_and_empty_stop_are_legal) ... ok
+test_official_defaults_declare_limited_capabilities_and_empty_receipt (test_m0.FrameMappingTests.test_official_defaults_declare_limited_capabilities_and_empty_receipt) ... ok
+test_official_request_maps_all_frame_fields (test_m0.FrameMappingTests.test_official_request_maps_all_frame_fields) ... ok
+test_context_keeps_current_ax_ids_bounded_history_and_receipt (test_m0.RuntimeTests.test_context_keeps_current_ax_ids_bounded_history_and_receipt) ... ok
+test_custom_port_stale_action_is_rejected_before_memory_merge (test_m0.RuntimeTests.test_custom_port_stale_action_is_rejected_before_memory_merge) ... ok
+test_public_entry_uses_injected_runtime_and_frame (test_m0.RuntimeTests.test_public_entry_uses_injected_runtime_and_frame) ... ok
+test_valid_decision_calls_model_once (test_m0.RuntimeTests.test_valid_decision_calls_model_once) ... ok
+test_close_clears_identity_and_requires_reset (test_m0.StateTests.test_close_clears_identity_and_requires_reset) ... ok
+test_memory_continues_until_reset (test_m0.StateTests.test_memory_continues_until_reset) ... ok
+test_expired_deadline_does_not_reach_sdk_and_is_logged (test_m1a.DecisionTests.test_expired_deadline_does_not_reach_sdk_and_is_logged) ... ok
+test_invalid_output_correction_is_a_separate_logged_call (test_m1a.DecisionTests.test_invalid_output_correction_is_a_separate_logged_call) ... ok
+test_log_step_uses_platform_step_consistently (test_m1a.DecisionTests.test_log_step_uses_platform_step_consistently) ... ok
+test_observation_memory_continues_across_steps (test_m1a.DecisionTests.test_observation_memory_continues_across_steps) ... ok
+test_stop_is_terminal_and_sets_end_reason (test_m1a.DecisionTests.test_stop_is_terminal_and_sets_end_reason) ... ok
+test_valid_decision_exactly_one_model_call (test_m1a.DecisionTests.test_valid_decision_exactly_one_model_call) ... ok
+test_real_effgen_version_and_disabled_features (test_m1a.EffGenWiringTests.test_real_effgen_version_and_disabled_features) ... ok
+test_deadline_is_checked_before_the_sdk (test_m1a.ModelPortTests.test_deadline_is_checked_before_the_sdk) ... ok
+test_only_role_and_string_content_reach_sdk (test_m1a.ModelPortTests.test_only_role_and_string_content_reach_sdk) ... ok
+test_bad_output_is_corrected_before_action (test_version.ProtocolTests.test_bad_output_is_corrected_before_action) ... ok
+test_current_ids_and_type_syntax (test_version.ProtocolTests.test_current_ids_and_type_syntax) ... ok
+test_one_action_and_task_memory (test_version.ProtocolTests.test_one_action_and_task_memory) ... ok
+test_sdk_spawn_model_binding_and_close (test_version.ProtocolTests.test_sdk_spawn_model_binding_and_close) ... ok
+test_unsupported_tabs_and_cross_origin_are_rejected (test_version.ProtocolTests.test_unsupported_tabs_and_cross_origin_are_rejected) ... ok
+test_defaults_and_path_escape (test_version.WorkspaceTests.test_defaults_and_path_escape) ... ok
+test_independent_copy_runs_environment_check (test_version.WorkspaceTests.test_independent_copy_runs_environment_check)
+A copied version starts with only its own files plus installed deps. ... ok
+test_official_sdk_tampering_is_detected (test_version.WorkspaceTests.test_official_sdk_tampering_is_detected) ... ok
+test_snapshots_survive_version_changes (test_version.WorkspaceTests.test_snapshots_survive_version_changes) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 9.756s
+
+OK

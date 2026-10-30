@@ -66,6 +66,14 @@ def python_env(harness, sdk):
     return env
 
 
+def run_env(harness, sdk, run):
+    """Environment shared by the launcher and the spawned SDK task process."""
+    env = python_env(harness, sdk)
+    env.pop("WEBAGENT_TELEMETRY_PATH", None)
+    env["WEBAGENT_RUN_DIR"] = str(run.resolve())
+    return env
+
+
 def git_state(root):
     def git(*args):
         result = subprocess.run(["git", "-C", str(root), *args], capture_output=True, text=True)
@@ -108,6 +116,7 @@ def new_run(kind="official", root=ROOT):
         "sdk_archive_sha256": read_json(sdk / "SOURCE.json")["archive_sha256"],
         "sdk_sha256": source_hashes(inside(snapshot / "harness", config["sdk_root"])),
         "launcher_sha256": hashlib.sha256((root / "run.py").read_bytes()).hexdigest(),
+        "telemetry_path": "telemetry.jsonl",
         "official_score": None, "platform_run_ids": [],
     }
     write_json(run / "run.json", metadata)
@@ -131,9 +140,69 @@ def finish_run(run, metadata, status, exit_code):
     write_json(run / "run.json", metadata)
 
 
+def telemetry_summary(run):
+    """Read append-only telemetry into an aggregate handoff summary."""
+    path = run / "telemetry.jsonl"
+    if not path.is_file():
+        return {
+            "path": None, "run_ids": [], "run_count": 0, "model_calls": 0,
+            "rejected_calls": 0, "completed_calls": 0, "incomplete_calls": 0,
+            "by_purpose": {}, "successful": 0, "failed": 0,
+            "end_reason": None, "end_reasons": [],
+            "prompt_tokens": None, "completion_tokens": None,
+            "total_tokens": None, "cost_usd": None,
+        }
+    calls, rejected, purposes, end_reasons = 0, 0, {}, []
+    successful, failed, run_ids = 0, 0, set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            event = json.loads(line)
+        except ValueError:
+            continue
+        if event.get("run_id"):
+            run_ids.add(str(event["run_id"]))
+        kind = event.get("event")
+        if kind == "model_call_start":
+            calls += 1
+            purpose = event.get("purpose") or "unknown"
+            purposes[purpose] = purposes.get(purpose, 0) + 1
+        elif kind == "model_call_rejected":
+            rejected += 1
+        elif kind == "model_call_end":
+            successful += 1
+        elif kind == "model_call_failed":
+            failed += 1
+        elif kind == "run_end":
+            end_reasons.append(event.get("end_reason"))
+    summary = {
+        "path": path.relative_to(run).as_posix(),
+        "run_ids": sorted(run_ids),
+        "run_count": len(run_ids),
+        "model_calls": calls,
+        "rejected_calls": rejected,
+        "completed_calls": successful + failed,
+        "incomplete_calls": max(0, calls - successful - failed),
+        "by_purpose": purposes,
+        "successful": successful,
+        "failed": failed,
+        "end_reason": end_reasons[-1] if len(end_reasons) == 1 else None,
+        "end_reasons": end_reasons,
+        "prompt_tokens": None,
+        "completion_tokens": None,
+        "total_tokens": None,
+        "cost_usd": None,
+    }
+    write_json(run / "telemetry-summary.json", summary)
+    return summary
+
+
 def check():
     config, version, harness, sdk = layout()
-    code = ("import pathlib,my_agent,agent_logic,third_party_agent; "
+    code = ("from web_agent.environment import check as check_environment; "
+            "check_environment(); "
+            "import pathlib,my_agent,agent_logic,third_party_agent; "
             "print('harness=' + str(pathlib.Path(my_agent.__file__).parent)); "
             "print('sdk=' + str(pathlib.Path(third_party_agent.__file__).parent)); "
             "assert callable(my_agent.MyAgent); assert callable(agent_logic.decide)")
@@ -181,19 +250,26 @@ def main():
         # Test the selected frozen harness and SDK, not a module cached by the caller.
         frozen = run / "snapshot/harness"
         frozen_sdk = layout(frozen)[3]
-        env = python_env(frozen, frozen_sdk)
+        env = run_env(frozen, frozen_sdk, run)
         env["WEBAGENT_TEST_VERSION"] = str(run / "snapshot/harness")
         result = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", str(tests), "-v"],
                                 cwd=run, env=env, capture_output=True, text=True, encoding="utf-8")
         output = result.stdout + result.stderr
         (run / "test-output.txt").write_text(output, encoding="utf-8")
         print(output, end="")
+        summary = telemetry_summary(run)
+        metadata["telemetry"] = summary
         finish_run(run, metadata, "passed" if result.returncode == 0 else "failed", result.returncode)
+        purpose_text = ", ".join(f"{k}={v}" for k, v in summary["by_purpose"].items()) or "无"
         (run / "result.md").write_text(
             "# 工程检查\n\n" + ("通过" if result.returncode == 0 else "失败") +
             "；具体用例见 test-output.txt。\n\n测试版本：" + metadata["harness"] +
-            "。验证版本定位、导入、SDK 完整性、单步协议、状态隔离与结果快照。"
-            "使用模拟模型响应，未连接平台或运行真实模型，官方成绩未填写。\n", encoding="utf-8")
+            "。验证真实 EffGen v1.3.0 接线、单动作、状态延续、SDK 子进程、日志与结果快照。"
+            "使用模拟 SDK 响应，未连接平台或运行真实模型，官方成绩未填写。\n\n"
+            f"遥测：{summary['path'] or '未生成'}；模型调用 {summary['model_calls']} 次"
+            f"（{purpose_text}）；调用前拒绝 {summary['rejected_calls']} 次；"
+            f"运行结束原因：{', '.join(summary['end_reasons']) or '未记录'}。\n",
+            encoding="utf-8")
         print(run)
         return result.returncode
     check()
@@ -209,11 +285,12 @@ def main():
             [sys.executable, "-m", "third_party_agent", "connect", "--connection-file",
              str(connection_path()), "--agent", "my_agent:MyAgent"],
             cwd=run / "snapshot/harness",
-            env=python_env(run / "snapshot/harness", layout(run / "snapshot/harness")[3]))
+            env=run_env(run / "snapshot/harness", layout(run / "snapshot/harness")[3], run))
         status = "client_closed" if exit_code == 0 else "client_failed"
     except KeyboardInterrupt:
         status, exit_code = "client_interrupted", 130
     finally:
+        metadata["telemetry"] = telemetry_summary(run)
         finish_run(run, metadata, status, exit_code)
     return exit_code
 

@@ -1,1 +1,5 @@
-# Python >= 3.11. v1 and its bundled official SDK use only the standard library.
+# Python 3.11+; install the fully pinned set with:
+#   python -m pip install -r requirements.lock
+# effgen-1.3.0-py3-none-any.whl sha256:
+#   474a7fcf952f87995c19cfe261167d713ace9f9d8fc0773d134c42ea49d9d5e5
+effgen==1.3.0

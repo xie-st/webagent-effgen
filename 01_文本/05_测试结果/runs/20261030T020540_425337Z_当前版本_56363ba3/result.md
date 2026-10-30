@@ -21,3 +21,5 @@
 | 兼容入口连续两普通步+stop | 三步均step0/call_seq1/run_id=legacy；逐步run_end为decide、decide、stop，未通过 |
 
 剩余两项的验收要求：同一注入端口在每次reset后汇入当前任务遥测；兼容入口必须把同一state内连续观察视为一个任务，唯一run_id，步骤0/1/2、调用序号1/2/3，最终stop只产生一次run_end且累计3调用。新任务使用新state时身份和计数重置。不得通过将每次decide声明为独立run来规避跨观察日志。
+
+补充亲验：假SDK首空响应、随后有效响应，真实EffGen自动重试。SDK实际2次，model_call_start=2、model_call_end=2，summary_model_calls=2，返回一条click动作；框架内部额外调用未漏记。结果见本机 raw/coordinator-framework-retry.json。

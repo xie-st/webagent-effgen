@@ -88,6 +88,7 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(calls[0][0].task, "Save profile")
         self.assertIs(calls[0][1], agent.state)
         self.assertIs(calls[1][1], agent.state)
+        agent.close()
 
     def test_context_keeps_current_ax_ids_bounded_history_and_receipt(self):
         source = request("context")
@@ -172,6 +173,7 @@ class StateTests(unittest.TestCase):
             reset_context = json.loads(generate.call_args_list[2].args[0][1]["content"])
             self.assertEqual(reset_context["memory"], "")
             self.assertEqual(agent.state["memory"], "second fact")
+            agent.close()
 
     def test_close_clears_identity_and_requires_reset(self):
         agent = MyAgent()
@@ -187,6 +189,7 @@ class StateTests(unittest.TestCase):
             agent.reset({"run_id": "close"})
             self.assertEqual(agent.state, {})
             self.assertEqual(agent.step(request("close")), {"action": "click [17]"})
+            agent.close()
 
 
 class BehaviorTests(unittest.TestCase):
@@ -206,8 +209,9 @@ class BehaviorTests(unittest.TestCase):
 
         self.assertEqual(generate.call_count, 2)
         correction = generate.call_args_list[1].args[0]
-        self.assertEqual(len(correction), 4)
+        self.assertEqual([message["role"] for message in correction], ["system", "user"])
         self.assertIn("Invalid output", correction[-1]["content"])
+        agent.close()
 
     def test_repeated_bad_reply_rotates_baseline_recovery_actions(self):
         agent = MyAgent()
@@ -220,6 +224,7 @@ class BehaviorTests(unittest.TestCase):
 
         self.assertEqual(generate.call_count, 4)
         self.assertEqual(agent.state["_recovery_count"], 2)
+        agent.close()
 
     def test_memory_over_limit_is_rejected_then_corrected(self):
         agent = MyAgent()
@@ -231,6 +236,7 @@ class BehaviorTests(unittest.TestCase):
 
         self.assertEqual(generate.call_count, 2)
         self.assertEqual(agent.state["memory"], "usable")
+        agent.close()
 
     def test_legacy_decide_signature_still_uses_runtime_state(self):
         state = {}

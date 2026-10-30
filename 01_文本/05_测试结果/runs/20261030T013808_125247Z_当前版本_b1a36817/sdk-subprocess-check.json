@@ -1,0 +1,17 @@
+{
+  "result": {
+    "action": "click [17]"
+  },
+  "sdk_calls": 1,
+  "message_roles": [
+    "system",
+    "user"
+  ],
+  "request_has_model": false,
+  "request_has_temperature": false,
+  "telemetry_model_calls": 1,
+  "telemetry_request_id": "sdk-child-request",
+  "telemetry_purpose": "decision",
+  "telemetry_step": 0,
+  "run_end": "close"
+}

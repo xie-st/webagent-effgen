@@ -4,6 +4,8 @@ import json
 import os
 from pathlib import Path
 import shutil
+import subprocess
+import sys
 import tempfile
 import threading
 import time
@@ -52,6 +54,7 @@ class ProtocolTests(unittest.TestCase):
         self.assertEqual(agent.state, {})
         with self.assertRaises(ValueError):
             agent.step(self.request())
+        agent.close()
 
     def test_bad_output_is_corrected_before_action(self):
         agent = MyAgent()
@@ -61,6 +64,7 @@ class ProtocolTests(unittest.TestCase):
         with patch.object(agent_logic.model, "generate", side_effect=replies) as model:
             self.assertEqual(agent.step(self.request()), {"action": "click [17]"})
             self.assertEqual(model.call_count, 2)
+        agent.close()
 
     def test_sdk_spawn_model_binding_and_close(self):
         requests = []
@@ -82,23 +86,50 @@ class ProtocolTests(unittest.TestCase):
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
         process = None
-        try:
-            process = AgentProcess(MyAgent, "http://127.0.0.1:" + str(server.server_port),
-                                   "offline-test-token", "test-job")
-            process.reset({"run_id": "one", "execution_deadline": time.time() + 10})
-            self.assertEqual(process.step(self.request()), {"action": "click [17]"})
-            self.assertEqual(requests[0]["run_id"], "one")
-            self.assertEqual(requests[0]["job_id"], "test-job")
-            self.assertIn("messages", requests[0])
-            self.assertNotIn("model", requests[0])
-            self.assertNotIn("temperature", requests[0])
-        finally:
-            if process is not None:
-                process.close()
-            server.shutdown()
-            server.server_close()
-            thread.join(timeout=2)
+        with tempfile.TemporaryDirectory() as log_directory, patch.dict(
+            os.environ, {"WEBAGENT_RUN_DIR": log_directory}
+        ):
+            try:
+                process = AgentProcess(MyAgent, "http://127.0.0.1:" + str(server.server_port),
+                                       "offline-test-token", "test-job")
+                process.reset({"run_id": "one", "execution_deadline": time.time() + 10})
+                self.assertEqual(process.step(self.request()), {"action": "click [17]"})
+                self.assertEqual(requests[0]["run_id"], "one")
+                self.assertEqual(requests[0]["job_id"], "test-job")
+                self.assertIn("messages", requests[0])
+                self.assertNotIn("model", requests[0])
+                self.assertNotIn("temperature", requests[0])
+                self.assertNotIn("api_key", requests[0])
+                self.assertEqual([m["role"] for m in requests[0]["messages"]],
+                                 ["system", "user"])
+                self.assertTrue(all(isinstance(m["content"], str)
+                                    for m in requests[0]["messages"]))
+            finally:
+                if process is not None:
+                    process.close()
+                server.shutdown()
+                server.server_close()
+                thread.join(timeout=2)
+            records = [
+                json.loads(line)
+                for line in (Path(log_directory) / "telemetry.jsonl").read_text(
+                    encoding="utf-8"
+                ).splitlines()
+            ]
         self.assertFalse(process.process.is_alive())
+        calls = [record for record in records if record["event"] == "model_call_start"]
+        ends = [record for record in records if record["event"] == "model_call_end"]
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(len(ends), 1)
+        self.assertLess(records.index(calls[0]), records.index(ends[0]))
+        self.assertEqual(calls[0]["request_id"], None)
+        self.assertEqual(ends[0]["request_id"], "offline-test")
+        self.assertEqual(calls[0]["purpose"], "decision")
+        self.assertEqual(calls[0]["step"], 0)
+        self.assertEqual(calls[0]["run_id"], "one")
+        end = [record for record in records if record["event"] == "run_end"][-1]
+        self.assertEqual(end["model_calls"], 1)
+        self.assertEqual(end["end_reason"], "close")
 
 
 class WorkspaceTests(unittest.TestCase):
@@ -145,6 +176,26 @@ class WorkspaceTests(unittest.TestCase):
         index = (self.root / "results/index.jsonl").read_text(encoding="utf-8").splitlines()
         self.assertEqual(len(index), 2)
         self.assertEqual(workspace.read_json(first / "run.json")["status"], "prepared")
+
+    def test_independent_copy_runs_environment_check(self):
+        """A copied version starts with only its own files plus installed deps."""
+        env = os.environ.copy()
+        env.pop("WEBAGENT_PROJECT_ROOT", None)
+        env.pop("WEBAGENT_CONNECTION_FILE", None)
+        env.pop("WEBAGENT_RUN_DIR", None)
+        result = subprocess.run(
+            [sys.executable, str(self.root / "run.py"), "check"],
+            cwd=self.root,
+            env=env,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=120,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("PASS: environment", result.stdout)
+        self.assertIn("effgen=1.3.0", result.stdout)
+        self.assertIn("PASS: v1", result.stdout)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@
 
 平时在当前版本修改，沿用[开发方案](../../01_文本/06_开发框架/开发方案.md)的模块边界，按阶段验收。阶段结束并由用户决定保存后，在项目根执行 `python webagent.py new-version v2`，保存完整大版本；之后继续开发当前版本。
 
+以下 `python` 指已安装当前版本 `requirements.lock` 的解释器。本机使用 `.local/m1a-lock-venv/Scripts/python.exe`；环境建立与独立运行见[当前版本说明](当前版本/README.md)。
+
 在项目根运行：
 
 | 命令 | 用途 |

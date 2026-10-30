@@ -1,4 +1,4 @@
-"""M0 core skeleton: contracts, state, observation and runtime."""
+"""M1a core: contracts, state, observation, policy, model port and runtime."""
 from .contracts import Capabilities, Context, Frame
 from .runtime import Runtime
 from .state import TaskState

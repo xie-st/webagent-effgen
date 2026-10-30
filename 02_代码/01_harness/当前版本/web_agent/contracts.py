@@ -52,6 +52,7 @@ class Context:
     memory: str
     recovery_feedback: str
     remaining_seconds: float | None
+    deadline: float | None
     capabilities: Capabilities
     previous_receipt: Mapping[str, Any] | None
     unchanged_count: int

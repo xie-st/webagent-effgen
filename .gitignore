@@ -32,4 +32,4 @@
 **/.local/
 
 # Raw model and action telemetry stays local
-/01_文本/05_测试结果/**/telemetry.jsonl
+/01_文本/05_测试结果/**/*telemetry*.jsonl
