@@ -1,0 +1,33 @@
+{
+  "frozen_commit": "1f21d1501b4f994470c5d31d5272e76913d08385",
+  "official": true,
+  "total": 2,
+  "passed": 1,
+  "batches": [
+    "a80c87081a1085c66ef4666d9ec436a2",
+    "e4d0352c4751863d1886da2e835e08ce"
+  ],
+  "tasks": [
+    {
+      "task_id": 284,
+      "score": 0.0,
+      "steps": 12,
+      "finish_reason": "stop",
+      "model_calls": 9,
+      "execution_seconds": 64.456
+    },
+    {
+      "task_id": 731,
+      "score": 1.0,
+      "steps": 21,
+      "finish_reason": "stop",
+      "model_calls": 17,
+      "execution_seconds": 65.121
+    }
+  ],
+  "cost_complete": false,
+  "raw_sha256": {
+    "284-final.json": "1e11e3962458d38f5db34fae256b9ff07fe2896a0513348b2a0dbea8991f7064",
+    "731-final.json": "afc21745a4d7a2ff42667b2aff7a587245d86ed79bd13438743a804d7254e98a"
+  }
+}
