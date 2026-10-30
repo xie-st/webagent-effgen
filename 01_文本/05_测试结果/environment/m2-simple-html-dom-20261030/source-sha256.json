@@ -1,0 +1,30 @@
+[
+  {
+    "Path": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\my_agent.py",
+    "Hash": "EF468F874CD99C0EE053FA306664DD86F373B9CDC9D4AF58A5F645DD0253B9BF"
+  },
+  {
+    "Path": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\web_agent\\runtime.py",
+    "Hash": "DA6B8F3FEAF362C80C7667E5FD777D4979E7B85A9BC04D8E02AD83DD49B3FCB5"
+  },
+  {
+    "Path": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\web_agent\\policy.py",
+    "Hash": "294A12CD0A8F8506C19A1249F0A729D6AD5B7964004AB26F648004ABF9930986"
+  },
+  {
+    "Path": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\web_agent\\recover.py",
+    "Hash": "04EBE3944CDACBC381B7B71C3B41E3E06DE80F6B651CB5ED0F545EB57EA371F5"
+  },
+  {
+    "Path": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\web_agent\\page_sources.py",
+    "Hash": "C1BB5D7347E0E5BB3704C7D00B1F3D18F46D2A64F2A4BD87BF8AD41FB3717C79"
+  },
+  {
+    "Path": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\web_agent\\contracts.py",
+    "Hash": "62536AA774FC6DE519D362B6B26E3374C531E8C23D3CD6E2CCEA9140D987F6EB"
+  },
+  {
+    "Path": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\web_agent\\observe.py",
+    "Hash": "6997D2871FE51EDB0B5B02820CB94410C3085A707F0DB1BAC34A5ADA4157A3AD"
+  }
+]

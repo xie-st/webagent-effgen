@@ -166,10 +166,12 @@ class SdkUpgradeTests(unittest.TestCase):
         source = json.loads((current / "sdk/SOURCE.json").read_text(encoding="utf-8"))
         self.assertEqual(
             source["archive_sha256"],
-            "23c08362f37a12a437f93dfe86a3ab46364cff393af9c46263b24a99c92276ca",
+            "ec1a6697656d5e1b6ba328ea4c69601a6c6e82ab9e63f428f23db71afa16feb4",
         )
         self.assertTrue(callable(sdk_browser.get_screenshot))
         self.assertTrue(callable(sdk_browser.save_screenshot))
+        self.assertTrue(callable(sdk_browser.get_html))
+        self.assertTrue(callable(sdk_browser.get_dom))
         for relative, expected in source["files"].items():
             actual = hashlib.sha256((current / "sdk" / relative).read_bytes()).hexdigest()
             self.assertEqual(actual, expected, relative)

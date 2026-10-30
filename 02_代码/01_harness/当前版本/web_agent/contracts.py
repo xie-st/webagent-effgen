@@ -351,6 +351,8 @@ class Frame:
     action_history: tuple[str, ...] = ()
     screenshot: ScreenshotReference | None = None
 
+    page_details: str = ""
+
     def as_observation(self) -> dict[str, Any]:
         return {"type": "accessibility_tree", "url": self.url, "text": self.ax}
 
@@ -395,3 +397,5 @@ class Context:
     write_guard: str | None = None
     verification_feedback: str = ""
     goal_progress: Mapping[str, int] = dataclass_field(default_factory=dict)
+    history_evidence: tuple[Mapping[str, Any], ...] = ()
+    page_details: str = ""

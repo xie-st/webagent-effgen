@@ -96,4 +96,5 @@ def build_context(frame: Frame, state: TaskState) -> Context:
         ),
         verification_feedback=m2_feedback,
         goal_progress=progress(state),
+        page_details=frame.page_details,
     )

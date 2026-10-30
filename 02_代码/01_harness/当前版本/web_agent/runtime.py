@@ -22,7 +22,7 @@ from .state import MAX_MEMORY, TaskState
 DecisionPort = Callable[[Context, TaskState], str | Mapping[str, Any]]
 
 # Bound repairs of one observation, not the number of task/browser steps.
-MAX_DECISION_CORRECTIONS = 2
+MAX_DECISION_CORRECTIONS = 1
 
 
 class Runtime:
@@ -48,6 +48,7 @@ class Runtime:
         self._active_frame: Frame | None = None
         self._active_state: TaskState | None = None
         self._verification_screenshot_done = False
+        self._decision_checks = None
 
     def advance(
         self,
@@ -63,9 +64,15 @@ class Runtime:
         task_state.invalidate_screenshot(frame)
         task_state.observe_identity(frame)
         verify.ensure_goals(frame, task_state, telemetry=self._telemetry)
+        if (task_state.remaining_seconds is not None
+                and 0 < task_state.remaining_seconds < 5):
+            # This is explicitly an incomplete finish, not a successful stop.
+            # Leave time for transport and the platform's final-state grading.
+            return {"action": "stop [Incomplete: execution time is nearly exhausted]"}
         self._active_frame = frame
         self._active_state = task_state
         self._verification_screenshot_done = False
+        self._decision_checks = None
         if screenshot_reason is not None:
             # Explicit demand only: ordinary decisions keep the text-only path
             # and never download a PNG.
@@ -78,11 +85,14 @@ class Runtime:
                     task_state,
                     semantic_verify=self._semantic_verify,
                     telemetry=self._telemetry,
-                    screenshot_request=lambda: self._request_verification_screenshot(
+                    screenshot_request=(lambda: self._request_verification_screenshot(
                         frame, task_state
-                    ),
+                    )) if hasattr(self.policy, "verify") else None,
                 )
             context = observe.build_context(frame, task_state)
+            context = replace(context, history_evidence=tuple(
+                verify.history_observations(frame, task_state)
+            ))
             if self.policy is None:
                 proposal = self.decision_port(context, task_state)
                 action, memory = _unpack(proposal)
@@ -112,6 +122,11 @@ class Runtime:
             self._active_state = None
 
     def _accept_action(self, frame: Frame, state: TaskState, action: str) -> None:
+        # The normal decision may also settle the previous write. Reuse that
+        # answer; never ask the default policy to run a second model judge.
+        if self._decision_checks is not None and state.pending_for(frame.tab) is not None:
+            verify.resolve_pending(frame, state, semantic_verify=self._semantic_verify,
+                                   telemetry=self._telemetry)
         recover.guard_action(frame, state, action, telemetry=self._telemetry)
         if action.startswith("stop ["):
             verify.assert_stop(
@@ -119,9 +134,9 @@ class Runtime:
                 state,
                 semantic_verify=self._semantic_verify,
                 telemetry=self._telemetry,
-                screenshot_request=lambda: self._request_verification_screenshot(
+                screenshot_request=(lambda: self._request_verification_screenshot(
                     frame, state, reason="verify"
-                ),
+                )) if hasattr(self.policy, "verify") else None,
             )
         recover.register_action(frame, state, action, telemetry=self._telemetry)
 
@@ -130,13 +145,15 @@ class Runtime:
         context: Context,
         state: TaskState,
         frame: Frame,
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         invalid_outputs: set[str] = set()
         corrections = 0
         raw = self.policy.generate(context, state)
         while True:
             try:
+                self._decision_checks = None
                 decision = _parse_decision(raw, frame.as_observation(), context, state)
+                self._decision_checks = decision.pop("checks", None)
                 self._accept_action(frame, state, decision["action"])
                 return decision
             except (ValueError, TypeError) as exc:
@@ -163,6 +180,12 @@ class Runtime:
         state: TaskState,
         mode: str,
     ) -> dict[str, Any] | None:
+        if self._decision_checks is not None:
+            return verify.parse_verification(
+                json.dumps({"checks": self._decision_checks}), frame, state, mode=mode
+            )
+        # Compatibility for injected local scripted policies. EffGenPolicy
+        # intentionally has no verify method or separate verification call.
         if self.policy is None or not hasattr(self.policy, "verify"):
             return None
         context = observe.build_context(frame, state)
@@ -229,7 +252,7 @@ def _parse_decision(
     observation: Mapping[str, Any],
     context: Context,
     state: TaskState,
-) -> dict[str, str]:
+) -> dict[str, Any]:
     if not isinstance(raw, str):
         raise ValueError("Decision output must be a string")
     text = raw.strip()
@@ -241,7 +264,7 @@ def _parse_decision(
     if (
         not isinstance(result, dict)
         or "action" not in result
-        or set(result) - {"action", "memory"}
+        or set(result) - {"action", "memory", "checks"}
     ):
         raise ValueError("Return action and optional memory; put the ID inside the action string")
     action = validate_action(result["action"], observation)
@@ -264,6 +287,10 @@ def _parse_decision(
     decision = {"action": action}
     if memory is not None:
         decision["memory"] = memory
+    if "checks" in result:
+        if not isinstance(result["checks"], list):
+            raise ValueError("checks must be a list of current-page evidence")
+        decision["checks"] = result["checks"]
     return decision
 
 

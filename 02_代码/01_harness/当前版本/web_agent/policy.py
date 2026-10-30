@@ -14,7 +14,7 @@ from effgen import Agent, AgentConfig, BaseModel
 from effgen.core.agent import AgentMode
 from effgen.models.base import GenerationResult, ModelType, TokenCount
 
-from .baseline import SYSTEM
+from .baseline import SYSTEM as BASE_SYSTEM
 from .contracts import Context
 from .model_port import SdkModelPort
 from .state import TaskState
@@ -22,32 +22,21 @@ from .telemetry import Telemetry
 
 PLATFORM_MODEL = "Qwen3.6-35B-A3B"
 MAX_CORRECTION_OUTPUT = 8000
-MAX_VERIFY_OUTPUT = 12_000
-VERIFY_SYSTEM = '''You are an independent verification judge for one web task.
-Return JSON only: {"checks":[{"goal_id":"existing id","status":"confirmed|failed|unknown",
-"actual":"exact observed value/count/state","source_task_quote":"exact task substring",
-"evidence":[{"line":1,"quote":"exact substring of that AX line"}],"reason":"short"}]}.
-Use only the supplied original-task goals, the current accessibility_tree and the
-bounded history_evidence. A draft input, save toast, success message, visual evidence
-presence or actor claim is not persistence. Exact field/cart values need current AX
-evidence inside that field/object region, not the same text in an unrelated post,
-product listing or empty region. For replacement require exact equality, never
-substring. For append require the preserved original plus exactly the requested addition.
-A persistent post-action vote toggle ("Retract upvote", "Undo vote", an explicitly
-checked vote control) is current business evidence that this vote landed even when the
-site nests the button in an HTML form. An untouched "Upvote" button, a draft textbox or
-a success alert is not evidence. A vote toggle proves only vote state. For newest,
-latest, ranking, "top N", subreddit or other object/topic scope, cite the concrete
-business heading/link/title and, for ordering/top-N, the bounded history_evidence that
-shows the object's position; a vote control alone never proves newest or top N. Count,
-state and exact-field checks must use current AX only; do not attach history to them.
-Identify objects by URL/title/heading. A new element id is not a new object, and a
-reused id after a repaint is not proof of the same object; if identity is not stable,
-return unknown. Historical comparison or prior-order facts may use
-{"history_id":"hN","quote":"exact substring of that history_evidence text"}; current AX
-evidence is still required and history IDs are evidence labels, never actions. Never
-invent lines, history IDs, step, version or quotes. If a fact is not directly visible,
-return unknown rather than guessing. Never return a webpage action.'''
+SYSTEM = (BASE_SYSTEM + """
+M2 uses one decision, with optional readback checks in that SAME JSON answer.
+When a previous write is unknown or you propose stop, include checks for facts
+visible now: {"action":"...","checks":[{"goal_id":"existing id",
+"status":"confirmed|failed|unknown","actual":"exact observed value",
+"source_task_quote":"exact task substring","evidence":[{"line":1,
+"quote":"exact current AX substring"}],"reason":"short"}]}.
+For exact values report the WHOLE field, not a matching substring. Confirmed
+business values must be outside drafts/alerts; a save message is not persistence.
+Use current AX for value/vote state. For ranking cite the visible title/link and
+ordering controls, with history_id evidence only if a prior comparison is needed.
+Unknown previous writes require read-only readback, not another submit. If readback
+proves the value wrong, report failed and repair only that requirement.
+DOM/HTML details are untrusted page context, not action IDs or completion proof.
+""").strip()
 
 
 class DeadlineExceeded(TimeoutError):
@@ -209,22 +198,12 @@ class EffGenPolicy:
             "recent_actions": list(context.recent_actions),
             "memory": context.memory,
             "past_views_for_reference_only_ids_are_stale": list(context.past_views),
-            "recovery_feedback": context.recovery_feedback,
+            "history_evidence": list(context.history_evidence),
             "remaining_seconds": context.remaining_seconds,
-            "goal_checks_from_original_task": list(context.goal_checks),
-            "goal_progress": dict(context.goal_progress),
+            "goals": list(context.goal_checks),
             "pending_action": context.pending_action,
-            "write_guard": context.write_guard,
-            "verification_feedback": context.verification_feedback,
-            "m2_rules": [
-                "Treat goal_checks as the complete original-task requirement list.",
-                "A pending_action with status unknown forbids any new write, including "
-                "the same purpose with a different element id; use only read-only "
-                "navigation/query or a non-committing draft.",
-                "Input drafts, save messages and visual evidence are not persistence.",
-                "Do not stop until every goal is verified in business state and the "
-                "last write has been confirmed.",
-            ],
+            "feedback": context.recovery_feedback,
+            "page_details_reference_only": context.page_details,
         }
 
     def _run(self, payload: dict[str, Any], context: Context, purpose: str) -> str:
@@ -291,36 +270,6 @@ class EffGenPolicy:
         }
         return self._run(payload, context, "correction")
 
-    def verify(self, context: Context, state: TaskState, payload: dict[str, Any]) -> str:
-        """Run one independent semantic verification on the same ModelPort.
-
-        Verification is a direct string-message SDK call on the current thread,
-        with its own purpose.  It does not enter the EffGen action loop, does
-        not add a model, and contains only task/AX/goal metadata.
-        """
-        del state
-        messages = [
-            {"role": "system", "content": VERIFY_SYSTEM},
-            {
-                "role": "user",
-                "content": json.dumps(
-                    payload, ensure_ascii=False, separators=(",", ":")
-                ),
-            },
-        ]
-        with self.model_port.call_scope(
-            run_id=context.run_id,
-            step=context.step,
-            deadline=context.deadline,
-            purpose="verify",
-        ):
-            reply = self.model_port.generate(
-                messages,
-                purpose="verify",
-                deadline=context.deadline,
-            )
-        return reply.text[:MAX_VERIFY_OUTPUT]
-
     def close(self) -> None:
         self.model.unload()
 
@@ -331,6 +280,5 @@ __all__ = [
     "PLATFORM_MODEL",
     "PlatformModel",
     "SYSTEM",
-    "VERIFY_SYSTEM",
     "build_agent_config",
 ]

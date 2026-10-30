@@ -574,7 +574,7 @@ class DeadlineAndLifecycleTests(unittest.TestCase):
 
 
 class ProductionWiringTests(unittest.TestCase):
-    def test_my_agent_runs_m2_with_decision_verify_purposes_separate(self):
+    def test_my_agent_reuses_readback_in_normal_decisions(self):
         with tempfile.TemporaryDirectory() as temporary:
             log = Path(temporary) / "telemetry.jsonl"
             telemetry = Telemetry(run_id="prod", path=log)
@@ -582,7 +582,6 @@ class ProductionWiringTests(unittest.TestCase):
                 [
                     decision("type [1] [New bio] [0]"),
                     decision("click [3]"),
-                    verification_unknown(),
                     decision("goto [" + PROFILE + "]"),
                     decision("stop [done]"),
                 ]
@@ -608,7 +607,7 @@ class ProductionWiringTests(unittest.TestCase):
             starts = [event for event in events if event["event"] == "model_call_start"]
             self.assertEqual(
                 [event["purpose"] for event in starts],
-                ["decision", "decision", "verify", "decision", "decision"],
+                ["decision", "decision", "decision", "decision"],
             )
             for call in sdk.calls:
                 content = "\n".join(message["content"] for message in call)
@@ -740,7 +739,7 @@ class ExpandedSuiteCoverageTests(unittest.TestCase):
         )
         self.assertNotIn("_pending_actions", state.data)
 
-        typed = frame(task=task, text=TYPED_TEXT)
+        typed = frame(task=task, text=TYPED_TEXT.replace("New bio", "I am a robot"))
         recover.guard_action(typed, state, "click [3]")
         pending = recover.register_action(typed, state, "click [3]")
         self.assertIsNotNone(pending)

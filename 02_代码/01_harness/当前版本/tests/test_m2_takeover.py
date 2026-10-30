@@ -77,7 +77,7 @@ class CorrectionBudgetTests(unittest.TestCase):
         policy = Policy()
         state = TaskState({})
         result = Runtime(policy=policy).advance(frame(), state)
-        self.assertEqual(policy.corrections, 2)
+        self.assertEqual(policy.corrections, 1)
         self.assertEqual(result, {"action": "scroll [down]"})
         self.assertEqual(state.recovery_count, 1)
         self.assertIsNone(state.pending_for(0))

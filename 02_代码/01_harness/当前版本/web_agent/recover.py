@@ -593,6 +593,20 @@ def guard_action(
     """Raise before a write that would overwrite an unknown pending result."""
     info = classify_action(action, frame)
     pending = state.pending_for(frame.tab)
+    if info.is_write and info.kind in {"click", "press"}:
+        replacements = [goal for goal in state.goal_checks
+                        if goal.kind == "exact_equal" and goal.status != "verified"]
+        if len(replacements) == 1 and str(replacements[0].target) in _draft_texts(state):
+            goal = replacements[0]
+            view = verify.parse_ax(frame)
+            for atom, value in view.form_values():
+                if (verify._field_scope_ok(view, atom, goal.field)
+                        and verify._normalize_text(value) != verify._normalize_text(goal.target)):
+                    raise ValueError(
+                        "Before saving, replace the WHOLE field: click the field, "
+                        "press [Ctrl+A], then type the requested value. "
+                        "The observed input is not exactly the target."
+                    )
     if pending is not None and pending.status == "unknown":
         if info.is_write:
             _guard_telemetry(

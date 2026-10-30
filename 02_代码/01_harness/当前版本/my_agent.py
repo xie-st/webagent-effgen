@@ -1,7 +1,8 @@
-"""Official entry: map one request to a Frame and advance the M1a Runtime."""
+"""Official entry: current observation and optional page details, one decision."""
 from __future__ import annotations
 
 import time
+from dataclasses import replace
 from typing import Any
 
 from web_agent.adapters import official
@@ -10,6 +11,8 @@ from web_agent.policy import EffGenPolicy
 from web_agent.runtime import Runtime
 from web_agent.screenshots import ScreenshotPort
 from web_agent.telemetry import Telemetry
+from web_agent.page_sources import read_details
+from web_agent.state import TaskState
 
 
 class MyAgent:
@@ -104,6 +107,13 @@ class MyAgent:
             )
         memory_before = self.state.get("memory")
         try:
+            if TaskState(self.state).pending_for(frame.tab) is not None or (
+                self._last_action and self._last_action.startswith("type [")
+            ):
+                frame = replace(frame, page_details=read_details(
+                    request.get("observation", {}), step=frame.step, deadline=frame.deadline
+                ))
+                self._last_frame = frame
             result = self.runtime.advance(frame, self.state)
             action = (result if isinstance(result, str)
                       else result.get("action") if isinstance(result, dict) else None)

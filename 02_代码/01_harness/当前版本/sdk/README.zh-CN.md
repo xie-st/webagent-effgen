@@ -120,3 +120,29 @@ python -m third_party_agent connect --connection-file agent-connection.json --ag
 也可在自己的 `decide()` 中按需调用 `browser.save_screenshot(observation, "./screenshots")`，返回 `Path`，旧服务没有截图字段时返回 `None`。只想取得 PNG 字节进行 OCR 时继续使用 `browser.get_screenshot(image_id)`。不要同时开启自动保存又重复下载同一帧，除非算法确有需要。
 
 同一连接文件先停止旧客户端再启动新版本。截图与本地计算都计入原有 300 秒预算；文件可能包含业务内容，请妥善保管，不要把截图、连接文件或令牌提交到 GitHub。不要在回调返回后另起后台任务下载，任务上下文和下载权限会随执行结束失效。
+
+## 完整 HTML 快照
+
+支持此能力的服务器在每步 `observation.html` 中提供 `html_id`、`step`、`byte_size`、`sha256` 和 `mime_type`。这是同次观察已经保存的 `page.content()` 原文，不按视口裁剪，不过滤脚本、注释、隐藏节点或属性。不是原始 HTTP 响应，也不包含 Cookie、localStorage、JS 堆或完整 iframe/Shadow DOM 内容；表单当前属性不一定反映在 HTML 中。HTML id 属性不是 WebArena 动作编号。
+
+```python
+from third_party_agent import browser
+metadata = request['observation'].get('html')
+if metadata and metadata.get('html_id'):
+    html = browser.get_html(metadata['html_id'])  # UTF-8 字符串
+    # 自行使用 BeautifulSoup / lxml 等解析
+```
+
+下载接口 `GET /api/client/html/{html_id}?job_id=...&run_id=...`，SDK 自动使用当前任务令牌。与截图相同，只允许当前任务所属 Agent 在执行会话和 300 秒时限内下载；不接受任意网址或文件路径，也不跟随重定向。响应为附件，不直接执行 HTML。每份最大 4 MiB，超限时元数据为 `available: false, reason: size_limit`，不返回截断内容。旧服务器可能没有 html 字段。HTML 原文不会自动加入模型提示；选手自行处理。需重新下载连接器以获得 `browser.get_html()`，旧 Agent 可继续运行。
+
+## 原始 DOM Tree（直接随本步 observation 返回）
+
+```python
+tree = request['observation'].get('dom')
+if tree and 'root' in tree:
+    root = tree['root']  # CDP 原始节点字典，无需 DOM ID 或下载
+```
+
+服务器每步仅调用一次 Chromium 原始 `DOM.getDocument(depth=-1, pierce=True)`，原样返回 JSON 字典；保留脚本、注释、隐藏节点、属性、Shadow DOM（含 closed shadow root）以及该调用返回的 iframe 子文档。不额外适配跨进程 iframe，不保证所有 iframe 都包含。不重建树、不生成选择器、不开放任意 JS 或 CDP 远程调用。`nodeId`/`backendNodeId` 不是 a11y 动作编号；坐标、计算样式和表单运行时属性不由该接口全部提供。
+
+只有当前观察包含 DOM 正文；后续请求的 history 中不重复携带旧 DOM。每份最大 4 MiB，超限返回 `available: false, reason: size_limit`，采集失败返回 `capture_failed`，不截断或复用上一帧。旧服务器可能没有 dom 字段。HTML 和截图继续按原方式下载；旧 Agent 无需修改。
