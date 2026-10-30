@@ -18,6 +18,19 @@ def frame(text, step=0, url='https://example.test/post/1'):
 
 
 class OperationsTests(unittest.TestCase):
+    def test_form_search_is_read_but_submit_search_remains_unknown_write(self):
+        for name in ['Search','搜索','查找']:
+            current=frame(f"[1] form 'Lookup'\n  [2] searchbox 'Search'\n  [3] button '{name}'")
+            state=TaskState();plan=operations.plan('click [3]',current,state)
+            self.assertEqual(plan.kind,'search')
+            operations.register(plan,current,state)
+            self.assertIsNone(state.pending_for(0))
+        current=frame("[1] form 'Settings'\n  [3] button 'Submit Search'")
+        state=TaskState();plan=operations.plan('click [3]',current,state)
+        self.assertTrue(plan.write)
+        operations.register(plan,current,state)
+        self.assertIsNotNone(state.pending_for(0))
+
     def test_commit_after_input_refreshes_layout_before_registering_unknown_write(self):
         state=TaskState()
         before=frame("[1] textbox 'Bio' value: 'OLD'\n[2] button 'Save'")
