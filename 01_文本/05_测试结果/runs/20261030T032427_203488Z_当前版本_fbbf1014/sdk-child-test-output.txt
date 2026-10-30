@@ -1,0 +1,6 @@
+test_sdk_spawn_model_binding_and_close (test_version.ProtocolTests.test_sdk_spawn_model_binding_and_close) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.722s
+
+OK

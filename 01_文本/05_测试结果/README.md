@@ -15,6 +15,8 @@
 
 官方成绩需从平台下载，放入本次 `raw/`；把成绩和结论写入 `result.md`，平台批次编号写入 `run.json` 的 `platform_run_ids`。一个会话有多个批次时分别记录。
 
+M1已验收基线：[396bcb6，3/4、75%](runs/20261030T025026_355479Z_当前版本_66091f22/result.md)；主线程最终复验与证据审计见[验收结果](runs/20261030T032427_203488Z_当前版本_fbbf1014/result.md)。
+
 已有历史官方成绩：[ypgf_v0](historical/batch-8ed63eb9d774f28ba098cfa7bb4f8e9c/result.md)。旧本机报告与回放见[历史本机测试](historical/environment-before-cleanup/result.md)。
 
 ## 本机测试

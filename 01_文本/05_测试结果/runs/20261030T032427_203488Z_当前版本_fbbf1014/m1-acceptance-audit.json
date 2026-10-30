@@ -1,0 +1,44 @@
+{
+  "status": "passed",
+  "m1a_run": "20261030T023943_253636Z_当前版本_fb2859f2",
+  "m1b_run": "20261030T025026_355479Z_当前版本_66091f22",
+  "platform_originals_verified": 23,
+  "artifact_bytes": 14500299,
+  "passed": 3,
+  "total": 4,
+  "accuracy": 0.75,
+  "model_calls": 26,
+  "purposes": {
+    "decision": 23,
+    "correction": 3
+  },
+  "tasks": [
+    {
+      "task_id": 399,
+      "score": 0.0,
+      "calls": 6,
+      "run_id_matched": true
+    },
+    {
+      "task_id": 404,
+      "score": 1.0,
+      "calls": 6,
+      "run_id_matched": true
+    },
+    {
+      "task_id": 650,
+      "score": 1.0,
+      "calls": 3,
+      "run_id_matched": true
+    },
+    {
+      "task_id": 731,
+      "score": 1.0,
+      "calls": 11,
+      "run_id_matched": true
+    }
+  ],
+  "source_files_match_m1a_and_m1b": 30,
+  "line_ending_normalization_only": true,
+  "current_regression_run": "20261030T032427_203488Z_当前版本_fbbf1014"
+}
