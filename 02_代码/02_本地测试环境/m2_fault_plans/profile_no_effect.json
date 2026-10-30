@@ -1,0 +1,13 @@
+{
+  "token": "m2-profile-no-effect",
+  "seed": {
+    "bio": "旧简介"
+  },
+  "faults": {
+    "profile": {
+      "mode": "no_effect_success",
+      "times": 1,
+      "note": "success-looking no-op; verify then retry"
+    }
+  }
+}

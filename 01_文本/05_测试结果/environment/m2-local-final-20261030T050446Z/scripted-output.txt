@@ -1,0 +1,71 @@
+{
+  "kind": "m2_scripted_environment_check",
+  "decision_source": "scripted_browser_no_model",
+  "model_calls": 0,
+  "official_score": false,
+  "started_at": "2026-10-30T05:04:49.197277+00:00",
+  "seconds": 7.577835600008257,
+  "all_matched": true,
+  "scenario_count": 10,
+  "scenarios": [
+    "normal_profile",
+    "normal_checkout",
+    "no_effect_recovery",
+    "append_correction",
+    "unknown_profile",
+    "unknown_checkout",
+    "partial_profile_post",
+    "missing_subscribe_vote",
+    "duplicate_vote",
+    "missing_checkout"
+  ],
+  "evidence_dir": "D:\\Dwen\\Alpha26fall\\华为2026Hackathon_WebAgent\\01_文本\\05_测试结果\\environment\\m2-local-final-20261030T050446Z\\scripted"
+}
+D:\Dwen\Alpha26fall\华为2026Hackathon_WebAgent\01_文本\05_测试结果\environment\m2-local-final-20261030T050446Z\scripted
+127.0.0.1 - - [30/Oct/2026 13:04:49] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:49] "POST /write/profile HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:49] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:50] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:50] "POST /cart HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:50] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:50] "POST /checkout HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:50] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:50] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:51] "POST /write/profile HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:51] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:51] "POST /write/profile HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:51] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:51] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:51] "POST /write/profile HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:51] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:51] "POST /write/profile HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:51] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:52] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:52] "POST /write/profile HTTP/1.1" 503 -
+127.0.0.1 - - [30/Oct/2026 13:04:52] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:53] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:53] "POST /cart HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:53] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:53] "POST /checkout HTTP/1.1" 503 -
+127.0.0.1 - - [30/Oct/2026 13:04:53] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:53] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:53] "POST /write/profile HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:53] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:53] "POST /write/post HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:53] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:54] "POST /write/post HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:54] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:54] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:54] "POST /write/subscribe HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:54] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:54] "POST /write/vote HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:54] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:55] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:55] "POST /write/vote HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:55] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:55] "POST /write/vote HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:55] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:56] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:56] "POST /cart HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:04:56] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:04:56] "POST /checkout HTTP/1.1" 200 -

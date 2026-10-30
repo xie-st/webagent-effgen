@@ -1,0 +1,13 @@
+{
+  "token": "m2-profile-append",
+  "seed": {
+    "bio": "旧简介"
+  },
+  "faults": {
+    "profile": {
+      "mode": "append_value",
+      "times": 1,
+      "note": "replacement becomes old value plus target"
+    }
+  }
+}

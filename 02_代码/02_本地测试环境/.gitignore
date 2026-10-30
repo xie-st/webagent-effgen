@@ -3,3 +3,4 @@ __pycache__/
 agent-connection*.json
 *.env
 results/*.zip
+evidence/

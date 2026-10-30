@@ -1,0 +1,10 @@
+{
+  "token": "m2-profile-unknown",
+  "faults": {
+    "profile": {
+      "mode": "commit_lost_receipt",
+      "times": 1,
+      "note": "first write commits but returns 503; query, do not resend"
+    }
+  }
+}

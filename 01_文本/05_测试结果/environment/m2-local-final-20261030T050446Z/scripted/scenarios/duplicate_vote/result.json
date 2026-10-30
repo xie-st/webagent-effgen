@@ -1,0 +1,104 @@
+{
+  "kind": "m2_scripted_browser_scenario",
+  "scenario": "duplicate_vote",
+  "task": "vote",
+  "note": "two likes must fail one-shot grading",
+  "expected_pass": false,
+  "actual_pass": false,
+  "matched": true,
+  "script_error": null,
+  "decision_source": "scripted_browser_no_model",
+  "model_calls": 0,
+  "official_score": false,
+  "fault_plan": {
+    "token": "m2duplicatevote",
+    "seed": {},
+    "faults": {},
+    "activations": []
+  },
+  "grade": {
+    "task": "vote",
+    "passed": false,
+    "requirements": [
+      {
+        "key": "one_vote",
+        "description": "技术帖子必须恰好有 1 次点赞",
+        "expected": 1,
+        "actual": 2,
+        "passed": false
+      }
+    ],
+    "write_rules": [
+      {
+        "operation": "vote",
+        "kind": "total",
+        "description": "vote 必须恰好提交 1 次点赞",
+        "expected": 1,
+        "actual": 2,
+        "target_value": null,
+        "passed": false
+      }
+    ],
+    "write_counts": {
+      "vote": 2
+    },
+    "attempt_counts": {
+      "vote": 2
+    },
+    "faults": {
+      "token": "m2duplicatevote",
+      "seed": {},
+      "faults": {},
+      "activations": []
+    },
+    "business_state": {
+      "token": "m2duplicatevote",
+      "bio": "",
+      "title": "",
+      "reply": "",
+      "subscribed": false,
+      "votes": 2,
+      "cart": [],
+      "ordered": false,
+      "orders": [],
+      "write_counts": {
+        "vote": 2
+      },
+      "attempt_counts": {
+        "vote": 2
+      },
+      "write_events": [
+        {
+          "operation": "vote",
+          "requested": "",
+          "stored": "",
+          "before": 0,
+          "after": 1,
+          "fault": "normal",
+          "committed": true
+        },
+        {
+          "operation": "vote",
+          "requested": "",
+          "stored": "",
+          "before": 1,
+          "after": 2,
+          "fault": "normal",
+          "committed": true
+        }
+      ],
+      "faults": {
+        "token": "m2duplicatevote",
+        "seed": {},
+        "faults": {},
+        "activations": []
+      }
+    },
+    "actor_claims": null,
+    "actor_claims_ignored": false,
+    "judged_from": "actual_fixture_state_and_original_task_requirements",
+    "official_score": false,
+    "model_calls": null
+  },
+  "final_body_excerpt": "论坛电商资料 A资料 B\n技术论坛\n\n个人简介：\n\n个人简介保存简介\n\n帖子：\n\n帖子标题发表帖子\n\n回复：\n\n回复内容发送回复\n\n订阅状态：未订阅\n\n订阅技术版块\n\n点赞数：2\n\n点赞技术帖子"
+}

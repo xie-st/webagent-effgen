@@ -1,0 +1,175 @@
+{
+  "kind": "m2_scripted_browser_scenario",
+  "scenario": "missing_checkout",
+  "task": "checkout",
+  "note": "cart present but order target missing must fail",
+  "expected_pass": false,
+  "actual_pass": false,
+  "matched": true,
+  "script_error": null,
+  "decision_source": "scripted_browser_no_model",
+  "model_calls": 0,
+  "official_score": false,
+  "fault_plan": {
+    "token": "m2missingcheckout",
+    "seed": {},
+    "faults": {
+      "checkout": {
+        "mode": "missing_target",
+        "times": 1,
+        "note": "",
+        "fired": 1
+      }
+    },
+    "activations": [
+      {
+        "operation": "checkout",
+        "mode": "missing_target",
+        "times": 1,
+        "fired": 1,
+        "note": ""
+      }
+    ]
+  },
+  "grade": {
+    "task": "checkout",
+    "passed": false,
+    "requirements": [
+      {
+        "key": "cart_exact",
+        "description": "购物车必须恰好包含一件“键盘”",
+        "expected": [
+          "键盘"
+        ],
+        "actual": [
+          "键盘"
+        ],
+        "passed": true
+      },
+      {
+        "key": "one_order",
+        "description": "必须恰好生成 1 个订单",
+        "expected": 1,
+        "actual": 0,
+        "passed": false
+      },
+      {
+        "key": "order_submitted",
+        "description": "订单必须处于已提交状态",
+        "expected": true,
+        "actual": false,
+        "passed": false
+      }
+    ],
+    "write_rules": [
+      {
+        "operation": "cart",
+        "kind": "total",
+        "description": "cart 必须恰好提交 1 次加入购物车",
+        "expected": 1,
+        "actual": 1,
+        "target_value": null,
+        "passed": true
+      },
+      {
+        "operation": "checkout",
+        "kind": "total",
+        "description": "checkout 必须恰好提交 1 次提交订单",
+        "expected": 1,
+        "actual": 0,
+        "target_value": null,
+        "passed": false
+      }
+    ],
+    "write_counts": {
+      "cart": 1
+    },
+    "attempt_counts": {
+      "cart": 1,
+      "checkout": 1
+    },
+    "faults": {
+      "token": "m2missingcheckout",
+      "seed": {},
+      "faults": {
+        "checkout": {
+          "mode": "missing_target",
+          "times": 1,
+          "note": "",
+          "fired": 1
+        }
+      },
+      "activations": [
+        {
+          "operation": "checkout",
+          "mode": "missing_target",
+          "times": 1,
+          "fired": 1,
+          "note": ""
+        }
+      ]
+    },
+    "business_state": {
+      "token": "m2missingcheckout",
+      "bio": "",
+      "title": "",
+      "reply": "",
+      "subscribed": false,
+      "votes": 0,
+      "cart": [
+        "键盘"
+      ],
+      "ordered": false,
+      "orders": [],
+      "write_counts": {
+        "cart": 1
+      },
+      "attempt_counts": {
+        "cart": 1,
+        "checkout": 1
+      },
+      "write_events": [
+        {
+          "operation": "cart",
+          "requested": "键盘",
+          "stored": [
+            "键盘"
+          ],
+          "before": [],
+          "after": [
+            "键盘"
+          ],
+          "fault": "normal",
+          "committed": true
+        }
+      ],
+      "faults": {
+        "token": "m2missingcheckout",
+        "seed": {},
+        "faults": {
+          "checkout": {
+            "mode": "missing_target",
+            "times": 1,
+            "note": "",
+            "fired": 1
+          }
+        },
+        "activations": [
+          {
+            "operation": "checkout",
+            "mode": "missing_target",
+            "times": 1,
+            "fired": 1,
+            "note": ""
+          }
+        ]
+      }
+    },
+    "actor_claims": null,
+    "actor_claims_ignored": false,
+    "judged_from": "actual_fixture_state_and_original_task_requirements",
+    "official_score": false,
+    "model_calls": null
+  },
+  "final_body_excerpt": "论坛电商资料 A资料 B\n无法提交订单\n\n购物车或目标商品缺项，未生成订单。"
+}

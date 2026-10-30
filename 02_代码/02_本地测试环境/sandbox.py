@@ -8,6 +8,8 @@ from uuid import uuid4
 from flask import Flask, abort, redirect, render_template_string, request
 from werkzeug.serving import make_server
 
+from m2_faults import FaultPlan, SCALAR_OPERATIONS
+
 
 @dataclass
 class Fixture:
@@ -19,27 +21,75 @@ class Fixture:
     votes: int = 0
     cart: list = field(default_factory=list)
     ordered: bool = False
+    orders: list = field(default_factory=list)
     delay: float = 0
     rate_once: bool = False
     require_login: bool = False
     authenticated: bool = False
+    fault_plan: FaultPlan = field(default_factory=FaultPlan)
+    write_counts: dict = field(default_factory=dict)
+    attempt_counts: dict = field(default_factory=dict)
+    write_events: list = field(default_factory=list)
     lock: object = field(default_factory=threading.RLock, repr=False)
 
+    def __post_init__(self):
+        self.fault_plan.apply_seed(self)
+
     def task(self, name):
-        values = {"profile": f"把个人简介改为 开发者-{self.token}",
-                  "post": f"发表标题为 并行调度-{self.token} 的帖子",
-                  "reply": f"回复内容为 已确认-{self.token}",
-                  "subscribe": "订阅技术版块", "vote": "点赞技术帖子一次",
-                  "cart": "把键盘加入购物车", "checkout": "购买键盘并提交订单"}
-        return values[name]
+        from m2_grading import task_prompt
+        return task_prompt(name, self.token)
 
     def grade(self, name):
-        return {"profile": self.bio == f"开发者-{self.token}",
-                "post": self.title == f"并行调度-{self.token}",
-                "reply": self.reply == f"已确认-{self.token}",
-                "subscribe": self.subscribed, "vote": self.votes == 1,
-                "cart": "键盘" in self.cart,
-                "checkout": self.ordered and "键盘" in self.cart}[name]
+        from m2_grading import grade
+        return grade(self, name)["passed"]
+
+    def grade_report(self, name, actor_claims=None):
+        from m2_grading import grade
+        return grade(self, name, actor_claims=actor_claims)
+
+    def operation_state(self, operation):
+        values = {"profile": lambda: self.bio,
+                  "post": lambda: self.title,
+                  "reply": lambda: self.reply,
+                  "subscribe": lambda: bool(self.subscribed),
+                  "vote": lambda: int(self.votes),
+                  "cart": lambda: list(self.cart),
+                  "checkout": lambda: list(self.orders)}
+        if operation not in values:
+            raise KeyError(operation)
+        return values[operation]()
+
+    def record_attempt(self, operation):
+        self.attempt_counts[operation] = self.attempt_counts.get(operation, 0) + 1
+
+    def record_write(self, operation, requested, before, after, fault_mode, stored=None):
+        self.write_counts[operation] = self.write_counts.get(operation, 0) + 1
+        self.write_events.append({
+            "operation": operation,
+            "requested": requested,
+            "stored": after if stored is None else stored,
+            "before": before,
+            "after": after,
+            "fault": fault_mode,
+            "committed": True,
+        })
+
+    def business_snapshot(self):
+        return {
+            "token": self.token,
+            "bio": self.bio,
+            "title": self.title,
+            "reply": self.reply,
+            "subscribed": bool(self.subscribed),
+            "votes": int(self.votes),
+            "cart": list(self.cart),
+            "ordered": bool(self.ordered),
+            "orders": list(self.orders),
+            "write_counts": dict(self.write_counts),
+            "attempt_counts": dict(self.attempt_counts),
+            "write_events": [dict(event) for event in self.write_events],
+            "faults": self.fault_plan.to_dict(),
+        }
 
 
 LAYOUT = """<!doctype html><html lang="zh"><meta charset="utf-8">
@@ -48,6 +98,29 @@ LAYOUT = """<!doctype html><html lang="zh"><meta charset="utf-8">
 nav a{margin-right:24px}input,button{font:inherit;margin:10px;padding:8px}section{margin:30px 0}</style>
 <nav><a href="/forum">论坛</a><a href="/shop">电商</a><a href="/slow/a">资料 A</a><a href="/slow/b">资料 B</a></nav>
 {{ body|safe }}</html>"""
+
+FIELD_NAMES = {"profile": "bio", "post": "title", "reply": "reply"}
+
+
+def _home_for(operation):
+    return "/shop" if operation in ("cart", "checkout") else "/forum"
+
+
+def _missing_body(operation):
+    return {
+        "profile": "<h1>用户资料不存在</h1><p>目标用户资料缺项，个人简介未保存。</p>",
+        "post": "<h1>目标版块不存在</h1><p>目标版块缺项，帖子未发表。</p>",
+        "reply": "<h1>目标帖子不存在</h1><p>目标帖子缺项，回复未发送。</p>",
+        "subscribe": "<h1>目标版块不存在</h1><p>技术版块缺项，未订阅。</p>",
+        "vote": "<h1>目标帖子不存在</h1><p>技术帖子缺项，未点赞。</p>",
+        "cart": "<h1>商品不存在</h1><p>目标商品“键盘”缺项，未加入购物车。</p>",
+        "checkout": "<h1>无法提交订单</h1><p>购物车或目标商品缺项，未生成订单。</p>",
+    }[operation]
+
+
+LOST_RECEIPT_BODY = """<h1>写入结果未知</h1>
+<p>服务端可能已经提交，但回执丢失。请先查询当前状态，再决定是否重试。</p>
+<p>未确认前不得重复写入。</p>"""
 
 
 def create_app(fixture):
@@ -92,34 +165,99 @@ def create_app(fixture):
 
     @app.route("/write/<operation>", methods=["POST"])
     def write(operation):
+        if operation not in ("profile", "post", "reply", "subscribe", "vote", "cart", "checkout"):
+            abort(404)
         with fixture.lock:
-            if operation in ("profile", "post", "reply"):
-                setattr(fixture, {"profile": "bio", "post": "title", "reply": "reply"}[operation], request.form.get("value", ""))
+            fixture.record_attempt(operation)
+            fault = fixture.fault_plan.take(operation)
+            mode = fault["mode"] if fault else "normal"
+            requested = request.form.get("value", "")
+            value = requested
+
+            if mode == "no_effect_success":
+                # Looks exactly like a successful redirect, but no state changes.
+                return redirect(_home_for(operation))
+            if mode == "missing_target":
+                return page(_missing_body(operation))
+
+            if mode == "append_value":
+                if operation not in SCALAR_OPERATIONS:
+                    abort(400)
+                value = str(getattr(fixture, FIELD_NAMES[operation])) + value
+
+            before = fixture.operation_state(operation)
+            if operation in FIELD_NAMES:
+                setattr(fixture, FIELD_NAMES[operation], value)
             elif operation == "subscribe":
                 fixture.subscribed = True
             elif operation == "vote":
                 fixture.votes += 1
-            else:
-                abort(404)
-        return redirect("/forum")
+            elif operation == "cart":
+                fixture.cart.append("键盘")
+            elif operation == "checkout":
+                if fixture.cart:
+                    fixture.orders.append(f"order-{len(fixture.orders) + 1}-{uuid4().hex[:6]}")
+                    fixture.ordered = True
+                else:
+                    fixture.ordered = False
+            after = fixture.operation_state(operation)
+
+            # Checkout with an empty cart is a failed attempt, not a committed
+            # business write.  All other operations commit one write event.
+            if operation == "checkout" and not after:
+                return redirect(_home_for(operation))
+            fixture.record_write(operation, requested, before, after, mode, stored=value)
+            if mode == "commit_lost_receipt":
+                return page(LOST_RECEIPT_BODY), 503
+        return redirect(_home_for(operation))
 
     @app.route("/shop")
     def shop():
         return page('''<h1>电商商城</h1><section><h2>键盘</h2><p>价格：199 元</p>
         <form method="post" action="/cart"><button>键盘加入购物车</button></form></section>
-        <p>购物车：{{ f.cart|join('、') }}</p><p>订单：{{ '已提交' if f.ordered else '未提交' }}</p>
+        <p>购物车：{{ f.cart|join('、') }}</p><p>订单：{{ '已提交' if f.ordered else '未提交' }}（{{ f.orders|length }} 个）</p>
         <form method="post" action="/checkout"><button>提交订单</button></form>''')
 
     @app.route("/cart", methods=["POST"])
     def cart():
         with fixture.lock:
+            fixture.record_attempt("cart")
+            fault = fixture.fault_plan.take("cart")
+            mode = fault["mode"] if fault else "normal"
+            if mode == "no_effect_success":
+                return redirect("/shop")
+            if mode == "missing_target":
+                return page(_missing_body("cart"))
+            before = fixture.operation_state("cart")
             fixture.cart.append("键盘")
+            after = fixture.operation_state("cart")
+            fixture.record_write("cart", "键盘", before, after, mode)
+            if mode == "commit_lost_receipt":
+                return page(LOST_RECEIPT_BODY), 503
         return redirect("/shop")
 
     @app.route("/checkout", methods=["POST"])
     def checkout():
         with fixture.lock:
-            fixture.ordered = bool(fixture.cart)
+            fixture.record_attempt("checkout")
+            fault = fixture.fault_plan.take("checkout")
+            mode = fault["mode"] if fault else "normal"
+            if mode == "no_effect_success":
+                return redirect("/shop")
+            if mode == "missing_target":
+                return page(_missing_body("checkout"))
+            before = fixture.operation_state("checkout")
+            if fixture.cart:
+                fixture.orders.append(f"order-{len(fixture.orders) + 1}-{uuid4().hex[:6]}")
+                fixture.ordered = True
+            else:
+                fixture.ordered = False
+            after = fixture.operation_state("checkout")
+            if not after:
+                return redirect("/shop")
+            fixture.record_write("checkout", "提交订单", before, after, mode)
+            if mode == "commit_lost_receipt":
+                return page(LOST_RECEIPT_BODY), 503
         return redirect("/shop")
 
     @app.route("/slow/<name>")
@@ -130,10 +268,28 @@ def create_app(fixture):
     return app
 
 
+# Chromium refuses a few otherwise valid TCP ports (ERR_UNSAFE_PORT).
+# Ephemeral bindings can land on one, so retry before handing the URL to
+# Playwright.  The list covers Chromium's restricted ports that fall inside
+# the ephemeral range used on this machine.
+UNSAFE_BROWSER_PORTS = frozenset({
+    1719, 1720, 1723, 2049, 3659, 4045, 5060, 5061, 6000, 6566,
+    6665, 6666, 6667, 6668, 6669, 6697, 10080,
+})
+
+
 class LocalServer:
     def __init__(self, fixture=None, port=0):
         self.fixture = fixture or Fixture()
-        self.server = make_server("127.0.0.1", port, create_app(self.fixture), threaded=True)
+        app = create_app(self.fixture)
+        for _ in range(20):
+            server = make_server("127.0.0.1", port, app, threaded=True)
+            if server.server_port not in UNSAFE_BROWSER_PORTS:
+                break
+            server.server_close()
+        else:
+            raise RuntimeError("could not bind a browser-safe local port")
+        self.server = server
         self.url = f"http://127.0.0.1:{self.server.server_port}"
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
 

@@ -1,0 +1,10 @@
+{
+  "token": "m2-vote-unknown",
+  "faults": {
+    "vote": {
+      "mode": "commit_lost_receipt",
+      "times": 1,
+      "note": "one like commits but receipt is lost; no second like"
+    }
+  }
+}

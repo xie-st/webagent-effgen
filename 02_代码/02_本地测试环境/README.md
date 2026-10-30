@@ -6,11 +6,17 @@
 
 | 文件 | 用途 |
 |---|---|
-| `sandbox.py` | 本机论坛、电商练习站及任务判定 |
+| `sandbox.py` | 本机论坛、电商练习站、业务状态与故障注入 |
 | `runner.py` | 观察页面、调用传入的决策函数、执行动作、保存回放 |
 | `smoke_test.py` | 脚本检查网页与运行器；`profile_driver` 只用于检查 |
 | `browsergym_smoke.py` | BrowserGym 环境检查 |
 | `start.ps1` | 上述功能的统一入口 |
+| `m2_faults.py` | 按写操作配置的可复现故障计划与激活记录 |
+| `m2_grading.py` | 七类及复合任务的独立判定（实际状态+写入次数） |
+| `m2_acceptance.py` | M2 浏览器验收运行器；脚本套件或注入 `decide` |
+| `test_m2_fixtures.py` | 故障、判定与复合任务单元测试 |
+| `m2_fault_plans/` | 可复现故障计划示例，可直接传给验收运行器 |
+| `evidence/` | M2 手工证据，供主线程归档；不自动进入项目结果目录 |
 | `requirements-*.lock.txt` | 各本地环境的固定依赖 |
 
 ## 启动与检查
@@ -29,6 +35,19 @@
 练习站地址 `http://127.0.0.1:8765`，Ctrl+C 停止。支持修改简介、发帖、回复、订阅、点赞、购物车和下单。场景可选 `normal`、`slow`、`rate`、`login`；重启后重新生成任务数据。
 
 这些检查使用脚本验证网页、运行器和回放。Agent 成功率需另用真实模型执行整项任务；当前官方模型调用依赖比赛任务上下文，本地模型入口按开发方案接入。
+
+## M2 故障与判定
+
+M2 本地单元只扩展本目录，不改 harness。故障按写操作配置，激活 `times` 次后自动恢复正常，种子可设置旧值，便于复现“追加而非替换”等场景。
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest test_m2_fixtures -v
+.\.venv\Scripts\python.exe m2_acceptance.py --suite scripted
+.\.venv\Scripts\python.exe m2_acceptance.py --task profile --agent 模块:函数 `
+  --fault-plan .\m2_fault_plans\profile_unknown.json
+```
+
+`--suite scripted` 是脚本化浏览器环境检查，`model_calls` 恒为 0；`--agent` 注入决策函数，任一步调用量未知时汇总为 null。默认写 `01_文本/05_测试结果/local/<UTC时间>_<标签>/`，不覆盖旧结果。判定器只读取实际 Fixture 业务状态和原任务要求，actor 的 `goal_checks` 仅作附注。故障 API、判定语义和故障计划格式见[M2 本地故障环境](M2本地故障环境.md)。
 
 ## 结果
 

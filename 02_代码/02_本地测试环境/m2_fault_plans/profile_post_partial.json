@@ -1,0 +1,13 @@
+{
+  "token": "m2-profile-post-partial",
+  "seed": {
+    "title": "旧帖子"
+  },
+  "faults": {
+    "post": {
+      "mode": "no_effect_success",
+      "times": 1,
+      "note": "profile prefix commits; post fails locally and needs recovery"
+    }
+  }
+}

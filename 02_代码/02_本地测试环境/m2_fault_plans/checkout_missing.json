@@ -1,0 +1,10 @@
+{
+  "token": "m2-checkout-missing",
+  "faults": {
+    "checkout": {
+      "mode": "missing_target",
+      "times": 1,
+      "note": "cart is present but order target is missing; must not pass"
+    }
+  }
+}

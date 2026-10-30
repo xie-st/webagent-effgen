@@ -1,0 +1,10 @@
+{
+  "token": "m2-checkout-unknown",
+  "faults": {
+    "checkout": {
+      "mode": "commit_lost_receipt",
+      "times": 1,
+      "note": "order commits but receipt is lost; query, do not resubmit"
+    }
+  }
+}

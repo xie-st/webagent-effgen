@@ -1,0 +1,10 @@
+{
+  "token": "m2-subscribe-missing",
+  "faults": {
+    "subscribe": {
+      "mode": "missing_target",
+      "times": 1,
+      "note": "composite subscribe_vote has one missing target and must not pass"
+    }
+  }
+}

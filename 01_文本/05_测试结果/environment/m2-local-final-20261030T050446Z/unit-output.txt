@@ -1,0 +1,114 @@
+{
+  "kind": "m2_browser_local_acceptance",
+  "decision_source": "external_agent",
+  "official_score": false,
+  "task": "profile",
+  "passed": false,
+  "script_error": null,
+  "steps": 2,
+  "model_calls": null,
+  "seconds": 0.9448046999750659,
+  "grade": {
+    "task": "profile",
+    "passed": false,
+    "requirements": [
+      {
+        "key": "profile_exact",
+        "description": "个人简介必须精确等于“开发者-286d0846”，不能保留或追加旧内容",
+        "expected": "开发者-286d0846",
+        "actual": "",
+        "passed": false
+      }
+    ],
+    "write_rules": [
+      {
+        "operation": "profile",
+        "kind": "target",
+        "description": "profile 必须恰好提交 1 次达到要求的个人简介",
+        "expected": 1,
+        "actual": 0,
+        "target_value": "开发者-286d0846",
+        "passed": false
+      }
+    ],
+    "write_counts": {},
+    "attempt_counts": {},
+    "faults": {
+      "token": null,
+      "seed": {},
+      "faults": {
+        "profile": {
+          "mode": "commit_lost_receipt",
+          "times": 1,
+          "note": "",
+          "fired": 0
+        }
+      },
+      "activations": []
+    },
+    "business_state": {
+      "token": "286d0846",
+      "bio": "",
+      "title": "",
+      "reply": "",
+      "subscribed": false,
+      "votes": 0,
+      "cart": [],
+      "ordered": false,
+      "orders": [],
+      "write_counts": {},
+      "attempt_counts": {},
+      "write_events": [],
+      "faults": {
+        "token": null,
+        "seed": {},
+        "faults": {
+          "profile": {
+            "mode": "commit_lost_receipt",
+            "times": 1,
+            "note": "",
+            "fired": 0
+          }
+        },
+        "activations": []
+      }
+    },
+    "actor_claims": null,
+    "actor_claims_ignored": false,
+    "judged_from": "actual_fixture_state_and_original_task_requirements",
+    "official_score": false,
+    "model_calls": null
+  },
+  "final_body_excerpt": "论坛电商资料 A资料 B\n技术论坛\n\n个人简介：\n\n个人简介保存简介\n\n帖子：\n\n帖子标题发表帖子\n\n回复：\n\n回复内容发送回复\n\n订阅状态：未订阅\n\n订阅技术版块\n\n点赞数：0\n\n点赞技术帖子"
+}
+C:\Users\hiyad\AppData\Local\Temp\tmp1yxbuno7\run
+test_browser_actor_receives_no_judge_truth_and_one_fixed_deadline (test_m2_acceptance.AcceptanceTests.test_browser_actor_receives_no_judge_truth_and_one_fixed_deadline) ... 127.0.0.1 - - [30/Oct/2026 13:04:47] "GET /forum HTTP/1.1" 200 -
+ok
+test_default_output_folder_and_partial_unknown_calls (test_m2_acceptance.AcceptanceTests.test_default_output_folder_and_partial_unknown_calls) ... ok
+test_checkout_missing_order_cannot_pass (test_m2_fixtures.CompositeTaskTests.test_checkout_missing_order_cannot_pass) ... ok
+test_composites_have_at_least_two_requirements (test_m2_fixtures.CompositeTaskTests.test_composites_have_at_least_two_requirements) ... ok
+test_missing_target_in_composite_cannot_pass (test_m2_fixtures.CompositeTaskTests.test_missing_target_in_composite_cannot_pass) ... ok
+test_profile_post_needs_both_requirements (test_m2_fixtures.CompositeTaskTests.test_profile_post_needs_both_requirements) ... ok
+test_reply_subscribe_and_cart_checkout_composites (test_m2_fixtures.CompositeTaskTests.test_reply_subscribe_and_cart_checkout_composites) ... ok
+test_subscribe_vote_needs_both_requirements (test_m2_fixtures.CompositeTaskTests.test_subscribe_vote_needs_both_requirements) ... ok
+test_example_fault_plans_are_valid (test_m2_fixtures.FaultPlanTests.test_example_fault_plans_are_valid) ... ok
+test_grade_rejects_unknown_task (test_m2_fixtures.FaultPlanTests.test_grade_rejects_unknown_task) ... ok
+test_invalid_fault_configuration_is_rejected (test_m2_fixtures.FaultPlanTests.test_invalid_fault_configuration_is_rejected) ... ok
+test_plan_round_trip_keeps_seed_and_fault (test_m2_fixtures.FaultPlanTests.test_plan_round_trip_keeps_seed_and_fault) ... ok
+test_append_value_is_observable_and_correctable_for_scalar_tasks (test_m2_fixtures.FaultTests.test_append_value_is_observable_and_correctable_for_scalar_tasks) ... ok
+test_duplicate_writes_are_rejected_by_grade (test_m2_fixtures.FaultTests.test_duplicate_writes_are_rejected_by_grade) ... ok
+test_missing_target_operations_do_not_write (test_m2_fixtures.FaultTests.test_missing_target_operations_do_not_write) ... ok
+test_no_effect_success_is_consumed_and_recoverable_for_every_operation (test_m2_fixtures.FaultTests.test_no_effect_success_is_consumed_and_recoverable_for_every_operation) ... ok
+test_partial_checkout_recovery_keeps_cart_write (test_m2_fixtures.FaultTests.test_partial_checkout_recovery_keeps_cart_write) ... ok
+test_partial_failure_after_verified_prefix_preserves_prefix (test_m2_fixtures.FaultTests.test_partial_failure_after_verified_prefix_preserves_prefix) ... ok
+test_unknown_commit_profile_query_then_no_resend (test_m2_fixtures.FaultTests.test_unknown_commit_profile_query_then_no_resend) ... ok
+test_unknown_commit_vote_and_checkout_are_one_shot (test_m2_fixtures.FaultTests.test_unknown_commit_vote_and_checkout_are_one_shot) ... ok
+test_actor_claims_are_advisory_only (test_m2_fixtures.NormalTaskTests.test_actor_claims_are_advisory_only) ... ok
+test_checkout_requires_cart_and_exactly_one_order (test_m2_fixtures.NormalTaskTests.test_checkout_requires_cart_and_exactly_one_order) ... ok
+test_scalar_tasks_pass_with_exact_value_and_one_target_write (test_m2_fixtures.NormalTaskTests.test_scalar_tasks_pass_with_exact_value_and_one_target_write) ... ok
+test_single_effect_tasks_pass_once (test_m2_fixtures.NormalTaskTests.test_single_effect_tasks_pass_once) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 1.169s
+
+OK
