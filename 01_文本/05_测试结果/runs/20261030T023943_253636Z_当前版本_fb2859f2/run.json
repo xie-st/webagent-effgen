@@ -118,5 +118,13 @@
     "cost_usd": null
   },
   "exit_code": 0,
-  "finished_at": "2026-10-30T02:39:53.347148+00:00"
+  "finished_at": "2026-10-30T02:39:53.347148+00:00",
+  "accepted_code_commit": "396bcb62bbb6d44c6935678e7c6161f0577bb74c",
+  "git_binding": {
+    "normalization": "CRLF to LF only",
+    "runtime_files_match": true,
+    "documentation_only_after_test": [
+      "README.md"
+    ]
+  }
 }
