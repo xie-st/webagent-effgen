@@ -73,7 +73,7 @@ class BrowserTests(unittest.TestCase):
         self.thread.join()
 
     def test_runtime_replaces_and_confirms_last_write(self):
-        actions = iter(["click", "select", "type", "save", "stop"])
+        actions = iter(["click", "select", "type", "save", "save", "stop"])
         def decide(ctx, state):
             view = AXTree(type("F", (), {"ax": ctx.page})())
             ids = {a.name: a.element_id for a in view.nodes}
@@ -98,6 +98,41 @@ class BrowserTests(unittest.TestCase):
         self.assertIn("New", self.page.get_by_role("textbox", name="Biography").input_value())
         self.assertNotEqual(self.page.get_by_role("textbox", name="Biography").input_value(), "New")
         with self.assertRaises(ValueError): adapter.act(f"click [{old_id}]")
+
+    def test_multiline_business_text_is_read_exactly_only_when_unambiguous(self):
+        self.page.set_content('<h1>Saved</h1><pre>first\n\nsecond</pre>')
+        adapter=AXPage(self.page,self.url)
+        view=AXTree(type('F',(),{'ax':adapter.observe()['text']})())
+        self.assertIn('first\n\nsecond',view.business_texts())
+        self.page.set_content('<pre>first\nsecond</pre><pre>first\n\nsecond</pre>')
+        view=AXTree(type('F',(),{'ax':adapter.observe()['text']})())
+        self.assertNotIn('first\n\nsecond',view.business_texts())
+
+    def test_unnamed_form_dynamic_output_and_bare_text_are_never_persistence(self):
+        for preview in ['<output id="preview"></output>', '<section id="preview"></section>', '<span id="preview"></span>', '<h2 id="preview"></h2>', '<a href="#" id="preview"></a>']:
+            with self.subTest(preview=preview):
+                self.page.set_content('<form><textarea aria-label="Body">NEW</textarea>'+preview+'<button type="button" onclick="document.querySelector(\'#preview\').textContent=\'NEW\'">Save</button></form>')
+                adapter=AXPage(self.page,self.url)
+                adapter.observe()
+                self.page.get_by_role('button',name='Save').click()
+                view=AXTree(type('F',(),{'ax':adapter.observe()['text']})())
+                self.assertNotIn('NEW',view.business_texts())
+        self.page.set_content('<form id="f"><textarea aria-label="Body">NEW</textarea></form>')
+        self.page.locator('form').evaluate("e=>e.appendChild(document.createTextNode('NEW'))")
+        adapter=AXPage(self.page,self.url)
+        view=AXTree(type('F',(),{'ax':adapter.observe()['text']})())
+        self.assertNotIn('NEW',view.business_texts())
+        self.page.set_content('<form><a href="#" id="preview" aria-label="old">preview</a><button type="button" onclick="document.querySelector(\'#preview\').setAttribute(\'aria-label\',\'NEW\')">Save</button></form>')
+        self.page.get_by_role('button',name='Save').click()
+        adapter=AXPage(self.page,self.url)
+        view=AXTree(type('F',(),{'ax':adapter.observe()['text']})())
+        self.assertNotIn('NEW',view.business_texts())
+        self.page.set_content('<form><pre>first\n\nsecond</pre></form>')
+        view=AXTree(type('F',(),{'ax':adapter.observe()['text']})())
+        self.assertNotIn('first\n\nsecond',view.business_texts())
+        self.page.set_content('<p>first</p><p>second</p><pre style="display:none">first\n\nsecond</pre>')
+        view=AXTree(type('F',(),{'ax':adapter.observe()['text']})())
+        self.assertNotIn('first\n\nsecond',view.business_texts())
 
     def test_real_429_defers_the_next_navigation(self):
         runtime = Runtime(decision_port=lambda c,s: f"goto [{self.url}/profile]")

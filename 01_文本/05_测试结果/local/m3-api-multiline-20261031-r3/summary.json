@@ -1,0 +1,38 @@
+[
+  {
+    "name": "closed-loop",
+    "workers": 3,
+    "exit_code": 0,
+    "wall_seconds": 70.675,
+    "scheduler_seconds": 68.64561759997741,
+    "status": {
+      "read_a": "verified",
+      "read_b": "verified",
+      "replace": "verified",
+      "draft": "verified",
+      "dependent": "verified"
+    },
+    "answers": {
+      "read_a": "stop [cobalt]",
+      "read_b": "stop [amber]",
+      "replace": "stop [Done.]",
+      "draft": "stop [The Comment editor is filled with exactly '感谢分享与支持 😊'.]",
+      "dependent": "stop [cobalt]"
+    },
+    "model_calls": 10,
+    "business": {
+      "bio": "New bio\\n\\nEDIT: This news aged well",
+      "saves": 1,
+      "published": 0
+    },
+    "checks": {
+      "read_a": true,
+      "read_b": true,
+      "dependency": true,
+      "saved_exactly_once": false,
+      "never_published": true,
+      "draft_screenshot": true,
+      "all_nodes_complete": true
+    }
+  }
+]

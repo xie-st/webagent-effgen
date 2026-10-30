@@ -17,10 +17,12 @@ def main():
     parser.add_argument('--out',type=Path,required=True)
     parser.add_argument('--public',action='store_true')
     parser.add_argument('--only-closed-loop',action='store_true')
+    parser.add_argument('--multiline',action='store_true')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
     args.out=args.out.resolve();args.out.mkdir(parents=True,exist_ok=False)
     data={'bio':'Old bio','saves':0,'published':0}
+    bio_target = 'New bio\n\nEDIT: This news aged well' if args.multiline else 'New bio'
     class Handler(BaseHTTPRequestHandler):
         def log_message(self,*a):pass
         def do_GET(self):
@@ -29,9 +31,9 @@ def main():
             elif self.path=='/b':
                 time.sleep(.6);html='<h1>Record B</h1><p>The identifier is amber.</p>'
             elif self.path=='/profile':
-                html='<h1>Saved biography</h1><p>'+data['bio']+'</p>'
+                html='<h1>Saved biography</h1><pre>'+data['bio']+'</pre>'
             elif self.path=='/edit':
-                html='<h1>Edit biography</h1><form action="/save" method="post"><label>Biography<input name="bio" value="Old bio"></label><button>Save</button></form>'
+                html='<h1>Edit biography</h1><form action="/save" method="post"><label>Biography<textarea name="bio" oninput="document.querySelector(\'#preview\').textContent=this.value">Old bio</textarea></label><pre id="preview" style="min-height:600px"></pre><button>Save</button></form>'
             elif self.path=='/draft':
                 html='<h1>Comment draft</h1><label>Comment<textarea oninput="fetch(\'/publish\',{method:\'POST\'})"></textarea></label><button onclick="fetch(\'/publish\',{method:\'POST\'})">Publish</button>'
             else:
@@ -40,7 +42,7 @@ def main():
         def do_POST(self):
             body=self.rfile.read(int(self.headers.get('Content-Length',0))).decode()
             if self.path=='/save':
-                data['bio']=parse_qs(body,keep_blank_values=True)['bio'][0];data['saves']+=1
+                data['bio']=parse_qs(body,keep_blank_values=True)['bio'][0].replace('\r\n','\n');data['saves']+=1
                 self.send_response(303);self.send_header('Location','/profile');self.end_headers()
             else:
                 data['published']+=1;self.send_response(200);self.end_headers()
@@ -76,7 +78,7 @@ def main():
     results=[]
     try:
         combined=reads+[
-            {'name':'replace','url':base+'/edit','task':'Replace the biography with exactly New bio. Save once, then check the saved biography before stopping.','readonly':False,'writes':['profile'],'scope':'account'},
+            {'name':'replace','url':base+'/edit','task':'Replace the biography with exactly the text between BEGIN and END (markers excluded):\nBEGIN\n'+bio_target+'\nEND\nPreserve actual line breaks, not literal backslash sequences. Save once, then check the saved biography before stopping.','readonly':False,'writes':['profile'],'scope':'account'},
             {'name':'draft','url':base+'/draft','task':'Fill the Comment editor with exactly 感谢分享与支持 😊. Do not publish or submit. Stop when this exact draft is ready; the runner will save a screenshot and cancel it.','readonly':False,'writes':['comment-draft'],'scope':'account','draft':{'field_label':'Comment','text':'感谢分享与支持 😊'}},
             {'name':'dependent','url':base+'/dependent','task':'Use the confirmed read_a dependency result in your memory and report the identifier that read_a found. Do not browse elsewhere or modify anything.','deps':['read_a'],'readonly':True,'reads':['catalog'],'scope':'catalog'}]
         result=run('closed-loop',combined,3)
@@ -85,7 +87,7 @@ def main():
             'read_a':'cobalt' in (result['answers'].get('read_a') or '').lower(),
             'read_b':'amber' in (result['answers'].get('read_b') or '').lower(),
             'dependency':'cobalt' in (result['answers'].get('dependent') or '').lower(),
-            'saved_exactly_once':data['bio']=='New bio' and data['saves']==1,
+            'saved_exactly_once':data['bio']==bio_target and data['saves']==1,
             'never_published':data['published']==0,
             'draft_screenshot':(args.out/'closed-loop/raw/draft.png').is_file(),
             'all_nodes_complete':len(result['status'])==5 and all(v=='verified' for v in result['status'].values())}

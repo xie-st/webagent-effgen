@@ -101,5 +101,8 @@ def make_runtime(spec,context):
     port=HttpModelPort(config,telemetry=telemetry)
     runtime=Runtime(policy=EffGenPolicy(model_port=port,telemetry=telemetry),telemetry=telemetry)
     if context.inputs:
-        runtime.initial_memory=json.dumps({'dependency_results_reference_only':context.inputs},ensure_ascii=False)[:9000]
+        results={name:({key:value[key] for key in ('last_action','memory','last_readback','url') if key in value}
+                       if isinstance(value,dict) and 'last_action' in value else value)
+                 for name,value in context.inputs.items()}
+        runtime.initial_memory=json.dumps({'dependency_results_reference_only':results},ensure_ascii=False)[:9000]
     return runtime

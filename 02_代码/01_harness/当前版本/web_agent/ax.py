@@ -21,7 +21,7 @@ _VALUE = re.compile(
     re.I,
 )
 _URL = re.compile(r"\burl:\s*(\S+)")
-_BOOL = re.compile(r"\b(checked|selected|focused|pressed|expanded|disabled):\s*(true|false)", re.I)
+_BOOL = re.compile(r"\b(checked|selected|focused|pressed|expanded|disabled|in_form):\s*(true|false)", re.I)
 _FORM_ROLES = frozenset(
     {"form", "textbox", "searchbox", "combobox", "option", "checkbox", "radio",
      "spinbutton", "slider", "listbox", "menuitem"}
@@ -151,6 +151,7 @@ class AXTree:
                 "pressed": flags.get("pressed"),
                 "expanded": flags.get("expanded"),
                 "disabled": flags.get("disabled"),
+                "in_form": flags.get("in_form", False),
             })
         for position, row in enumerate(rows):
             ancestors = []
@@ -187,7 +188,7 @@ class AXTree:
                 expanded=row["expanded"],
                 disabled=row["disabled"],
                 inside_alert=any(entry["role"] == "alert" for entry in ancestors),
-                inside_form=any(entry["role"] in _FORM_ROLES for entry in ancestors),
+                inside_form=row['in_form'] or any(entry["role"] in _FORM_ROLES for entry in ancestors),
                 inside_nav=any(entry["role"] in {"navigation", "banner", "contentinfo"} for entry in ancestors),
                 section=section,
                 descendants=tuple(_node_from_row(entry, ancestors + [row]) for entry in descendants),
@@ -225,10 +226,12 @@ class AXTree:
             return None
         if node.value is not None:
             return node.value
-        values = [
-            child.name for child in node.descendants
-            if child.role in {"StaticText", "text"} and child.name
-        ]
+        text_nodes = [child for child in node.descendants
+                      if child.role in {"StaticText", "text", "LineBreak"}]
+        if any(child.role == 'LineBreak' for child in text_nodes):
+            return ''.join('\n' if child.role == 'LineBreak' else child.name
+                           for child in text_nodes)
+        values = [child.name for child in text_nodes]
         if values:
             return "\n".join(values)
         # Some AX writers expose the editable value as a child text node with

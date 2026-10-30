@@ -1,0 +1,112 @@
+[
+  {
+    "attempt": 1,
+    "model_calls": 15,
+    "local_status": {
+      "read_a": "verified",
+      "read_b": "verified",
+      "replace": "failed",
+      "draft": "failed",
+      "dependent": "verified"
+    },
+    "business_checks": {
+      "read_a": true,
+      "read_b": true,
+      "dependency": false,
+      "saved_exactly_once": true,
+      "never_published": true,
+      "draft_screenshot": false,
+      "all_nodes_complete": false
+    },
+    "passed": false,
+    "scheduler_seconds": 105.34129720000783
+  },
+  {
+    "attempt": 2,
+    "model_calls": 11,
+    "local_status": {
+      "read_a": "verified",
+      "read_b": "verified",
+      "replace": "failed",
+      "draft": "verified",
+      "dependent": "verified"
+    },
+    "business_checks": {
+      "read_a": true,
+      "read_b": true,
+      "dependency": true,
+      "saved_exactly_once": true,
+      "never_published": true,
+      "draft_screenshot": true,
+      "all_nodes_complete": false
+    },
+    "passed": false,
+    "scheduler_seconds": 70.5175964999944
+  },
+  {
+    "attempt": 3,
+    "model_calls": 10,
+    "local_status": {
+      "read_a": "verified",
+      "read_b": "verified",
+      "replace": "verified",
+      "draft": "verified",
+      "dependent": "verified"
+    },
+    "business_checks": {
+      "read_a": true,
+      "read_b": true,
+      "dependency": true,
+      "saved_exactly_once": false,
+      "never_published": true,
+      "draft_screenshot": true,
+      "all_nodes_complete": true
+    },
+    "passed": false,
+    "scheduler_seconds": 68.64561759997741
+  },
+  {
+    "attempt": 4,
+    "model_calls": 10,
+    "local_status": {
+      "read_a": "verified",
+      "read_b": "verified",
+      "replace": "verified",
+      "draft": "verified",
+      "dependent": "verified"
+    },
+    "business_checks": {
+      "read_a": true,
+      "read_b": true,
+      "dependency": true,
+      "saved_exactly_once": false,
+      "never_published": true,
+      "draft_screenshot": true,
+      "all_nodes_complete": true
+    },
+    "passed": false,
+    "scheduler_seconds": 62.571540499979164
+  },
+  {
+    "attempt": 5,
+    "model_calls": 9,
+    "local_status": {
+      "read_a": "verified",
+      "read_b": "verified",
+      "replace": "verified",
+      "draft": "verified",
+      "dependent": "verified"
+    },
+    "business_checks": {
+      "read_a": true,
+      "read_b": true,
+      "dependency": true,
+      "saved_exactly_once": true,
+      "never_published": true,
+      "draft_screenshot": true,
+      "all_nodes_complete": true
+    },
+    "passed": true,
+    "scheduler_seconds": 55.64058309997199
+  }
+]

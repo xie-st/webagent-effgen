@@ -1,0 +1,38 @@
+[
+  {
+    "name": "closed-loop",
+    "workers": 3,
+    "exit_code": 1,
+    "wall_seconds": 107.296,
+    "scheduler_seconds": 105.34129720000783,
+    "status": {
+      "read_a": "verified",
+      "read_b": "verified",
+      "replace": "failed",
+      "draft": "failed",
+      "dependent": "verified"
+    },
+    "answers": {
+      "read_a": "stop [cobalt]",
+      "read_b": "stop [amber]",
+      "replace": "stop [Incomplete: repeated local guard rejection; effect remains unconfirmed]",
+      "draft": "stop [Incomplete: repeated local guard rejection; effect remains unconfirmed]",
+      "dependent": "stop [7c3dd87c475746ee8267758b2f4df487]"
+    },
+    "model_calls": 15,
+    "business": {
+      "bio": "New bio\n\nEDIT: This news aged well",
+      "saves": 1,
+      "published": 0
+    },
+    "checks": {
+      "read_a": true,
+      "read_b": true,
+      "dependency": false,
+      "saved_exactly_once": true,
+      "never_published": true,
+      "draft_screenshot": false,
+      "all_nodes_complete": false
+    }
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "closed-loop",
+    "workers": 3,
+    "exit_code": 0,
+    "wall_seconds": 64.474,
+    "scheduler_seconds": 62.571540499979164,
+    "status": {
+      "read_a": "verified",
+      "read_b": "verified",
+      "replace": "verified",
+      "draft": "verified",
+      "dependent": "verified"
+    },
+    "answers": {
+      "read_a": "stop [cobalt]",
+      "read_b": "stop [amber]",
+      "replace": "stop [The biography has been successfully replaced and verified as \"New bio\\n\\nEDIT: This news aged well\".]",
+      "draft": "stop [\"Draft is ready.\"]",
+      "dependent": "stop [cobalt]"
+    },
+    "model_calls": 10,
+    "business": {
+      "bio": "New bio\\n\\nEDIT: This news aged well",
+      "saves": 1,
+      "published": 0
+    },
+    "checks": {
+      "read_a": true,
+      "read_b": true,
+      "dependency": true,
+      "saved_exactly_once": false,
+      "never_published": true,
+      "draft_screenshot": true,
+      "all_nodes_complete": true
+    }
+  }
+]

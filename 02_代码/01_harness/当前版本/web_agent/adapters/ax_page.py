@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from urllib.parse import urljoin, urlsplit
 import re
+import json
 
 def quote_name(name):
     escaped = name.replace("\\", "\\\\").replace("'", "\\'")
@@ -63,6 +64,11 @@ def _parse_aria(snapshot: str) -> list[dict]:
                 rest = rest[quoted.end():].strip()
         elif rest.startswith(":"):
             name = rest[1:].strip()
+            if name.startswith('"') and name.endswith('"'):
+                try:
+                    name = json.loads(name)
+                except ValueError:
+                    pass
         flags = {}
         for flag, value in _FLAG.findall(rest):
             flags[flag.casefold()] = value if value else True
@@ -100,6 +106,41 @@ class AXPage:
         except Exception:
             title = ""
         nodes = _parse_aria(self.page.locator("body").aria_snapshot())
+        # ARIA snapshots collapse whitespace in static text. Preserve exact
+        # multiline business text only where one visible DOM block uniquely
+        # matches that same AX text; never join unrelated paragraph fragments.
+        multiline, form_texts = {}, set()
+        for form in self.page.locator('form').all():
+            for item in _parse_aria(form.aria_snapshot()):
+                form_texts.add(re.sub(r'\s+', ' ', item['name']).strip())
+        # Form membership is independent of formatting. Include all visible
+        # form descendants and bare text, even when ARIA omits an unnamed form.
+        for text in self.page.locator('form').evaluate_all('''forms => forms.flatMap(form => {
+            const texts=[];
+            for (const e of [form,...form.querySelectorAll('*')]) {
+                if (!e.matches('input,textarea,select,option,script,style') && e.getClientRects().length
+                    && getComputedStyle(e).visibility !== 'hidden') texts.push(e.innerText || '');
+            }
+            const walker=document.createTreeWalker(form,NodeFilter.SHOW_TEXT);
+            while(walker.nextNode()) {
+                const n=walker.currentNode, p=n.parentElement;
+                if(!p || p.closest('input,textarea,select,option,script,style') || getComputedStyle(p).visibility==='hidden') continue;
+                const range=document.createRange();range.selectNodeContents(n);
+                if(range.getClientRects().length) texts.push(n.textContent || '');
+            }
+            return texts;
+        })'''):
+            form_texts.add(re.sub(r'\s+', ' ', text).strip())
+        for block in self.page.locator('pre,p,blockquote').evaluate_all('''elements => elements
+            .filter(e => e.getClientRects().length && getComputedStyle(e).visibility !== 'hidden'
+                && !e.querySelector('input,textarea,select'))
+            .map(e => ({text:e.innerText, form:!!e.closest('form')}))'''):
+            text=block['text']
+            key = re.sub(r'\s+', ' ', text).strip()
+            if key in multiline and multiline[key] != text:
+                multiline[key] = None
+            elif key not in multiline:
+                multiline[key] = text
         lines = [f"Tab 0 (current): {title}"]
         counts: dict[tuple[str, str], int] = {}
         next_id = 1
@@ -108,9 +149,15 @@ class AXPage:
             next_id += 1
             role = node["role"]
             name = str(node["name"] or "").strip()
+            if role == 'StaticText':
+                exact = multiline.get(re.sub(r'\s+', ' ', name).strip())
+                if exact is not None:
+                    name = exact
             if role in _PW_ROLES:
                 name = re.sub(r'\s+',' ',name)
             parts = [f"[{element_id}]", role]
+            if role in {'StaticText','heading','paragraph','link','cell'} and re.sub(r'\s+', ' ', name).strip() in form_texts:
+                parts.append('in_form: true')
             if name:
                 parts.append(quote_name(name))
             url = node.get("url")
