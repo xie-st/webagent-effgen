@@ -11,6 +11,7 @@ import hashlib
 import os
 from pathlib import Path
 import re
+import shutil
 import struct
 import time
 from dataclasses import dataclass, replace
@@ -217,7 +218,30 @@ class ScreenshotPort:
         started = self._clock()
         key = reference.binding()
         cached = self._cache.get(key)
-        if cached is not None:
+        if cached is not None and directory is not None:
+            try:
+                source = Path(cached.path)
+                problem = _verify_file(source, reference)
+                if problem is not None:
+                    raise ValueError(problem)
+                target = directory / (reference.image_id + ".png")
+                if source.resolve() != target.resolve():
+                    directory.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(source, target)
+                if frame.deadline is not None and self._clock() >= frame.deadline:
+                    raise TimeoutError("Task deadline reached while restoring cached screenshot")
+                cached = replace(cached, path=str(target))
+                self._cache[key] = cached
+            except (OSError, ValueError) as exc:
+                if isinstance(exc, TimeoutError):
+                    self._emit(frame=frame, reference=reference, result="timeout",
+                               started=started, error=exc, reason=reason)
+                    raise
+                result = ScreenshotCapture(result="invalid", reference=reference,
+                                           error=str(exc))
+                self._emit(frame=frame, reference=reference, result=result.result,
+                           started=started, error=exc, reason=reason)
+                return result
             result = replace(cached, result="cached", cached=True, requested=True)
             self._emit(
                 frame=frame,

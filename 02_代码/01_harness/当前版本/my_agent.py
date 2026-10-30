@@ -139,6 +139,8 @@ class MyAgent:
         directory: str | None = None,
     ):
         """Explicit current-frame screenshot request; ordinary steps never call it."""
+        if self._stopped or (self._telemetry is not None and self._telemetry.is_finished):
+            raise ValueError("run already ended; screenshot requests require an active run")
         if self.runtime is None:
             raise ValueError("reset is required")
         target = frame if frame is not None else self._last_frame

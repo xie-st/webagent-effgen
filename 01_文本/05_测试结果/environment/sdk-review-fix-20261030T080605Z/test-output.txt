@@ -1,0 +1,8 @@
+test_cache_relocates_to_requested_result_directory_without_downloading (test_screenshot.ScreenshotPortTests.test_cache_relocates_to_requested_result_directory_without_downloading) ... ok
+test_corrupt_cached_file_is_not_reported_as_verified (test_screenshot.ScreenshotPortTests.test_corrupt_cached_file_is_not_reported_as_verified) ... ok
+test_stop_rejects_capture_without_appending_after_run_end (test_screenshot.AgentScreenshotLifecycleTests.test_stop_rejects_capture_without_appending_after_run_end) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.050s
+
+OK

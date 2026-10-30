@@ -1,0 +1,8 @@
+{
+  "base_commit": "ee4d380",
+  "patched_files": {
+    "web_agent/screenshots.py": "55fc6a699401d86f3364dcc72c9bbff7e7548279f08aab019bb6247cdb34e370",
+    "my_agent.py": "77bbb6c86a3c546157ea6231d0e6578436184c9a3ff3ee3f30815f20e5e63ab7",
+    "tests/test_screenshot.py": "30d222ce0989a3ff28c7baf671ba08441b8d2082baf4c762b2d283a33028d421"
+  }
+}

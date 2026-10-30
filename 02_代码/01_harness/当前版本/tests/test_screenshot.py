@@ -138,6 +138,28 @@ def read_events(path):
     return [json.loads(line) for line in Path(path).read_text(encoding="utf-8").splitlines()]
 
 
+class AgentScreenshotLifecycleTests(unittest.TestCase):
+    def test_stop_rejects_capture_without_appending_after_run_end(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            telemetry = Telemetry(path=Path(temporary) / "telemetry.jsonl")
+            runtime = SimpleNamespace(
+                advance=lambda frame, state: {"action": "stop [done]"},
+                request_screenshot=lambda *args, **kwargs: self.fail("capture after stop"),
+            )
+            agent = MyAgent(runtime=runtime, telemetry=telemetry)
+            request = {"run_id": "stop-boundary", "task": "test",
+                       "observation": {"url": URL, "text": TEXT},
+                       "execution_deadline": time.time() + 30}
+            agent.reset(request)
+            agent.step(request)
+            before = read_events(telemetry.path)
+            with self.assertRaises(ValueError):
+                agent.request_screenshot()
+            self.assertEqual(read_events(telemetry.path), before)
+            self.assertEqual(before[-1]["event"], "run_end")
+            agent.close()
+
+
 class SdkUpgradeTests(unittest.TestCase):
     def test_bundled_sdk_has_screenshot_api_and_exact_source_fingerprint(self):
         current = Path(official.__file__).resolve().parents[2]
@@ -247,6 +269,32 @@ class FrameMetadataTests(unittest.TestCase):
 
 
 class ScreenshotPortTests(unittest.TestCase):
+    def test_cache_relocates_to_requested_result_directory_without_downloading(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary) / "raw/screenshots"
+            transient = Path(temporary) / "transient"
+            fake = FakeBrowser()
+            port = ScreenshotPort(browser=fake, directory=directory)
+            frame = make_frame(screenshot=metadata())
+            first = port.capture(frame, directory=transient)
+            second = port.capture(frame)
+            self.assertEqual(second.result, "cached")
+            self.assertEqual(Path(second.path).parent, directory)
+            self.assertEqual(Path(second.path).read_bytes(), png_bytes())
+            Path(first.path).unlink()
+            self.assertTrue(port.capture(frame).ok)
+            self.assertEqual(len(fake.calls), 1)
+
+    def test_corrupt_cached_file_is_not_reported_as_verified(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            fake = FakeBrowser()
+            port = ScreenshotPort(browser=fake, directory=temporary)
+            frame = make_frame(screenshot=metadata())
+            first = port.capture(frame)
+            Path(first.path).write_bytes(b"corrupt")
+            self.assertEqual(port.capture(frame).result, "invalid")
+            self.assertEqual(len(fake.calls), 1)
+
     def test_same_frame_is_cached_and_downloaded_once(self):
         with tempfile.TemporaryDirectory() as temporary:
             telemetry = Telemetry(run_id="cache", path=Path(temporary) / "telemetry.jsonl")
