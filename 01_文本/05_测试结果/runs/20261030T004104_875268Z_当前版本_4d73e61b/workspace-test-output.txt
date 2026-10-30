@@ -1,0 +1,6 @@
+test_copy_and_run_without_parent_project (test_workspace.DispatchTests.test_copy_and_run_without_parent_project) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 3.736s
+
+OK
