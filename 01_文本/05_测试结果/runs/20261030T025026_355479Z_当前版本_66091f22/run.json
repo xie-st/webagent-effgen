@@ -4,7 +4,7 @@
   "kind": "official",
   "harness": "当前版本",
   "started_at": "2026-10-30T02:50:26.369175+00:00",
-  "status": "client_running",
+  "status": "client_interrupted",
   "git": {
     "commit": "f698f6806b6221036c8f01edc100033f3ee23af7",
     "dirty": false
@@ -67,6 +67,48 @@
   },
   "launcher_sha256": "c714f0e32f7e6fd744c6bc7f27d1aa3a7bc8cc534291cf79ac5839f02ac0277e",
   "telemetry_path": "telemetry.jsonl",
-  "official_score": null,
-  "platform_run_ids": []
+  "official_score": {
+    "batch_id": "0c72da8ee1729843b4ddf5364a851221",
+    "passed": 3,
+    "total": 4,
+    "accuracy": 0.75,
+    "source": "raw/batch-0c72da8ee1729843b4ddf5364a851221.json"
+  },
+  "platform_run_ids": [
+    "0c72da8ee1729843b4ddf5364a851221"
+  ],
+  "telemetry": {
+    "path": "telemetry.jsonl",
+    "run_ids": [
+      "314c3139512d43a7bc3c94ac18eb2ff4",
+      "40f4a8081cc949dda4b9c0a08000636c",
+      "4999a5cca72e4297a9a6a366cf1859e7",
+      "f296d17879504b7e8a706f28ed342cb5"
+    ],
+    "run_count": 4,
+    "model_calls": 26,
+    "rejected_calls": 0,
+    "completed_calls": 26,
+    "incomplete_calls": 0,
+    "by_purpose": {
+      "decision": 23,
+      "correction": 3
+    },
+    "successful": 26,
+    "failed": 0,
+    "end_reason": null,
+    "end_reasons": [
+      "stop",
+      "stop",
+      "stop",
+      "stop"
+    ],
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+  },
+  "exit_code": 130,
+  "finished_at": "2026-10-30T03:01:33.485481+00:00",
+  "client_shutdown_reason": "coordinator_after_platform_batch_completed"
 }

@@ -1,0 +1,98 @@
+{
+  "phase": "M1b",
+  "batch_id": "0c72da8ee1729843b4ddf5364a851221",
+  "code_commit": "396bcb62bbb6d44c6935678e7c6161f0577bb74c",
+  "suite_version": "forum-practice-4-v1-300s-managed",
+  "status": "completed",
+  "passed": 3,
+  "failed": 1,
+  "total": 4,
+  "accuracy": 0.75,
+  "errors": 0,
+  "timed_out": 0,
+  "batch_elapsed_seconds": 278.1,
+  "execution_seconds_all": 115.156,
+  "execution_seconds_passed": 94.645,
+  "model_usage": {
+    "calls": 26,
+    "prompt_tokens": 107594,
+    "completion_tokens": 1603,
+    "cached_tokens": 20992,
+    "cost_usd": "0.028030152",
+    "unknown_cost_calls": 0,
+    "cost_complete": true,
+    "currency": "USD"
+  },
+  "source": "raw/batch-0c72da8ee1729843b4ddf5364a851221.json",
+  "source_sha256": "ce606a49199e4073c4f3c38a25ab6b1bd6db7be472fd12b87a9bc44aa182e2e5",
+  "platform_artifact_files": 23,
+  "platform_artifacts_hashes_verified": true,
+  "local_calls_match_platform": true,
+  "tasks": [
+    {
+      "task_id": 399,
+      "job_id": "36316d111029511f4a017c2f5fe4320f",
+      "local_run_id": "314c3139512d43a7bc3c94ac18eb2ff4",
+      "score": 0.0,
+      "status": "completed",
+      "execution_seconds": 20.511,
+      "steps": 6,
+      "platform_model_calls": 6,
+      "local_model_calls": 6,
+      "call_ids_paired": true,
+      "end_reason": "stop",
+      "purposes": {
+        "decision": 6
+      }
+    },
+    {
+      "task_id": 404,
+      "job_id": "2a0d6a17658941e32092332218e9453a",
+      "local_run_id": "4999a5cca72e4297a9a6a366cf1859e7",
+      "score": 1.0,
+      "status": "completed",
+      "execution_seconds": 30.926,
+      "steps": 6,
+      "platform_model_calls": 6,
+      "local_model_calls": 6,
+      "call_ids_paired": true,
+      "end_reason": "stop",
+      "purposes": {
+        "decision": 6
+      }
+    },
+    {
+      "task_id": 650,
+      "job_id": "4e94a837782e89a357171cfa807f983d",
+      "local_run_id": "40f4a8081cc949dda4b9c0a08000636c",
+      "score": 1.0,
+      "status": "completed",
+      "execution_seconds": 25.667,
+      "steps": 3,
+      "platform_model_calls": 3,
+      "local_model_calls": 3,
+      "call_ids_paired": true,
+      "end_reason": "stop",
+      "purposes": {
+        "decision": 3
+      }
+    },
+    {
+      "task_id": 731,
+      "job_id": "813abcbe32f47dec0c2b405affef9d38",
+      "local_run_id": "f296d17879504b7e8a706f28ed342cb5",
+      "score": 1.0,
+      "status": "completed",
+      "execution_seconds": 38.052,
+      "steps": 8,
+      "platform_model_calls": 11,
+      "local_model_calls": 11,
+      "call_ids_paired": true,
+      "end_reason": "stop",
+      "purposes": {
+        "decision": 8,
+        "correction": 3
+      }
+    }
+  ]
+}
