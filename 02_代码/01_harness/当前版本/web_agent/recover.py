@@ -180,7 +180,7 @@ def _dangerous_url(url: str | None) -> bool:
         return True
     for key, values in parse_qs(parsed.query).items():
         if key.casefold() in {"action", "do", "op", "operation", "cmd"}:
-            if any(re.match(
+            if any(_DANGEROUS_URL.search("/" + value) or re.match(
                 r"^(?:delete|remove|save|submit|reorder|upvote|downvote|"
                 r"subscribe|unsubscribe|follow|unfollow|add_to_cart)(?:$|[_/-])",
                 value, re.I,
@@ -225,6 +225,11 @@ def classify_action(action: str, frame: Frame) -> ActionInfo:
         if role in {"option", "checkbox", "radio"}:
             return ActionInfo(action, "click", element_id, role, name, url,
                               is_read=False, is_draft=True, operation="draft")
+        if _dangerous_link(atom):
+            # Explicit business mutation wins over popup/tab metadata. A
+            # split button or link can both expose a menu and perform a write.
+            return ActionInfo(action, "click", element_id, role, name, url,
+                              is_write=True, is_read=False, operation="commit")
         if _ui_navigation(atom):
             # A popup-menu opener or tab only opens UI state.  Committing is a
             # later form control, so this must not create a phantom pending.

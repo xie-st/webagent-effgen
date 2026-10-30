@@ -1,0 +1,14 @@
+[
+  {
+    "Path": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\web_agent\\recover.py",
+    "Hash": "300A2AC91B8DF008B18B1C9CEAF93A92DDB69372EE5ACF2103BCF92EF4D03638"
+  },
+  {
+    "Path": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\web_agent\\runtime.py",
+    "Hash": "CF5E670245EF91775BEC08548FD64F3C94E7B4D56B0BC8BF774F4232053E65AB"
+  },
+  {
+    "Path": "D:\\HackathonWebAgent\\webagent-effgen\\02_代码\\01_harness\\当前版本\\tests\\test_m2_takeover.py",
+    "Hash": "3CDEA768C54F5E04CEAB49F7B0EE0F89671C5847AAB16FAF82DBFA32D8209A67"
+  }
+]

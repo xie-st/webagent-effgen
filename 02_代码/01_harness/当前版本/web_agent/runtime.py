@@ -21,6 +21,9 @@ from .state import MAX_MEMORY, TaskState
 
 DecisionPort = Callable[[Context, TaskState], str | Mapping[str, Any]]
 
+# Bound repairs of one observation, not the number of task/browser steps.
+MAX_DECISION_CORRECTIONS = 2
+
 
 class Runtime:
     """Drive either a legacy decision port or an EffGen raw-decision policy."""
@@ -129,6 +132,7 @@ class Runtime:
         frame: Frame,
     ) -> dict[str, str]:
         invalid_outputs: set[str] = set()
+        corrections = 0
         raw = self.policy.generate(context, state)
         while True:
             try:
@@ -138,7 +142,7 @@ class Runtime:
             except (ValueError, TypeError) as exc:
                 if not isinstance(raw, str):
                     raise ValueError("Policy must return a string decision") from exc
-                if raw in invalid_outputs:
+                if raw in invalid_outputs or corrections >= MAX_DECISION_CORRECTIONS:
                     recovery_actions = (
                         "scroll [down]",
                         "scroll [up]",
@@ -146,8 +150,11 @@ class Runtime:
                         "press [Tab]",
                     )
                     index = state.next_recovery()
-                    return {"action": recovery_actions[index % len(recovery_actions)]}
+                    action = recovery_actions[index % len(recovery_actions)]
+                    self._accept_action(frame, state, action)
+                    return {"action": action}
                 invalid_outputs.add(raw)
+                corrections += 1
                 raw = self.policy.correct(context, state, raw, exc)
 
     def _semantic_verify(
