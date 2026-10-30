@@ -1,0 +1,55 @@
+{
+  "kind": "environment_smoke_not_agent_benchmark",
+  "model_calls": 0,
+  "checks": [
+    "single_action_profile",
+    "stale_id_rejected",
+    "post",
+    "reply",
+    "subscribe",
+    "vote",
+    "cart",
+    "checkout",
+    "429_then_retry",
+    "login_resume_simulated_by_test",
+    "delayed_write"
+  ],
+  "all_passed": true,
+  "parallel_io": {
+    "serial_seconds": 1.6782183999894187,
+    "parallel_seconds": 0.8330903999740258,
+    "speedup": 2.014449332319449,
+    "measurement": "synthetic browser IO only"
+  }
+}
+D:\Dwen\Alpha26fall\华为2026Hackathon_WebAgent\01_文本\05_测试结果\environment\20261030T050716_203176Z
+127.0.0.1 - - [30/Oct/2026 13:07:10] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:10] "POST /write/profile HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:10] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:10] "POST /write/post HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:10] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:10] "POST /write/reply HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:10] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:10] "POST /write/subscribe HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:10] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:11] "POST /write/vote HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:11] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:11] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:11] "POST /cart HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:11] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:11] "POST /checkout HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:11] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:11] "POST /checkout HTTP/1.1" 429 -
+127.0.0.1 - - [30/Oct/2026 13:07:12] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:12] "POST /checkout HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:12] "GET /shop HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:12] "GET /forum HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:12] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:12] "POST /login HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:12] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:12] "POST /write/subscribe HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:12] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:14] "GET /slow/a HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:15] "GET /slow/b HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:15] "GET /slow/b HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:15] "GET /slow/a HTTP/1.1" 200 -

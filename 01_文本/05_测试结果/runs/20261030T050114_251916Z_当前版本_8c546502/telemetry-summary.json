@@ -1,0 +1,31 @@
+{
+  "path": "telemetry.jsonl",
+  "run_ids": [
+    "0345d412f60541c386030de621b7645e",
+    "30a842ef2cbc4630950527a82d154914",
+    "96c2c943bcc8467e85cac46ae2aa9587",
+    "c9091ed199c94683bec0f06707300c61"
+  ],
+  "run_count": 4,
+  "model_calls": 25,
+  "rejected_calls": 0,
+  "completed_calls": 25,
+  "incomplete_calls": 0,
+  "by_purpose": {
+    "decision": 24,
+    "correction": 1
+  },
+  "successful": 25,
+  "failed": 0,
+  "end_reason": null,
+  "end_reasons": [
+    "stop",
+    "stop",
+    "stop",
+    "stop"
+  ],
+  "prompt_tokens": null,
+  "completion_tokens": null,
+  "total_tokens": null,
+  "cost_usd": null
+}

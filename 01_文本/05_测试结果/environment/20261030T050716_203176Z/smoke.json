@@ -1,0 +1,24 @@
+{
+  "kind": "environment_smoke_not_agent_benchmark",
+  "model_calls": 0,
+  "checks": [
+    "single_action_profile",
+    "stale_id_rejected",
+    "post",
+    "reply",
+    "subscribe",
+    "vote",
+    "cart",
+    "checkout",
+    "429_then_retry",
+    "login_resume_simulated_by_test",
+    "delayed_write"
+  ],
+  "all_passed": true,
+  "parallel_io": {
+    "serial_seconds": 1.6782183999894187,
+    "parallel_seconds": 0.8330903999740258,
+    "speedup": 2.014449332319449,
+    "measurement": "synthetic browser IO only"
+  }
+}

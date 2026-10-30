@@ -1,0 +1,54 @@
+{
+  "status": "passed",
+  "batch_id": "81cc74db49e85f9fc13469488fb8fd9f",
+  "sdk_archive_sha256": "23c08362f37a12a437f93dfe86a3ab46364cff393af9c46263b24a99c92276ca",
+  "source_files": 39,
+  "artifact_files": 23,
+  "passed": 2,
+  "total": 4,
+  "accuracy": 0.5,
+  "model_calls": 25,
+  "by_purpose": {
+    "decision": 24,
+    "correction": 1
+  },
+  "screenshot_results": {},
+  "tasks": [
+    {
+      "task_id": 731,
+      "score": 1.0,
+      "status": "completed",
+      "run_id": "30a842ef2cbc4630950527a82d154914",
+      "calls": 9,
+      "seconds": 46.08228826522827,
+      "finish_reason": "stop"
+    },
+    {
+      "task_id": 404,
+      "score": 0.0,
+      "status": "completed",
+      "run_id": "c9091ed199c94683bec0f06707300c61",
+      "calls": 7,
+      "seconds": 49.58691430091858,
+      "finish_reason": "stop"
+    },
+    {
+      "task_id": 399,
+      "score": 0.0,
+      "status": "completed",
+      "run_id": "96c2c943bcc8467e85cac46ae2aa9587",
+      "calls": 6,
+      "seconds": 42.558398962020874,
+      "finish_reason": "stop"
+    },
+    {
+      "task_id": 650,
+      "score": 1.0,
+      "status": "completed",
+      "run_id": "0345d412f60541c386030de621b7645e",
+      "calls": 3,
+      "seconds": 40.075406074523926,
+      "finish_reason": "stop"
+    }
+  ]
+}

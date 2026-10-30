@@ -1,0 +1,5 @@
+{"kind": "local_synthetic_result", "agent": "smoke_test:profile_driver", "task": "profile", "scenario": "normal", "passed": true, "seconds": 0.8841177000431344, "steps": 3, "official_score": false}
+D:\Dwen\Alpha26fall\华为2026Hackathon_WebAgent\01_文本\05_测试结果\local\20261030T050716_749000Z\actions.jsonl
+127.0.0.1 - - [30/Oct/2026 13:07:17] "GET /forum HTTP/1.1" 200 -
+127.0.0.1 - - [30/Oct/2026 13:07:17] "POST /write/profile HTTP/1.1" 302 -
+127.0.0.1 - - [30/Oct/2026 13:07:17] "GET /forum HTTP/1.1" 200 -

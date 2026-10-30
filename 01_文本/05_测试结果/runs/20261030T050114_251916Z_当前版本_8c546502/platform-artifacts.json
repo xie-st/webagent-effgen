@@ -1,0 +1,166 @@
+{
+  "batch_id": "81cc74db49e85f9fc13469488fb8fd9f",
+  "files": [
+    {
+      "path": "raw/batch-detail.json",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/batches/81cc74db49e85f9fc13469488fb8fd9f",
+      "bytes": 2863,
+      "sha256": "6a943b82937e35b3633ce010e8e0c703dfed3f47445a08ffc44e9cada2468c33",
+      "downloaded_at": "2026-10-30T05:08:25.055156+00:00"
+    },
+    {
+      "path": "raw/batch-81cc74db49e85f9fc13469488fb8fd9f.json",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/batches/81cc74db49e85f9fc13469488fb8fd9f/report.json",
+      "bytes": 3724,
+      "sha256": "97de90cedb9f91b8c6bba82668db8aed20a0fc3bf1fbdedd854bb3dcb12a9a3d",
+      "downloaded_at": "2026-10-30T05:08:26.351650+00:00"
+    },
+    {
+      "path": "raw/batch-81cc74db49e85f9fc13469488fb8fd9f.csv",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/batches/81cc74db49e85f9fc13469488fb8fd9f/report.csv",
+      "bytes": 771,
+      "sha256": "b63926a910c1a5638d390d5a06e07c738150288659e98f4e24bd1da2ad05a5c9",
+      "downloaded_at": "2026-10-30T05:08:27.702458+00:00"
+    },
+    {
+      "path": "raw/jobs/081095ac855882298f808e8906b59b54/detail.json",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/081095ac855882298f808e8906b59b54",
+      "bytes": 1662,
+      "sha256": "3d5cd4ca23c7e766860eb7ec24c6ad4dd0668af862b73f61afd2f859b17756f5",
+      "downloaded_at": "2026-10-30T05:08:30.413947+00:00"
+    },
+    {
+      "path": "raw/jobs/081095ac855882298f808e8906b59b54/summary.json",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/081095ac855882298f808e8906b59b54/files/summary.json",
+      "bytes": 314,
+      "sha256": "30a9c4db7e3e1f0009a6ecb3cb64ec861421db3fbb14b18ec68e276bf395ec8d",
+      "downloaded_at": "2026-10-30T05:08:32.071360+00:00"
+    },
+    {
+      "path": "raw/jobs/081095ac855882298f808e8906b59b54/render.html",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/081095ac855882298f808e8906b59b54/files/render.html",
+      "bytes": 647409,
+      "sha256": "7fd893068b1b00cadd59eb6c9581a0f90477f93d1b9b06ffa13a0aef363c4609",
+      "downloaded_at": "2026-10-30T05:08:34.735394+00:00"
+    },
+    {
+      "path": "raw/jobs/081095ac855882298f808e8906b59b54/trace.zip",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/081095ac855882298f808e8906b59b54/files/trace.zip",
+      "bytes": 3424315,
+      "sha256": "d4b1bdc896153d07fa5e64448965eb406a75ca5dd9c559a67e99270bd6fb5c13",
+      "downloaded_at": "2026-10-30T05:08:51.426859+00:00"
+    },
+    {
+      "path": "raw/jobs/081095ac855882298f808e8906b59b54/worker.log",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/081095ac855882298f808e8906b59b54/files/worker.log",
+      "bytes": 1580,
+      "sha256": "6a51a07487316572df05dc790e8ed943842dfdc1007ae9aa9cb2cb6a337d1674",
+      "downloaded_at": "2026-10-30T05:08:53.029984+00:00"
+    },
+    {
+      "path": "raw/jobs/e34c53f3b0e7b9b14d52e46a56787c00/detail.json",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/e34c53f3b0e7b9b14d52e46a56787c00",
+      "bytes": 1631,
+      "sha256": "a04a090bd7f540344c86bc9486329868c36ae0a80061503d83c79c3e9f883e70",
+      "downloaded_at": "2026-10-30T05:08:54.618182+00:00"
+    },
+    {
+      "path": "raw/jobs/e34c53f3b0e7b9b14d52e46a56787c00/summary.json",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/e34c53f3b0e7b9b14d52e46a56787c00/files/summary.json",
+      "bytes": 314,
+      "sha256": "fa1703d3ddd48face866ed10e0f673f52253b78f76dbc5102b50a0629d08bd02",
+      "downloaded_at": "2026-10-30T05:08:56.432860+00:00"
+    },
+    {
+      "path": "raw/jobs/e34c53f3b0e7b9b14d52e46a56787c00/render.html",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/e34c53f3b0e7b9b14d52e46a56787c00/files/render.html",
+      "bytes": 304487,
+      "sha256": "45737b02ebc036b69f15b89652804a32484979f6e8493b6a2013d11deb2b50ad",
+      "downloaded_at": "2026-10-30T05:08:58.799263+00:00"
+    },
+    {
+      "path": "raw/jobs/e34c53f3b0e7b9b14d52e46a56787c00/trace.zip",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/e34c53f3b0e7b9b14d52e46a56787c00/files/trace.zip",
+      "bytes": 3822157,
+      "sha256": "9af55137240d7d855a1fd230ba8c66e1cbcfadae0456dc88e25d4c52fc241297",
+      "downloaded_at": "2026-10-30T05:09:10.284691+00:00"
+    },
+    {
+      "path": "raw/jobs/e34c53f3b0e7b9b14d52e46a56787c00/worker.log",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/e34c53f3b0e7b9b14d52e46a56787c00/files/worker.log",
+      "bytes": 1547,
+      "sha256": "2cb6c472bf33d778dafda18566bd990d8bab7f256d32cd5c02fad989b2dbae2f",
+      "downloaded_at": "2026-10-30T05:09:11.474807+00:00"
+    },
+    {
+      "path": "raw/jobs/bc58c37ba2ce8c4ef7d656a8b2099d65/detail.json",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/bc58c37ba2ce8c4ef7d656a8b2099d65",
+      "bytes": 1603,
+      "sha256": "a42a1cccccec45edd295655ca21c1d6652bf956d1d1a5e775789f17c751116e0",
+      "downloaded_at": "2026-10-30T05:09:12.603111+00:00"
+    },
+    {
+      "path": "raw/jobs/bc58c37ba2ce8c4ef7d656a8b2099d65/summary.json",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/bc58c37ba2ce8c4ef7d656a8b2099d65/files/summary.json",
+      "bytes": 314,
+      "sha256": "192b449fde2489580b571d9f80c3e201693e3b8b002ffef3f7fd2fce405a6ba6",
+      "downloaded_at": "2026-10-30T05:09:13.750144+00:00"
+    },
+    {
+      "path": "raw/jobs/bc58c37ba2ce8c4ef7d656a8b2099d65/render.html",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/bc58c37ba2ce8c4ef7d656a8b2099d65/files/render.html",
+      "bytes": 867079,
+      "sha256": "a1a7a2a67b8371ee080a4e0b86bb5c4011392a5790bf16ad7e114c11350913c4",
+      "downloaded_at": "2026-10-30T05:09:20.703296+00:00"
+    },
+    {
+      "path": "raw/jobs/bc58c37ba2ce8c4ef7d656a8b2099d65/trace.zip",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/bc58c37ba2ce8c4ef7d656a8b2099d65/files/trace.zip",
+      "bytes": 3139496,
+      "sha256": "e6850d565ae2e0c000bb626516c486c048019cdc45a4e6b0c282cb5264c65d4b",
+      "downloaded_at": "2026-10-30T05:09:31.163850+00:00"
+    },
+    {
+      "path": "raw/jobs/bc58c37ba2ce8c4ef7d656a8b2099d65/worker.log",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/bc58c37ba2ce8c4ef7d656a8b2099d65/files/worker.log",
+      "bytes": 1523,
+      "sha256": "0027d625f8c1fc1a4ca832ce4bd9f7572c04e6c776a9bdc90982e2f5c0f67f75",
+      "downloaded_at": "2026-10-30T05:09:32.604843+00:00"
+    },
+    {
+      "path": "raw/jobs/e0a228f44ba82053d2cff60e710878bb/detail.json",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/e0a228f44ba82053d2cff60e710878bb",
+      "bytes": 1604,
+      "sha256": "5c8723c06c3fa3db1b66b54bf83ed79eb0c176c541fd2b6d6a606df340cb2360",
+      "downloaded_at": "2026-10-30T05:09:35.094331+00:00"
+    },
+    {
+      "path": "raw/jobs/e0a228f44ba82053d2cff60e710878bb/summary.json",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/e0a228f44ba82053d2cff60e710878bb/files/summary.json",
+      "bytes": 314,
+      "sha256": "3664606b7e5c538f14aeacceb4f22f463c8bd785ec3287902aaea5ccdb699ad9",
+      "downloaded_at": "2026-10-30T05:09:36.295596+00:00"
+    },
+    {
+      "path": "raw/jobs/e0a228f44ba82053d2cff60e710878bb/render.html",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/e0a228f44ba82053d2cff60e710878bb/files/render.html",
+      "bytes": 451927,
+      "sha256": "537ab39ee512ef46e7dc0a652b1a21e36484c9d6e565e995e7b6e8fdf794cdff",
+      "downloaded_at": "2026-10-30T05:09:38.948776+00:00"
+    },
+    {
+      "path": "raw/jobs/e0a228f44ba82053d2cff60e710878bb/trace.zip",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/e0a228f44ba82053d2cff60e710878bb/files/trace.zip",
+      "bytes": 3510284,
+      "sha256": "cfb34838a83e599c35c84801b8b69840bda7a5b4eb99c680748b29a87b07d312",
+      "downloaded_at": "2026-10-30T05:09:49.319365+00:00"
+    },
+    {
+      "path": "raw/jobs/e0a228f44ba82053d2cff60e710878bb/worker.log",
+      "url": "https://webarena.94-74-111-115.sslip.io/api/jobs/e0a228f44ba82053d2cff60e710878bb/files/worker.log",
+      "bytes": 1520,
+      "sha256": "4af7781cee75190146fcd45802f967439e19b08d7e22ef5ac3d362cc958ba3d7",
+      "downloaded_at": "2026-10-30T05:09:50.693462+00:00"
+    }
+  ]
+}
